@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
   "displayName": "SaaS Branching Blueprint & Governance IDE Plugin",
-  "description": "Plugin IDE & Alat Otomasi Tata Kelola Ruang Kerja SaaS (Branching Strategy, SOP, CI/CD, Branch Protection, & PR Helper)",
-  "version": "1.0.0",
+  "description": "Plugin IDE & AI Chat Copilot Tata Kelola Ruang Kerja SaaS (Dual Mode: Solo & Team)",
+  "version": "1.2.0",
   "publisher": "joecompanyagent-lab",
   "engines": {
     "vscode": "^1.80.0"
@@ -16,11 +16,29 @@
     "saas-workflow-init": "./cli.js"
   },
   "activationEvents": [
+    "onView:saasWorkflow.chatView",
     "onCommand:saasWorkflow.initProject",
-    "onCommand:saasWorkflow.createFeatureBranch",
-    "onCommand:saasWorkflow.createPullRequest"
+    "onCommand:saasWorkflow.createFeatureBranch"
   ],
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "saasWorkflowExplorer",
+          "title": "SaaS Workflow Copilot",
+          "icon": "$(shield)"
+        }
+      ]
+    },
+    "views": {
+      "saasWorkflowExplorer": [
+        {
+          "type": "webview",
+          "id": "saasWorkflow.chatView",
+          "name": "Asisten SaaS Copilot"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "saasWorkflow.initProject",
@@ -29,10 +47,6 @@
       {
         "command": "saasWorkflow.createFeatureBranch",
         "title": "SaaS Workflow: Buat Ruang Kerja Fitur Baru (Create Feature Branch)"
-      },
-      {
-        "command": "saasWorkflow.createPullRequest",
-        "title": "SaaS Workflow: Pengajuan Pemeriksaan Pekerjaan (Create Pull Request)"
       }
     ]
   },

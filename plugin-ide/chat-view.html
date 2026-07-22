@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SaaS Workflow AI Copilot</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-color: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-gold: #eab308;
+      --accent-blue: #3b82f6;
+      --accent-green: #22c55e;
+      --border-color: #334155;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; height: 100vh; font-size: 13px; }
+
+    /* Header Bar */
+    .header { padding: 12px; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+    .header-title { font-weight: 600; font-size: 14px; color: var(--accent-gold); display: flex; align-items: center; gap: 6px; }
+    
+    /* Mode Toggle */
+    .mode-selector { display: flex; background: var(--bg-color); border-radius: 6px; padding: 2px; border: 1px solid var(--border-color); }
+    .mode-btn { border: none; background: transparent; color: var(--text-muted); padding: 4px 8px; font-size: 11px; cursor: pointer; border-radius: 4px; font-weight: 500; }
+    .mode-btn.active { background: var(--card-bg); color: var(--text-color); box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+
+    /* Chat Area */
+    .chat-container { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+    .message { display: flex; flex-direction: column; max-width: 88%; animation: fadeIn 0.2s ease-in-out; }
+    .message.user { align-self: flex-end; }
+    .message.assistant { align-self: flex-start; }
+
+    .bubble { padding: 10px 14px; border-radius: 10px; line-height: 1.5; font-size: 12.5px; }
+    .message.user .bubble { background: #2563eb; color: #ffffff; border-bottom-right-radius: 2px; }
+    .message.assistant .bubble { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); border-bottom-left-radius: 2px; }
+
+    .sender-label { font-size: 10px; color: var(--text-muted); margin-bottom: 3px; font-weight: 500; }
+
+    /* Quick Action Chips */
+    .chips-container { padding: 8px 12px; display: flex; gap: 6px; overflow-x: auto; border-top: 1px solid var(--border-color); background-color: rgba(30, 41, 59, 0.5); }
+    .chip { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 4px 10px; border-radius: 12px; font-size: 11px; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+    .chip:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+
+    /* Input Area */
+    .input-container { padding: 10px 12px; background: var(--card-bg); border-top: 1px solid var(--border-color); display: flex; gap: 8px; align-items: center; }
+    textarea { flex: 1; background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 6px; padding: 8px 10px; font-size: 12px; resize: none; outline: none; height: 38px; }
+    textarea:focus { border-color: var(--accent-blue); }
+    .send-btn { background: var(--accent-blue); color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; }
+    .send-btn:hover { background: #1d4ed8; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+
+  <!-- Header & Mode Switcher -->
+  <div class="header">
+    <div class="header-title">
+      <span>🛡️</span> SaaS Copilot
+    </div>
+    <div class="mode-selector">
+      <button class="mode-btn active" id="btnSolo" onclick="switchMode('solo')">🟢 Mandiri (Solo)</button>
+      <button class="mode-btn" id="btnTeam" onclick="switchMode('team')">🔵 Tim (Team)</button>
+    </div>
+  </div>
+
+  <!-- Chat Log -->
+  <div class="chat-container" id="chatContainer">
+    <div class="message assistant">
+      <div class="sender-label">SaaS Workflow Copilot</div>
+      <div class="bubble">
+        Halo! Saya <b>SaaS Workflow Copilot</b>. Saat ini Anda berada dalam <b>Mode Mandiri (Solo)</b>.<br/><br/>
+        Saya akan membimbing alur pengerjaan fitur Anda, melakukan audit kelaikan otomatis, dan menyetujui pengajuan secara virtual agar sistem aktif Anda tetap 100% stabil.
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Action Chips -->
+  <div class="chips-container">
+    <div class="chip" onclick="quickAction('Buat fitur baru')">✨ Fitur Baru</div>
+    <div class="chip" onclick="quickAction('Ajukan pemeriksaan PR')">🚀 Ajukan PR</div>
+    <div class="chip" onclick="quickAction('Perbaikan darurat Hotfix')">🚨 Perbaikan Hotfix</div>
+    <div class="chip" onclick="quickAction('Status ruang kerja')">📊 Status Branch</div>
+  </div>
+
+  <!-- Input Field -->
+  <div class="input-container">
+    <textarea id="promptInput" placeholder="Ketik perintah atau instruksi bisnis... (misal: buat fitur cetak faktur)"></textarea>
+    <button class="send-btn" onclick="sendMessage()">Kirim</button>
+  </div>
+
+  <script>
+    const vscode = acquireVsCodeApi();
+    let currentMode = 'solo';
+
+    function switchMode(mode) {
+      currentMode = mode;
+      document.getElementById('btnSolo').classList.toggle('active', mode === 'solo');
+      document.getElementById('btnTeam').classList.toggle('active', mode === 'team');
+      
+      const msg = mode === 'solo' 
+        ? "Mode diubah ke 🟢 <b>Mandiri (Solo)</b>. AI akan bertindak sebagai peninjau virtual & melakukan auto-approve otomatis."
+        : "Mode diubah ke 🔵 <b>Kerja Tim (Team)</b>. AI akan memperketat persetujuan manusia & mendeteksi potensi bentrok kodingan.";
+
+      appendMessage('assistant', msg);
+      vscode.postMessage({ type: 'setMode', mode: mode });
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('promptInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      appendMessage('user', text);
+      input.value = '';
+
+      vscode.postMessage({ type: 'userInput', text: text, mode: currentMode });
+    }
+
+    function quickAction(text) {
+      document.getElementById('promptInput').value = text;
+      sendMessage();
+    }
+
+    function appendMessage(sender, htmlContent) {
+      const container = document.getElementById('chatContainer');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${sender}`;
+      
+      const label = sender === 'user' ? 'Anda' : 'SaaS Workflow Copilot';
+      msgDiv.innerHTML = `
+        <div class="sender-label">${label}</div>
+        <div class="bubble">${htmlContent}</div>
+      `;
+
+      container.appendChild(msgDiv);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // Listen for responses from Extension Backend
+    window.addEventListener('message', event => {
+      const data = event.data;
+      if (data.type === 'response') {
+        appendMessage('assistant', data.text);
+      }
+    });
+
+    // Enter to Send
+    document.getElementById('promptInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>

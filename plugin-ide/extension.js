@@ -1,7 +1,7 @@
 const vscode = require('vscode');
 const path = require('path');
 const { execSync } = require('child_process');
-const fs = require('fs');
+const SaaSWorkflowChatProvider = require('./chatProvider');
 
 /**
  * VS Code Extension Activation Handler
@@ -10,7 +10,13 @@ const fs = require('fs');
 function activate(context) {
   console.log('Plugin IDE SaaS Workflow & Governance telah aktif!');
 
-  // Perintah 1: Inisialisasi Cetakan Proyek Lengkap (Setup Blueprint)
+  // 1. Daftarkan Webview Ruang Chat Copilot di Sidebar
+  const chatProvider = new SaaSWorkflowChatProvider(context.extensionUri);
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider('saasWorkflow.chatView', chatProvider)
+  );
+
+  // 2. Perintah Manual: Inisialisasi Cetakan Proyek Lengkap (Setup Blueprint)
   let disposableInit = vscode.commands.registerCommand('saasWorkflow.initProject', function () {
     const workspaceFolders = vscode.workspace.workspaceFolders;
     if (!workspaceFolders) {
@@ -29,7 +35,7 @@ function activate(context) {
     }
   });
 
-  // Perintah 2: Buat Ruang Kerja Fitur Baru (Create Feature Branch)
+  // 3. Perintah Manual: Buat Ruang Kerja Fitur Baru
   let disposableFeature = vscode.commands.registerCommand('saasWorkflow.createFeatureBranch', async function () {
     const workspaceFolders = vscode.workspace.workspaceFolders;
     if (!workspaceFolders) {
