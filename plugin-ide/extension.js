@@ -10,7 +10,7 @@ let currentPanel = undefined;
  * VS Code & Antigravity IDE Extension Activation Handler
  */
 function activate(context) {
-  console.log('Plugin IDE SaaS Workflow & Governance untuk Antigravity IDE telah aktif!');
+  console.log('Plugin IDE Asisten Joe Tata Kelola Ruang Kerja telah aktif!');
 
   // 1. Daftarkan Webview Ruang Chat Copilot di Sidebar
   const chatProvider = new SaaSWorkflowChatProvider(context.extensionUri);
@@ -29,7 +29,7 @@ function activate(context) {
     } else {
       currentPanel = vscode.window.createWebviewPanel(
         'saasWorkflowChatTab',
-        '🛡️ SaaS Workflow Copilot',
+        '🛡️ Asisten Joe',
         columnToShowIn,
         {
           enableScripts: true,
@@ -60,12 +60,12 @@ function activate(context) {
             const branchName = `feature/${ticketId}-${featureName.toLowerCase().replace(/\s+/g, '-')}`;
             try {
               execSync(`git checkout develop && git checkout -b ${branchName}`, { cwd: targetDir });
-              currentPanel.webview.postMessage({ type: 'response', text: `✅ <b>Ruang Kerja Fitur Terbuat:</b> <code>${branchName}</code>` });
+              currentPanel.webview.postMessage({ type: 'response', text: `✅ <b>Ruang Kerja Fitur Terbuat:</b> <code>${branchName}</code><br/>Asisten Joe siap mengawal.` });
             } catch (err) {
               currentPanel.webview.postMessage({ type: 'response', text: `❌ Gagal: ${err.message}` });
             }
           } else {
-            currentPanel.webview.postMessage({ type: 'response', text: `Saya menerima pesan Anda: <i>"${data.text}"</i>` });
+            currentPanel.webview.postMessage({ type: 'response', text: `Asisten Joe menerima pesan Anda: <i>"${data.text}"</i>` });
           }
         }
       });
@@ -93,7 +93,7 @@ function activate(context) {
 
     try {
       execSync(`node "${cliScript}" "${targetDir}"`);
-      vscode.window.showInformationMessage('🎉 Berhasil! Cetakan Tata Kelola SaaS & 4 Ruang Kerja telah disuntikkan ke proyek ini.');
+      vscode.window.showInformationMessage('🎉 Berhasil! Cetakan Tata Kelola SaaS & 4 Ruang Kerja disuntikkan oleh Asisten Joe.');
     } catch (err) {
       vscode.window.showErrorMessage(`Gagal menyuntikkan template: ${err.message}`);
     }

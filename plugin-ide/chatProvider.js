@@ -35,7 +35,7 @@ class SaaSWorkflowChatProvider {
   async _handleUserInput(text, mode) {
     const workspaceFolders = vscode.workspace.workspaceFolders;
     if (!workspaceFolders) {
-      this._reply("⚠️ Silakan buka folder proyek Anda terlebih dahulu di VS Code/IDE!");
+      this._reply("⚠️ Silakan buka folder proyek Anda terlebih dahulu di Antigravity IDE!");
       return;
     }
 
@@ -54,7 +54,7 @@ class SaaSWorkflowChatProvider {
 
       try {
         execSync(`git checkout develop && git checkout -b ${branchName}`, { cwd: targetDir });
-        this._reply(`✅ <b>Ruang Kerja Fitur Terbuat:</b> <code>${branchName}</code><br/>Silakan kerjakan fitur Anda. Jika sudah selesai, ketik <i>"Ajukan PR"</i> di chat ini.`);
+        this._reply(`✅ <b>Ruang Kerja Fitur Terbuat:</b> <code>${branchName}</code><br/>Asisten Joe siap mengawal. Jika sudah selesai, ketik <i>"Ajukan PR"</i> di chat ini.`);
       } catch (err) {
         this._reply(`❌ Gagal membuat ruang kerja: ${err.message}`);
       }
@@ -67,21 +67,21 @@ class SaaSWorkflowChatProvider {
         const currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim();
         
         if (mode === 'solo') {
-          // MODE SOLO: Audit Otomatis & Auto-Approve Virtual
-          this._reply(`🤖 <b>[Mode Solo]</b> Menjalankan Audit Kelaikan Otomatis pada ruang <code>${currentBranch}</code>...`);
+          // MODE SOLO: Audit Otomatis & Auto-Approve Virtual oleh Asisten Joe
+          this._reply(`🤖 <b>Asisten Joe [Mode Solo]</b> Menjalankan Audit Kelaikan Otomatis pada ruang <code>${currentBranch}</code>...`);
           
           execSync(`git add . && git commit -m "fitur: pembaruan mandiri terverifikasi" || true`, { cwd: targetDir });
           execSync(`git checkout develop && git merge ${currentBranch}`, { cwd: targetDir });
           
-          this._reply(`🎉 <b>[Mode Solo Auto-Approved]</b> Pekerjaan Anda dari <code>${currentBranch}</code> telah lulus audit kelaikan dan otomatis digabungkan ke <b>develop</b>!`);
+          this._reply(`🎉 <b>Asisten Joe [Mode Solo Auto-Approved]</b> Pekerjaan Anda dari <code>${currentBranch}</code> telah lulus audit kelaikan dan otomatis digabungkan ke <b>develop</b>!`);
         } else {
           // MODE TIM: Buat PR & Wajib Persetujuan Manusia (CODEOWNERS)
-          this._reply(`🔵 <b>[Mode Tim]</b> Mendorong ruang <code>${currentBranch}</code> ke GitHub & membuat pengajuan persetujuan (PR)...`);
+          this._reply(`🔵 <b>Asisten Joe [Mode Tim]</b> Mendorong ruang <code>${currentBranch}</code> ke GitHub & membuat pengajuan persetujuan (PR)...`);
           
           execSync(`git push -u origin ${currentBranch}`, { cwd: targetDir });
           const prOutput = execSync(`gh pr create --base develop --head ${currentBranch} --title "fitur: ${currentBranch}" --body "Pengajuan dari tim."`, { cwd: targetDir }).toString();
           
-          this._reply(`📢 <b>[Mode Tim]</b> Pengajuan pemeriksaan berhasil dibuat di GitHub!<br/><b>Tautan PR:</b> ${prOutput}<br/>Persetujuan dari 2 staf senior (CODEOWNERS) diperlukan sebelum digabungkan.`);
+          this._reply(`📢 <b>Asisten Joe [Mode Tim]</b> Pengajuan pemeriksaan berhasil dibuat di GitHub!<br/><b>Tautan PR:</b> ${prOutput}<br/>Persetujuan dari 2 staf senior (CODEOWNERS) diperlukan sebelum digabungkan.`);
         }
       } catch (err) {
         this._reply(`❌ Kendala saat proses PR: ${err.message}`);
@@ -93,15 +93,15 @@ class SaaSWorkflowChatProvider {
     if (lowerText.includes('status')) {
       try {
         const currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim();
-        this._reply(`📊 <b>Status Proyek Saat Ini:</b><br/>- Ruang Aktif: <code>${currentBranch}</code><br/>- Mode Operasional: <b>${mode === 'solo' ? '🟢 Mandiri (Solo)' : '🔵 Kerja Tim (Team)'}</b>`);
+        this._reply(`📊 <b>Status Proyek (Asisten Joe):</b><br/>- Ruang Aktif: <code>${currentBranch}</code><br/>- Mode Operasional: <b>${mode === 'solo' ? '🟢 Mandiri (Solo)' : '🔵 Kerja Tim (Team)'}</b>`);
       } catch (err) {
         this._reply(`❌ Gagal mengambil status: ${err.message}`);
       }
       return;
     }
 
-    // Respons umum AI Copilot
-    this._reply(`Saya menerima pesan Anda: <i>"${text}"</i>.<br/>Anda sedang dalam <b>Mode ${mode === 'solo' ? 'Mandiri' : 'Tim'}</b>. Gunakan tombol aksi di bawah untuk membuat fitur baru atau mengajukan PR.`);
+    // Respons umum Asisten Joe
+    this._reply(`Asisten Joe menerima pesan Anda: <i>"${text}"</i>.<br/>Anda sedang dalam <b>Mode ${mode === 'solo' ? 'Mandiri' : 'Tim'}</b>. Gunakan tombol aksi di bawah untuk membuat fitur baru atau mengajukan PR.`);
   }
 
   _reply(htmlText) {

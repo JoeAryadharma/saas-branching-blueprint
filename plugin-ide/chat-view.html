@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SaaS Workflow AI Copilot</title>
+  <title>Asisten Joe</title>
   <style>
     :root {
       --bg-color: #0f172a;
@@ -23,7 +23,7 @@
     .header { padding: 12px; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
     .header-title { font-weight: 600; font-size: 14px; color: var(--accent-gold); display: flex; align-items: center; gap: 6px; }
     
-    /* Mode Toggle */
+    /* Mode Selector */
     .mode-selector { display: flex; background: var(--bg-color); border-radius: 6px; padding: 2px; border: 1px solid var(--border-color); }
     .mode-btn { border: none; background: transparent; color: var(--text-muted); padding: 4px 8px; font-size: 11px; cursor: pointer; border-radius: 4px; font-weight: 500; }
     .mode-btn.active { background: var(--card-bg); color: var(--text-color); box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
@@ -60,7 +60,7 @@
   <!-- Header & Mode Switcher -->
   <div class="header">
     <div class="header-title">
-      <span>🛡️</span> SaaS Copilot
+      <span>🛡️</span> Asisten Joe
     </div>
     <div class="mode-selector">
       <button class="mode-btn active" id="btnSolo" onclick="switchMode('solo')">🟢 Mandiri (Solo)</button>
@@ -71,10 +71,10 @@
   <!-- Chat Log -->
   <div class="chat-container" id="chatContainer">
     <div class="message assistant">
-      <div class="sender-label">SaaS Workflow Copilot</div>
+      <div class="sender-label">Asisten Joe</div>
       <div class="bubble">
-        Halo! Saya <b>SaaS Workflow Copilot</b>. Saat ini Anda berada dalam <b>Mode Mandiri (Solo)</b>.<br/><br/>
-        Saya akan membimbing alur pengerjaan fitur Anda, melakukan audit kelaikan otomatis, dan menyetujui pengajuan secara virtual agar sistem aktif Anda tetap 100% stabil.
+        Halo! Saya <b>Asisten Joe</b>. Saat ini Anda berada dalam <b>Mode Mandiri (Solo)</b>.<br/><br/>
+        Saya siap membimbing alur pengerjaan fitur Anda, melakukan audit kelaikan otomatis, dan menyetujui pengajuan secara virtual agar sistem aktif Anda tetap 100% stabil.
       </div>
     </div>
   </div>
@@ -89,7 +89,7 @@
 
   <!-- Input Field -->
   <div class="input-container">
-    <textarea id="promptInput" placeholder="Ketik perintah atau instruksi bisnis... (misal: buat fitur cetak faktur)"></textarea>
+    <textarea id="promptInput" placeholder="Ketik perintah ke Asisten Joe... (misal: buat fitur cetak faktur)"></textarea>
     <button class="send-btn" onclick="sendMessage()">Kirim</button>
   </div>
 
@@ -103,8 +103,8 @@
       document.getElementById('btnTeam').classList.toggle('active', mode === 'team');
       
       const msg = mode === 'solo' 
-        ? "Mode diubah ke 🟢 <b>Mandiri (Solo)</b>. AI akan bertindak sebagai peninjau virtual & melakukan auto-approve otomatis."
-        : "Mode diubah ke 🔵 <b>Kerja Tim (Team)</b>. AI akan memperketat persetujuan manusia & mendeteksi potensi bentrok kodingan.";
+        ? "Mode diubah ke 🟢 <b>Mandiri (Solo)</b>. Asisten Joe akan bertindak sebagai peninjau virtual & melakukan auto-approve otomatis."
+        : "Mode diubah ke 🔵 <b>Kerja Tim (Team)</b>. Asisten Joe akan memperketat persetujuan manusia & mendeteksi potensi bentrok kodingan.";
 
       appendMessage('assistant', msg);
       vscode.postMessage({ type: 'setMode', mode: mode });
@@ -131,7 +131,7 @@
       const msgDiv = document.createElement('div');
       msgDiv.className = `message ${sender}`;
       
-      const label = sender === 'user' ? 'Anda' : 'SaaS Workflow Copilot';
+      const label = sender === 'user' ? 'Anda' : 'Asisten Joe';
       msgDiv.innerHTML = `
         <div class="sender-label">${label}</div>
         <div class="bubble">${htmlContent}</div>
