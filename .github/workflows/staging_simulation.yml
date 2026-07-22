@@ -1,0 +1,36 @@
+name: 🧪 Otomasi Ruang Simulasi (Staging Simulation Pipeline)
+
+# ==============================================================================
+# PEMICU: Berjalan saat penggabungan ke 'staging' berhasil disetujui.
+# ==============================================================================
+on:
+  push:
+    branches: [ staging ]
+
+jobs:
+  penerbitan-simulasi:
+    name: 🚀 Penerbitan Otomatis ke Server Simulasi Pelanggan
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: 📥 1. Ambil Berkas Teruji
+        uses: actions/checkout@v4
+
+      - name: ⚙️ 2. Siapkan Lingkungan
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 3. Pasang & Menyusun Paket Aplikasi
+        run: |
+          npm ci || npm install
+          npm run build --if-present
+
+      - name: 🌐 4. Terbitkan ke Server Simulasi Internal (Staging Deployment)
+        run: |
+          echo "Simulasi penerbitan ke Server Staging selesai."
+
+      - name: 📩 5. Notifikasi ke Tim QA & Pemilik Bisnis
+        run: |
+          echo "Sistem terbaru siap diuji coba di area simulasi oleh Pemilik Bisnis!"

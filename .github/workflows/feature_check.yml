@@ -1,0 +1,42 @@
+name: 🔍 Pemeriksaan Kelaikan Ruang Fitur (Feature Branch Check)
+
+# ==============================================================================
+# PEMICU: Berjalan otomatis setiap kali staf mengajukan pemeriksaan (PR)
+# dari ruang kerja 'feature/*' ke ruang integrasi 'develop'.
+# ==============================================================================
+on:
+  pull_request:
+    branches: [ develop ]
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  pemeriksaan-kelaikan:
+    name: 🛡️ Audit Kualitas & Keamanan Pekerjaan Staf
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 1. Ambil Berkas Pekerjaan Staf
+        uses: actions/checkout@v4
+
+      - name: ⚙️ 2. Siapkan Lingkungan Pengujian (Node.js)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 3. Pasang Kebutuhan Aplikasi
+        run: npm ci || npm install
+
+      - name: 🧹 4. Uji Keselarasan Format Kode (Linting)
+        run: npm run lint --if-present
+
+      - name: 🧪 5. Jalankan Uji Ketahanan Fungsi (Unit Testing)
+        run: npm test --if-present
+
+      - name: 🔒 6. Pemindaian Celah Keamanan (Audit Security Dependencies)
+        run: npm audit --audit-level=high --if-present
+
+      - name: 💬 7. Laporkan Status Keamanan ke Tim
+        if: always()
+        run: |
+          echo "Pemeriksaan otomatis untuk fitur baru telah selesai dikalkulasi."

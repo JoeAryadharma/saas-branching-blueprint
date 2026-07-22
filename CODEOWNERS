@@ -1,0 +1,23 @@
+# ==============================================================================
+# DAFTAR PENANGGUNG JAWAB MODUL BISNIS (CODEOWNERS)
+# Setiap pengajuan perubahan pada area berikut wajib mendapatkan persetujuan
+# dari penanggung jawab yang terdaftar sebelum dapat digabungkan.
+# ==============================================================================
+
+# 1. Konfigurasi Sistem Utama & Arsitektur Dasar
+/                               @pemimpin-arsitek
+
+# 2. Modul Keuangan, Faktur & Pembayaran
+/src/modules/billing/           @tim-keuangan-teknis
+/src/modules/payment/           @tim-keuangan-teknis
+
+# 3. Modul Manajemen Pengguna & Hak Akses
+/src/modules/auth/              @tim-keamanan-sistem
+/src/modules/users/             @tim-keamanan-sistem
+
+# 4. Modul Laporan & Analisis Data Bisnis
+/src/modules/analytics/          @analis-data-senior
+/src/modules/reports/            @analis-data-senior
+
+# 5. Otomasi Pemeriksaan & Penerbitan (CI/CD)
+/.github/                       @tim-devops-lead

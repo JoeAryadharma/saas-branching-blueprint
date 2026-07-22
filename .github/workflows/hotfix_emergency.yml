@@ -1,0 +1,33 @@
+name: 🚨 Otomasi Perbaikan Darurat Sistem (Hotfix Pipeline)
+
+# ==============================================================================
+# PEMICU: Berjalan saat ada pengajuan atau penggabungan di jalur 'hotfix/*'.
+# ==============================================================================
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ 'hotfix/**' ]
+
+jobs:
+  pemeriksaan-darurat:
+    name: ⚡ Penanganan & Uji Perbaikan Darurat Kilat
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 1. Ambil Perbaikan Darurat
+        uses: actions/checkout@v4
+
+      - name: ⚙️ 2. Siapkan Lingkungan
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 3. Pasang Kebutuhan & Uji Kilat Masalah Utama
+        run: |
+          npm ci || npm install
+          npm test --if-present
+
+      - name: ⚠️ 4. Ingatkan Sinkronisasi Ulang ke Ruang Develop
+        run: |
+          echo "INGATAN BISNIS: Pastikan perbaikan darurat ini juga digabungkan kembali ke ruang 'develop' agar tim tidak mengulangi masalah yang sama!"

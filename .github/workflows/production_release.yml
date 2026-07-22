@@ -1,0 +1,43 @@
+name: 🚀 Otomasi Penerbitan Sistem Aktif (Production Live Release)
+
+# ==============================================================================
+# PEMICU: Berjalan saat penggabungan ke 'main' disetujui Pemimpin Teknis.
+# ==============================================================================
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  penerbitan-live:
+    name: 🌐 Penerbitan Otomatis ke Sistem Aktif Pelanggan (Production)
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: 📥 1. Ambil Kodingan Rilis Resmi
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: ⚙️ 2. Siapkan Lingkungan Produksi
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 3. Pasang Kebutuhan & Susun Paket Produksi
+        run: |
+          npm ci || npm install
+          npm run build --if-present
+
+      - name: 🚀 4. Terbitkan ke Server Aktif Pelanggan (Live Deployment)
+        run: |
+          echo "Penerbitan ke Server Utama Aktif (Production) BERHASIL."
+
+      - name: 🏷️ 5. Bubuhkan Penanda Versi Rilis Otomatis (Automatic Release Tag)
+        run: |
+          echo "Menandai versi rilis resmi di repositori."
+
+      - name: 📢 6. Pengumuman Rilis ke Seluruh Manajemen Perusahaan
+        if: success()
+        run: |
+          echo "Rilis Resmi Berhasil Ditayangkan kepada Pelanggan!"

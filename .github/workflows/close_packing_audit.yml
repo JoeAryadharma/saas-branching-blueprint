@@ -1,0 +1,44 @@
+name: 📦 Otomasi Pembekuan & Audit Rilis (Close-Packing Audit)
+
+# ==============================================================================
+# PEMICU: Berjalan saat ada perubahan atau pembuatan ruang kerja 'close-packing'.
+# ==============================================================================
+on:
+  push:
+    branches: [ close-packing ]
+  pull_request:
+    branches: [ close-packing ]
+
+jobs:
+  audit-akhir:
+    name: 🛡️ Audit Kelaikan & Pembentukan Berkas Siap Rilis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 1. Ambil Berkas Rilis
+        uses: actions/checkout@v4
+
+      - name: ⚙️ 2. Siapkan Lingkungan Pengujian
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 3. Pasang Kebutuhan Aplikasi
+        run: npm ci || npm install
+
+      - name: 🧪 4. Uji Regresi Penuh (Full Regression Test)
+        run: npm run test:e2e --if-present
+
+      - name: 🔒 5. Pemindaian Keamanan Tingkat Tinggi (SAST Audit)
+        run: npm audit --audit-level=moderate --if-present
+
+      - name: 📦 6. Pembentukan Paket Aplikasi Siap Rilis (Release Candidate Artifact)
+        run: npm run build --if-present
+
+      - name: 📄 7. Verifikasi Kelengkapan Dokumen CHANGELOG
+        run: |
+          if [ ! -f CHANGELOG.md ]; then
+            echo "⚠️ ERROR: CHANGELOG.md wajib ada sebelum rilis!";
+            exit 1;
+          fi
+          echo "Dokumen riwayat rilis terverifikasi lengkap."

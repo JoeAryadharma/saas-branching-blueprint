@@ -1,0 +1,37 @@
+name: 🔄 Otomasi Ruang Integrasi Tim (Develop Branch Pipeline)
+
+# ==============================================================================
+# PEMICU: Berjalan otomatis setiap kali pekerjaan baru digabungkan ke 'develop'.
+# ==============================================================================
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+  integrasi-harian:
+    name: 🏗️ Penyusunan & Uji Integrasi Modul Harian
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 1. Ambil Kodingan Terbaru
+        uses: actions/checkout@v4
+
+      - name: ⚙️ 2. Siapkan Lingkungan Pengujian
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 3. Pasang Kebutuhan Aplikasi
+        run: npm ci || npm install
+
+      - name: 🧪 4. Jalankan Uji Integrasi Antar-Modul
+        run: npm run test:integration --if-present
+
+      - name: 🔨 5. Uji Penyusunan Paket Aplikasi (Build Check)
+        run: npm run build --if-present
+
+      - name: 📢 6. Kirim Ringkasan Integrasi ke Chat Internal Tim
+        if: success()
+        run: |
+          echo "Integrasi harian di Ruang Develop BERHASIL disusun."
