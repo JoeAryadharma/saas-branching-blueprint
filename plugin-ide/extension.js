@@ -1,14 +1,16 @@
 const vscode = require('vscode');
 const path = require('path');
+const fs = require('fs');
 const { execSync } = require('child_process');
 const SaaSWorkflowChatProvider = require('./chatProvider');
 
+let currentPanel = undefined;
+
 /**
- * VS Code Extension Activation Handler
- * Plugin SaaS Branching Blueprint & Governance
+ * VS Code & Antigravity IDE Extension Activation Handler
  */
 function activate(context) {
-  console.log('Plugin IDE SaaS Workflow & Governance telah aktif!');
+  console.log('Plugin IDE SaaS Workflow & Governance untuk Antigravity IDE telah aktif!');
 
   // 1. Daftarkan Webview Ruang Chat Copilot di Sidebar
   const chatProvider = new SaaSWorkflowChatProvider(context.extensionUri);
@@ -16,11 +18,73 @@ function activate(context) {
     vscode.window.registerWebviewViewProvider('saasWorkflow.chatView', chatProvider)
   );
 
-  // 2. Perintah Manual: Inisialisasi Cetakan Proyek Lengkap (Setup Blueprint)
+  // 2. Daftarkan Perintah Buka Tab Chat Utama (Ikon Header Bar / Editor Title Action)
+  let disposableOpenTab = vscode.commands.registerCommand('saasWorkflow.openChatTab', function () {
+    const columnToShowIn = vscode.window.activeTextEditor
+      ? vscode.window.activeTextEditor.viewColumn
+      : vscode.ViewColumn.One;
+
+    if (currentPanel) {
+      currentPanel.reveal(columnToShowIn);
+    } else {
+      currentPanel = vscode.window.createWebviewPanel(
+        'saasWorkflowChatTab',
+        '🛡️ SaaS Workflow Copilot',
+        columnToShowIn,
+        {
+          enableScripts: true,
+          localResourceRoots: [context.extensionUri]
+        }
+      );
+
+      const htmlPath = path.join(context.extensionUri.fsPath, 'chat-view.html');
+      let htmlContent = fs.readFileSync(htmlPath, 'utf8');
+
+      currentPanel.webview.html = htmlContent;
+
+      // Handle chat messages in Tab Mode
+      currentPanel.webview.onDidReceiveMessage(async (data) => {
+        const workspaceFolders = vscode.workspace.workspaceFolders;
+        if (!workspaceFolders) return;
+        const targetDir = workspaceFolders[0].uri.fsPath;
+
+        if (data.type === 'userInput') {
+          const lowerText = data.text.toLowerCase();
+          
+          if (lowerText.includes('fitur baru') || lowerText.includes('buat fitur')) {
+            const ticketId = await vscode.window.showInputBox({ prompt: 'Masukkan Nomor Tiket (Contoh: TK-201):' });
+            if (!ticketId) return;
+            const featureName = await vscode.window.showInputBox({ prompt: 'Masukkan Nama Fitur Singkat:' });
+            if (!featureName) return;
+
+            const branchName = `feature/${ticketId}-${featureName.toLowerCase().replace(/\s+/g, '-')}`;
+            try {
+              execSync(`git checkout develop && git checkout -b ${branchName}`, { cwd: targetDir });
+              currentPanel.webview.postMessage({ type: 'response', text: `✅ <b>Ruang Kerja Fitur Terbuat:</b> <code>${branchName}</code>` });
+            } catch (err) {
+              currentPanel.webview.postMessage({ type: 'response', text: `❌ Gagal: ${err.message}` });
+            }
+          } else {
+            currentPanel.webview.postMessage({ type: 'response', text: `Saya menerima pesan Anda: <i>"${data.text}"</i>` });
+          }
+        }
+      });
+
+      currentPanel.onDidDispose(
+        () => {
+          currentPanel = undefined;
+        },
+        null,
+        context.subscriptions
+      );
+    }
+  });
+
+  // 3. Perintah Manual: Inisialisasi Cetakan Proyek Lengkap (Setup Blueprint)
   let disposableInit = vscode.commands.registerCommand('saasWorkflow.initProject', function () {
     const workspaceFolders = vscode.workspace.workspaceFolders;
     if (!workspaceFolders) {
-      vscode.window.showErrorMessage('Silakan buka folder proyek Anda terlebih dahulu di VS Code/IDE!');
+      vscode.window.showErrorMessage('Silakan buka folder proyek Anda terlebih dahulu di Antigravity IDE!');
       return;
     }
 
@@ -35,32 +99,19 @@ function activate(context) {
     }
   });
 
-  // 3. Perintah Manual: Buat Ruang Kerja Fitur Baru
+  // 4. Perintah Manual: Buat Ruang Kerja Fitur Baru
   let disposableFeature = vscode.commands.registerCommand('saasWorkflow.createFeatureBranch', async function () {
     const workspaceFolders = vscode.workspace.workspaceFolders;
-    if (!workspaceFolders) {
-      vscode.window.showErrorMessage('Buka folder proyek Anda di IDE terlebih dahulu!');
-      return;
-    }
-
+    if (!workspaceFolders) return;
     const targetDir = workspaceFolders[0].uri.fsPath;
 
-    const ticketId = await vscode.window.showInputBox({
-      prompt: 'Masukkan Nomor Tiket Pekerjaan (Contoh: TK-102):',
-      placeHolder: 'TK-102'
-    });
-
+    const ticketId = await vscode.window.showInputBox({ prompt: 'Masukkan Nomor Tiket Pekerjaan (Contoh: TK-102):' });
     if (!ticketId) return;
 
-    const featureName = await vscode.window.showInputBox({
-      prompt: 'Masukkan Nama Fitur Singkat (Bahasa Bisnis):',
-      placeHolder: 'laporan-penjualan-excel'
-    });
-
+    const featureName = await vscode.window.showInputBox({ prompt: 'Masukkan Nama Fitur Singkat (Bahasa Bisnis):' });
     if (!featureName) return;
 
     const branchName = `feature/${ticketId}-${featureName.toLowerCase().replace(/\s+/g, '-')}`;
-
     try {
       execSync(`git checkout develop && git checkout -b ${branchName}`, { cwd: targetDir });
       vscode.window.showInformationMessage(`✅ Ruang Kerja Fitur Terbuat: ${branchName}`);
@@ -69,7 +120,7 @@ function activate(context) {
     }
   });
 
-  context.subscriptions.push(disposableInit, disposableFeature);
+  context.subscriptions.push(disposableOpenTab, disposableInit, disposableFeature);
 }
 
 function deactivate() {}

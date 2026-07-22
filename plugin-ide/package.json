@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "SaaS Branching Blueprint & Governance IDE Plugin",
-  "description": "Plugin IDE & AI Chat Copilot Tata Kelola Ruang Kerja SaaS (Dual Mode: Solo & Team)",
-  "version": "1.2.0",
+  "displayName": "SaaS Branching Blueprint & Governance Antigravity Plugin",
+  "description": "Plugin IDE & AI Chat Copilot Tata Kelola Ruang Kerja SaaS khusus Antigravity IDE & VS Code",
+  "version": "1.3.0",
   "publisher": "joecompanyagent-lab",
   "engines": {
     "vscode": "^1.80.0"
@@ -17,6 +17,7 @@
   },
   "activationEvents": [
     "onView:saasWorkflow.chatView",
+    "onCommand:saasWorkflow.openChatTab",
     "onCommand:saasWorkflow.initProject",
     "onCommand:saasWorkflow.createFeatureBranch"
   ],
@@ -41,6 +42,11 @@
     },
     "commands": [
       {
+        "command": "saasWorkflow.openChatTab",
+        "title": "Buka SaaS Workflow AI Chat",
+        "icon": "$(shield)"
+      },
+      {
         "command": "saasWorkflow.initProject",
         "title": "SaaS Workflow: Inisialisasi Cetakan Proyek (Setup Blueprint & Protection)"
       },
@@ -48,7 +54,16 @@
         "command": "saasWorkflow.createFeatureBranch",
         "title": "SaaS Workflow: Buat Ruang Kerja Fitur Baru (Create Feature Branch)"
       }
-    ]
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "saasWorkflow.openChatTab",
+          "icon": "$(shield)",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "start": "node cli.js"
