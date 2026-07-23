@@ -9,8 +9,8 @@ const SASTScanner = require('./sastScanner');
 const VibeOptimizer = require('./vibeOptimizer');
 
 // ============================================================
-// ASISTEN JOE v9.1.1 -- CHAT PROVIDER
-// Ultimate Vibe Coder Suite + Executive Summary Visualizer
+// ASISTEN JOE v9.2.0 -- CHAT PROVIDER
+// Visual Task Board & Roadmap Manager Edition
 // ============================================================
 
 class SaaSWorkflowChatProvider {
@@ -57,7 +57,10 @@ class SaaSWorkflowChatProvider {
     const diff = CodeReader.getRecentDiff(targetDir);
     VibeOptimizer.syncDotenvExample(targetDir, diff);
 
-    if (lowerText.includes('ringkasan eksekutif') || lowerText.includes('executive summary') || lowerText.includes('laporan eksekutif')) {
+    if (lowerText.includes('papan tugas') || lowerText.includes('task board') || lowerText.includes('papan kerja') || lowerText.includes('kanban')) {
+      await this._handleTaskBoard(targetDir, folderName, audit);
+    }
+    else if (lowerText.includes('ringkasan eksekutif') || lowerText.includes('executive summary') || lowerText.includes('laporan eksekutif')) {
       await this._handleExecutiveSummary(targetDir, folderName, audit, diff);
     }
     else if (lowerText.includes('optimalkan prompt') || lowerText.includes('refine prompt') || lowerText.includes('rapikan prompt')) {
@@ -101,14 +104,77 @@ class SaaSWorkflowChatProvider {
   }
 
   // ============================================================
-  // FITUR BARU v9.1.0: RINGKASAN EKSEKUTIF UNTUK MANAJEMEN
+  // FITUR BARU v9.2.0: PAPAN TUGAS VISUAL & PETA JALAN
+  // ============================================================
+  async _handleTaskBoard(targetDir, folderName, audit) {
+    const roadmapPath = path.join(targetDir, 'PETA_JALAN.md');
+    let content = '';
+    try {
+      if (fs.existsSync(roadmapPath)) {
+        content = fs.readFileSync(roadmapPath, 'utf8');
+      }
+    } catch (e) {}
+
+    const tickets = [];
+    if (content) {
+      const lines = content.split('\n');
+      lines.forEach(line => {
+        const match = line.match(/\|\s*(TK-\d+)\s*\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|/);
+        if (match) {
+          tickets.push({
+            id: match[1].trim(),
+            title: match[2].trim(),
+            desc: match[3].trim(),
+            priority: match[4].trim()
+          });
+        }
+      });
+    }
+
+    if (tickets.length === 0) {
+      this._reply(`[INFORMASI] Belum ada tiket di <code>PETA_JALAN.md</code>. Ketik "Pecah ide saya" untuk menyusun tiket tugas.`);
+      return;
+    }
+
+    const currentBranch = audit.currentBranch;
+    let html = `<b>PAPAN TUGAS & PETA JALAN VISUAL (v9.2.0)</b><br/>` +
+      `<small style="color:#94a3b8;">Proyek: ${folderName} | Ruang Kerja Aktif: <code>${currentBranch}</code></small><br/><br/>` +
+      `<table style="width:100%;border-collapse:collapse;font-size:11px;">` +
+      `<tr style="background:#1e293b;border-bottom:1px solid #334155;">` +
+      `<th style="padding:5px;text-align:left;color:#94a3b8;">TIKET</th>` +
+      `<th style="padding:5px;text-align:left;color:#94a3b8;">JUDUL PEKERJAAN</th>` +
+      `<th style="padding:5px;text-align:left;color:#94a3b8;">STATUS</th>` +
+      `</tr>`;
+
+    tickets.forEach(t => {
+      const isCurrentActive = currentBranch.toLowerCase().includes(t.id.toLowerCase());
+      const statusLabel = isCurrentActive ?
+        `<span style="color:#38bdf8;font-weight:700;">SEDANG DIKERJAKAN</span>` :
+        `<span style="color:#22c55e;">DRAF / TERSEDIA</span>`;
+
+      html += `<tr style="border-bottom:1px solid #1e293b;">` +
+        `<td style="padding:5px;"><code>${t.id}</code></td>` +
+        `<td style="padding:5px;">${t.title}</td>` +
+        `<td style="padding:5px;">${statusLabel}</td>` +
+        `</tr>`;
+    });
+
+    html += `</table><br/>` +
+      `<small style="color:#94a3b8;">Ketik "Buat fitur baru" untuk memulai pekerjaan tiket di atas.</small>`;
+
+    this._appendLog(targetDir, folderName, "PAPANTUGAS VISUAL v9.2.0", `Membuka papan ${tickets.length} tiket`, audit);
+    this._reply(html);
+  }
+
+  // ============================================================
+  // FITUR v9.1.0: RINGKASAN EKSEKUTIF UNTUK MANAJEMEN
   // ============================================================
   async _handleExecutiveSummary(targetDir, folderName, audit, diff) {
     const areas = CodeReader.classifyChanges(targetDir);
     const vibeResult = VibeGuard.auditAll(targetDir, diff, areas);
     const commits = CodeReader.getRecentCommits(targetDir, 5);
 
-    let html = `<b>LAPORAN RINGKASAN EKSEKUTIF (v9.1.1)</b><br/>` +
+    let html = `<b>LAPORAN RINGKASAN EKSEKUTIF (v9.2.0)</b><br/>` +
       `<small style="color:#94a3b8;">Dibuat untuk Manajemen & Pemilik Bisnis | Proyek: ${folderName}</small><br/><br/>` +
       `<div style="background:#1a2332;border:1px solid #3b82f6;border-radius:4px;padding:10px;font-size:11.5px;">` +
       `<b>1. STATUS KESEHATAN SISTEM:</b><br/>` +
@@ -125,7 +191,7 @@ class SaaSWorkflowChatProvider {
     html += `<br/><b>3. REKOMENDASI MANAJEMEN:</b><br/>` +
       `${vibeResult.isFullyPassed ? 'Sistem dalam kondisi prima dan siap untuk rilis simulasi/produksi.' : 'Selesaikan perbaikan audit teknis sebelum melakukan penggabungan kode.'}</div>`;
 
-    this._appendLog(targetDir, folderName, "RINGKASAN EKSEKUTIF v9.1.1", "Menerbitkan Laporan Eksekutif", audit);
+    this._appendLog(targetDir, folderName, "RINGKASAN EKSEKUTIF v9.2.0", "Menerbitkan Laporan Eksekutif", audit);
     this._reply(html);
   }
 
@@ -167,7 +233,7 @@ class SaaSWorkflowChatProvider {
       return;
     }
 
-    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.1.1 & Uji Kelaikan Mandiri...</small>`);
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.2.0 & Uji Kelaikan Mandiri...</small>`);
 
     const diff = preFetchedDiff || CodeReader.getRecentDiff(targetDir);
     const areas = CodeReader.classifyChanges(targetDir);
@@ -234,7 +300,7 @@ class SaaSWorkflowChatProvider {
       this._memory.incrementStat('total_penggabungan');
       this._memory.addDecision(`Penggabungan ${currentBranch} ke develop`, `Conventional Commit: ${convCommit.commitHeader}`);
       this._updateChangelog(targetDir, folderName, currentBranch, commits);
-      this._appendLog(targetDir, folderName, "PENGGABUNGAN + ULTIMATE VIBE GUARD v9.1.1", `${currentBranch} ke develop`, audit);
+      this._appendLog(targetDir, folderName, "PENGGABUNGAN + ULTIMATE VIBE GUARD v9.2.0", `${currentBranch} ke develop`, audit);
 
       const statusText = hasIssues ? '[BERHASIL DENGAN TEMUAN]' : '[BERHASIL]';
       this._reply(
@@ -250,16 +316,16 @@ class SaaSWorkflowChatProvider {
   }
 
   // ============================================================
-  // AUDIT VIBE CODING v9.1.1
+  // AUDIT VIBE CODING v9.2.0
   // ============================================================
   async _handleVibeCodingAudit(targetDir, folderName, userText, audit, preFetchedDiff = null) {
-    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.1.1...</small>`);
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.2.0...</small>`);
 
     const diff = preFetchedDiff || CodeReader.getRecentDiff(targetDir);
     const areas = CodeReader.classifyChanges(targetDir);
     const vibeResult = VibeGuard.auditAll(targetDir, diff, areas);
 
-    let html = `<b>LAPORAN AUDIT PENGAWAL VIBE CODING v9.1.1</b><br/>` +
+    let html = `<b>LAPORAN AUDIT PENGAWAL VIBE CODING v9.2.0</b><br/>` +
       `<small style="color:#94a3b8;">Proyek: ${folderName} | ${this._ai.modelName}</small><br/><br/>`;
 
     // 1. Audit Rahasia
@@ -278,7 +344,7 @@ class SaaSWorkflowChatProvider {
       `<b style="color:${envColor};">3. SINKRONISASI .ENV.EXAMPLE: [${vibeResult.envSync.isUpdated ? `${vibeResult.envSync.addedKeys.length} KUNCI DISINKRONKAN` : 'TERJAGA'}]</b></div>`;
 
     this._updateWidget(audit, targetDir, vibeResult);
-    this._appendLog(targetDir, folderName, "AUDIT VIBE CODING v9.1.1", `SAST: ${vibeResult.sastAudit.isClean ? 'BERSIH' : 'ADA CELAH'}`, audit);
+    this._appendLog(targetDir, folderName, "AUDIT VIBE CODING v9.2.0", `SAST: ${vibeResult.sastAudit.isClean ? 'BERSIH' : 'ADA CELAH'}`, audit);
     this._reply(html);
   }
 
@@ -295,7 +361,7 @@ class SaaSWorkflowChatProvider {
 
     let existingContent = '';
     try { if (fs.existsSync(changelogPath)) existingContent = fs.readFileSync(changelogPath, 'utf8'); } catch (e) {}
-    const header = existingContent ? '' : `# CATATAN RILIS PROYEK (${folderName})\n\nDokumen ini disusun secara otomatis oleh Asisten Joe v9.1.1.\n\n---\n`;
+    const header = existingContent ? '' : `# CATATAN RILIS PROYEK (${folderName})\n\nDokumen ini disusun secara otomatis oleh Asisten Joe v9.2.0.\n\n---\n`;
     try { fs.writeFileSync(changelogPath, header + newEntry + existingContent, 'utf8'); } catch (e) {}
   }
 
@@ -552,7 +618,7 @@ class SaaSWorkflowChatProvider {
       `## 1. TABEL REKAP OPERASI (CRUD)\n\n| Waktu | Aktivitas | Deskripsi | Ruang | Status |\n| :--- | :--- | :--- | :--- | :--- |\n${crudRows}\n\n---\n\n` +
       `## 2. DIAGRAM ALUR PEKERJAAN SESI\n\n\`\`\`mermaid\nflowchart TD\n    START["Awal Sesi"] --> ${this._logHistory.length ? 'N0' : 'END'}\n${mNodes}\n` +
       `    ${this._logHistory.length ? `N${this._logHistory.length-1}` : 'START'} --> END["Terkini: ${audit.currentBranch}"]\n\`\`\`\n\n---\n\n` +
-      `*Disusun otomatis oleh Asisten Joe v9.1.1 Executive Visualizer Suite*\n`;
+      `*Disusun otomatis oleh Asisten Joe v9.2.0 Task Board Edition*\n`;
     try { fs.writeFileSync(logPath, content, 'utf8'); } catch (e) {}
   }
 

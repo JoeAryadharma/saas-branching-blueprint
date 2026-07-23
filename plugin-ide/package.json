@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - Ultimate Vibe Coder Suite",
-  "description": "Asisten Joe v9.1.1: Ultimate Vibe Coder Suite + Executive Summary Visualizer (.env.example Synchronizer, Prompt Refiner, Atomic Commit Slicer, Auto Test Spec Drafter, SAST & Conventional Commits).",
-  "version": "9.1.1",
+  "displayName": "Asisten Joe - Visual Task Board Edition",
+  "description": "Asisten Joe v9.2.0: Interactive Visual Task Board & Roadmap Manager (.env.example Synchronizer, Prompt Refiner, Atomic Commit Slicer, Auto Test Spec Drafter, SAST & Conventional Commits).",
+  "version": "9.2.0",
   "publisher": "joecompanyagent-lab",
   "license": "MIT",
   "engines": {
@@ -51,7 +51,7 @@
       },
       {
         "command": "saasWorkflow.auditVibeCoding",
-        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.1.1)"
+        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.2.0)"
       },
       {
         "command": "saasWorkflow.initProject",
