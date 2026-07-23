@@ -2,16 +2,35 @@ const path = require('path');
 const fs = require('fs');
 
 // ============================================================
-// VIBE OPTIMIZER v9.5.0 -- Ultimate Vibe Coder Suite
-// 1. .env.example Synchronizer (rolodato/dotenv-safe adoption)
+// VIBE OPTIMIZER v9.5.2 -- Ultimate Vibe Coder Suite
+// 1. .env.example Synchronizer (dotenv-safe adoption)
 // 2. Prompt Refiner & Anti-Hallucination (promptfoo & fabric adoption)
 // 3. Atomic Commit Slicer (opencommit & cz-cli adoption)
 // 4. Auto Test Spec Drafter (keploy adoption)
 // 5. Performance & Bundle Size Guard (v9.4.0)
 // 6. OpenAPI / Swagger API Spec Drafter (v9.5.0)
+// 7. AI Code & Text Sanitizer (v9.5.2 - strip-ansi adoption)
 // ============================================================
 
 class VibeOptimizer {
+
+  // ============================================================
+  // 7. PEMBERSIH KODE & ARTEFAK TEKS AI (v9.5.2 - strip-ansi adoption)
+  // Menyaring zero-width spaces, kode ANSI, & control characters
+  // ============================================================
+  static cleanAIText(text) {
+    if (!text || typeof text !== 'string') return '';
+
+    return text
+      // Hapus kode warna ANSI escape
+      .replace(/\x1B\[[0-9;]*[a-zA-Z]/g, '')
+      // Hapus Zero-Width Space & BOM (\u200B, \u200C, \u200D, \uFEFF)
+      .replace(/[\u200B\u200C\u200D\uFEFF]/g, '')
+      // Hapus karakter kontrol tak valid (\u0000-\u0008, \u000B, \u000C, \u000E-\u001F)
+      .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
+      // Samakan pemisah baris \r\n menjadi \n
+      .replace(/\r\n/g, '\n');
+  }
 
   // ============================================================
   // 1. SINKRONISASI .ENV.EXAMPLE (dotenv-safe Adoption)

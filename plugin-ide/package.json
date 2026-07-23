@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - API Documentation Edition",
-  "description": "Asisten Joe v9.5.1: Responsive UI Patch Refinement & Automated OpenAPI API Spec Drafter (Performance Guard, Architecture Flowchart, Visual Task Board, .env.example Synchronizer, Prompt Refiner, SAST & Conventional Commits).",
-  "version": "9.5.1",
+  "displayName": "Asisten Joe - AI Code Cleaner Edition",
+  "description": "Asisten Joe v9.5.2: AI Code & Text Sanitizer - strip-ansi adoption (Automated OpenAPI API Spec Drafter, Performance Guard, Architecture Flowchart, Visual Task Board, .env.example Synchronizer, Prompt Refiner, SAST & Conventional Commits).",
+  "version": "9.5.2",
   "publisher": "joecompanyagent-lab",
   "license": "MIT",
   "engines": {
@@ -51,7 +51,7 @@
       },
       {
         "command": "saasWorkflow.auditVibeCoding",
-        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.5.1)"
+        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.5.2)"
       },
       {
         "command": "saasWorkflow.initProject",
