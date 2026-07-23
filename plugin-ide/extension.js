@@ -11,7 +11,6 @@ function inspectProject(targetDir) {
   let branchesPresent = ['main'];
   let changedFilesCount = 0;
   let hasBlueprint = false;
-  let rootStructure = [];
 
   try {
     currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim() || 'main';
@@ -26,24 +25,62 @@ function inspectProject(targetDir) {
 
   hasBlueprint = fs.existsSync(path.join(targetDir, 'BRAND.md')) || fs.existsSync(path.join(targetDir, '.github/workflows'));
 
-  try {
-    rootStructure = fs.readdirSync(targetDir).filter(f => !f.startsWith('.git'));
-  } catch (e) {}
-
   return {
     currentBranch,
     branchesPresent,
     changedFilesCount,
-    hasBlueprint,
-    rootStructure
+    hasBlueprint
   };
+}
+
+function updateLogFile(targetDir, folderName, actionName, userInstruction, audit) {
+  const logPath = path.join(targetDir, 'LOG_AKTIVITAS.md');
+  const now = new Date().toLocaleString('id-ID');
+
+  const logContent = `# LAPORAN REKAP AKTIVITAS & REKAM KERJA PROYEK
+
+- **Nama Proyek:** ${folderName}
+- **Waktu Pembaruan Terakhir:** ${now}
+- **Ruang Kerja Aktif:** ${audit.currentBranch}
+- **Status Tata Kelola SaaS:** ${audit.hasBlueprint ? 'Terpasang Lengkap' : 'Belum Terpasang'}
+
+---
+
+## 1. TABEL REKAP OPERASI SISTEM (CRUD)
+
+| Waktu | Jenis Aktivitas | Deskripsi Operasional | Ruang Kerja | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| ${now} | ${actionName} | ${userInstruction} | ${audit.currentBranch} | BERHASIL |
+
+---
+
+## 2. DIAGRAM VISUAL ALUR PEKERJAAN (INPUT KE HASIL)
+
+\`\`\`mermaid
+flowchart TD
+    A["Input Instruksi: '${userInstruction}'"] --> B["Pengolahan Asisten Joe"]
+    B --> C["Aktivitas Operasional: ${actionName}"]
+    C --> D["Audit Kelaikan System"]
+    D --> E["Hasil Akhir: Ruang ${audit.currentBranch} Terbarui"]
+\`\`\`
+
+---
+
+*Catatan: Dokumen ini disusun secara otomatis oleh Asisten Joe untuk memberikan transparansi riwayat pekerjaan dalam bahasa bisnis sederhana tanpa emoji.*
+`;
+
+  try {
+    fs.writeFileSync(logPath, logContent, 'utf8');
+  } catch (e) {
+    console.error('Gagal memperbarui LOG_AKTIVITAS.md:', e);
+  }
 }
 
 /**
  * VS Code & Antigravity IDE Extension Activation Handler
  */
 function activate(context) {
-  console.log('Plugin IDE Asisten Joe Tata Kelola Ruang Kerja telah aktif!');
+  console.log('Plugin IDE Asisten Joe Tata Kelola Ruang Kerja telah aktif.');
 
   // 1. Daftarkan Webview Ruang Chat Copilot di Sidebar
   const chatProvider = new SaaSWorkflowChatProvider(context.extensionUri);
@@ -62,7 +99,7 @@ function activate(context) {
     } else {
       currentPanel = vscode.window.createWebviewPanel(
         'saasWorkflowChatTab',
-        '🛡️ Asisten Joe',
+        'Asisten Joe',
         columnToShowIn,
         {
           enableScripts: true,
@@ -75,11 +112,10 @@ function activate(context) {
 
       currentPanel.webview.html = htmlContent;
 
-      // Handle chat messages in Tab Mode
       currentPanel.webview.onDidReceiveMessage(async (data) => {
         const workspaceFolders = vscode.workspace.workspaceFolders;
         if (!workspaceFolders) {
-          currentPanel.webview.postMessage({ type: 'response', text: "⚠️ Buka folder proyek Anda di Antigravity IDE terlebih dahulu!" });
+          currentPanel.webview.postMessage({ type: 'response', text: "[PERINGATAN] Buka folder proyek Anda di Antigravity IDE terlebih dahulu." });
           return;
         }
 
@@ -90,36 +126,28 @@ function activate(context) {
           const lowerText = data.text.toLowerCase();
           const audit = inspectProject(targetDir);
 
-          // Pertanyaan membaca folder / project / status / pull
-          if (lowerText.includes('baca') || lowerText.includes('folder') || lowerText.includes('project') || lowerText.includes('proyek') || lowerText.includes('status') || lowerText.includes('isi') || lowerText.includes('pull')) {
-            let html = `<b>🔍 LAPORAN INSPEKSI PROYEK REAL-TIME (ASISTEN JOE)</b><br/><br/>` +
-              `📁 <b>Folder Proyek:</b> <code>${folderName}</code><br/>` +
-              `📍 <b>Lokasi:</b> <code>${targetDir}</code><br/>` +
-              `🌿 <b>Ruang Kerja Aktif:</b> <code>${audit.currentBranch}</code><br/>` +
-              `📊 <b>Ruang Kerja Terdeteksi:</b> ${audit.branchesPresent.map(b => `<code>${b}</code>`).join(', ')}<br/>` +
-              `📝 <b>Perubahan Belum Disimpan:</b> ${audit.changedFilesCount} berkas<br/>` +
-              `🛡️ <b>Tata Kelola & SOP SaaS:</b> ${audit.hasBlueprint ? '✅ Terpasang Lengkap' : '❌ Belum Terpasang'}<br/><br/>`;
+          if (lowerText.includes('baca') || lowerText.includes('folder') || lowerText.includes('project') || lowerText.includes('proyek') || lowerText.includes('status') || lowerText.includes('inspeksi')) {
+            let html = `<b>LAPORAN INSPEKSI PROYEK REAL-TIME</b><br/><br/>` +
+              `• <b>Nama Proyek:</b> <code>${folderName}</code><br/>` +
+              `• <b>Lokasi:</b> <code>${targetDir}</code><br/>` +
+              `• <b>Ruang Kerja Aktif:</b> <code>${audit.currentBranch}</code><br/>` +
+              `• <b>Daftar Ruang Kerja:</b> ${audit.branchesPresent.map(b => `<code>${b}</code>`).join(', ')}<br/>` +
+              `• <b>Perubahan Belum Disimpan:</b> ${audit.changedFilesCount} berkas<br/>` +
+              `• <b>Status Tata Kelola SaaS:</b> ${audit.hasBlueprint ? '[TERPASANG LENGKAP]' : '[BELUM TERPASANG]'}<br/><br/>`;
 
-            if (audit.rootStructure.length > 0) {
-              html += `📂 <b>Struktur Berkas Utama:</b><br/><code>` + audit.rootStructure.slice(0, 8).join(', ') + `</code><br/><br/>`;
-            }
-
-            html += `🎯 <b>REKOMENDASI RENCANA KERJA ASISTEN JOE:</b><br/>`;
+            html += `<b>REKOMENDASI RENCANA KERJA ASISTEN JOE:</b><br/>`;
 
             if (!audit.hasBlueprint) {
-              html += `1. <b>Suntikkan Tata Kelola SaaS:</b> Folder proyek ini belum memiliki 20 berkas SOP & CI/CD. Ketik <i>"Setup Blueprint"</i> atau klik tombol <b>Inisialisasi Blueprint</b>.<br/>`;
-            }
-
-            if (!audit.branchesPresent.includes('develop')) {
-              html += `2. <b>Siapkan Ruang Kerja Integrasi:</b> Proyek ini belum memiliki cabang <code>develop</code>.<br/>`;
+              html += `1. <b>Inisialisasi Blueprint:</b> Folder proyek ini belum memiliki 20 berkas SOP & CI/CD. Ketik <i>"Setup Blueprint"</i>.<br/>`;
             }
 
             if (audit.currentBranch === 'main') {
-              html += `💡 <b>Peringatan Keamanan:</b> Anda sedang berada di Ruang Utama (<code>main</code>). Untuk mulai bekerja, Asisten Joe menyarankan Anda beralih ke Ruang Fitur baru dari <code>develop</code>.<br/>`;
+              html += `2. <b>Keamanan Sistem Utama:</b> Anda sedang di Ruang Utama (<code>main</code>). Disarankan beralih ke Ruang Fitur baru dari <code>develop</code>.<br/>`;
             } else if (audit.changedFilesCount > 0) {
-              html += `💡 <b>Rekomendasi Pekerjaan:</b> Ada ${audit.changedFilesCount} berkas diubah. Ketik <i>"Ajukan PR"</i> untuk menguji & menggabungkan ke <code>develop</code>.<br/>`;
+              html += `2. <b>Pengajuan Pekerjaan:</b> Ada ${audit.changedFilesCount} berkas diubah. Ketik <i>"Ajukan PR"</i>.<br/>`;
             }
 
+            updateLogFile(targetDir, folderName, "INSPEKSI PROYEK", data.text, audit);
             currentPanel.webview.postMessage({ type: 'response', text: html });
             return;
           }
@@ -133,12 +161,13 @@ function activate(context) {
             const branchName = `feature/${ticketId}-${featureName.toLowerCase().replace(/\s+/g, '-')}`;
             try {
               execSync(`git checkout develop && git checkout -b ${branchName}`, { cwd: targetDir });
-              currentPanel.webview.postMessage({ type: 'response', text: `✅ <b>Ruang Kerja Fitur Terbuat:</b> <code>${branchName}</code><br/>Asisten Joe siap mengawal.` });
+              updateLogFile(targetDir, folderName, "MEMBUAT FITUR BARU", `Membuat cabang ${branchName}`, audit);
+              currentPanel.webview.postMessage({ type: 'response', text: `[BERHASIL] Ruang Kerja Fitur Terbuat: <code>${branchName}</code>` });
             } catch (err) {
-              currentPanel.webview.postMessage({ type: 'response', text: `❌ Gagal: ${err.message}` });
+              currentPanel.webview.postMessage({ type: 'response', text: `[GAGAL] ${err.message}` });
             }
           } else {
-            currentPanel.webview.postMessage({ type: 'response', text: `Asisten Joe membaca proyek <b>${folderName}</b> (Ruang: <code>${audit.currentBranch}</code>).<br/>Anda mengetik: <i>"${data.text}"</i>.<br/>💡 Ketik <i>"baca folder"</i> untuk melihat laporan inspeksi proyek secara lengkap.` });
+            currentPanel.webview.postMessage({ type: 'response', text: `Asisten Joe membaca proyek <b>${folderName}</b> (Ruang: <code>${audit.currentBranch}</code>).<br/>Instruksi: <i>"${data.text}"</i>.<br/>Ketik <i>"Inspeksi Proyek"</i> untuk laporan lengkap & rekap log.` });
           }
         }
       });
@@ -166,7 +195,7 @@ function activate(context) {
 
     try {
       execSync(`node "${cliScript}" "${targetDir}"`);
-      vscode.window.showInformationMessage('🎉 Berhasil! Cetakan Tata Kelola SaaS & 4 Ruang Kerja disuntikkan oleh Asisten Joe.');
+      vscode.window.showInformationMessage('Berhasil! Cetakan Tata Kelola SaaS disuntikkan oleh Asisten Joe.');
     } catch (err) {
       vscode.window.showErrorMessage(`Gagal menyuntikkan template: ${err.message}`);
     }
@@ -187,7 +216,7 @@ function activate(context) {
     const branchName = `feature/${ticketId}-${featureName.toLowerCase().replace(/\s+/g, '-')}`;
     try {
       execSync(`git checkout develop && git checkout -b ${branchName}`, { cwd: targetDir });
-      vscode.window.showInformationMessage(`✅ Ruang Kerja Fitur Terbuat: ${branchName}`);
+      vscode.window.showInformationMessage(`Berhasil: Ruang Kerja Fitur Terbuat ${branchName}`);
     } catch (err) {
       vscode.window.showErrorMessage(`Gagal membuat ruang kerja: ${err.message}`);
     }
