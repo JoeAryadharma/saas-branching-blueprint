@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - GitHub Features Adopted Edition",
-  "description": "Asisten Joe v7.0: Adopsi 4 Fitur GitHub Terbaik (GitGuardian 25+ Secret Database, GitLens File Evolution Tracker, Keploy Build Sanity Check, Git-Track Auto CHANGELOG.md).",
-  "version": "7.0.0",
+  "displayName": "Asisten Joe - SAST & Conventional Commits Edition",
+  "description": "Asisten Joe v8.0: Adopsi 4 Repo GitHub Tingkat Tinggi (Semgrep SAST Code Vulnerability Scanner, OpenCommit AI Conventional Commits, Flagsmith Feature Flag Guard, Code2Flow Logic Mapper).",
+  "version": "8.0.0",
   "publisher": "joecompanyagent-lab",
   "engines": {
     "vscode": "^1.90.0"
@@ -50,7 +50,7 @@
       },
       {
         "command": "saasWorkflow.auditVibeCoding",
-        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (Vibe Guard v7.0)"
+        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (SAST v8.0)"
       },
       {
         "command": "saasWorkflow.initProject",
