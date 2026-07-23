@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - AI-Powered Personal Companion",
-  "description": "Asisten Joe v5.0: Bertenaga AI sesungguhnya via vscode.lm API. 5 Pilar Kecerdasan: AI Engine, Code Awareness, Contextual Tickets, Persistent Memory, Smart Code Review.",
-  "version": "5.0.0",
+  "displayName": "Asisten Joe - Vibe Coding Safety & Quality Guard",
+  "description": "Asisten Joe v6.0: Pengawal & Auditor Kualitas Vibe Coding (Secret & Credential Scanner, Regression Risk Guard, Duplicate Logic Detector, Auto Architecture Mapper).",
+  "version": "6.0.0",
   "publisher": "joecompanyagent-lab",
   "engines": {
     "vscode": "^1.90.0"
@@ -21,8 +21,7 @@
     "onCommand:saasWorkflow.openChatTab",
     "onCommand:saasWorkflow.initProject",
     "onCommand:saasWorkflow.createFeatureBranch",
-    "onCommand:saasWorkflow.analyzeRisk",
-    "onCommand:saasWorkflow.breakdownIdea"
+    "onCommand:saasWorkflow.auditVibeCoding"
   ],
   "contributes": {
     "viewsContainers": {
@@ -50,20 +49,16 @@
         "icon": "$(shield)"
       },
       {
+        "command": "saasWorkflow.auditVibeCoding",
+        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (Vibe Guard)"
+      },
+      {
         "command": "saasWorkflow.initProject",
         "title": "Asisten Joe: Inisialisasi Cetakan Proyek (Setup Blueprint)"
       },
       {
         "command": "saasWorkflow.createFeatureBranch",
         "title": "Asisten Joe: Buat Ruang Kerja Fitur Baru"
-      },
-      {
-        "command": "saasWorkflow.analyzeRisk",
-        "title": "Asisten Joe: Analisis Risiko & Estimasi Biaya"
-      },
-      {
-        "command": "saasWorkflow.breakdownIdea",
-        "title": "Asisten Joe: Pecah Ide Bisnis Jadi Tiket Tugas"
       }
     ],
     "menus": {
