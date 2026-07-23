@@ -7,9 +7,9 @@ const MemoryManager = require('./memoryManager');
 const VibeGuard = require('./vibeGuard');
 
 // ============================================================
-// ASISTEN JOE v6.0 -- CHAT PROVIDER
-// Pengawal & Auditor Kualitas Vibe Coding (vibeGuard.js)
-// 5 Pilar AI Engine + 4 Modul Pengawal Vibe Coding
+// ASISTEN JOE v7.0 -- CHAT PROVIDER
+// Adopsi Fitur GitHub Terkemuka (GitGuardian, GitLens, Keploy, Git-Track)
+// Auto CHANGELOG.md Generator, 25+ Secret Database, Sanity Check
 // ============================================================
 
 class SaaSWorkflowChatProvider {
@@ -52,9 +52,11 @@ class SaaSWorkflowChatProvider {
     const audit = this._inspectProject(targetDir);
     this._updateWidget(audit, targetDir);
 
-    // -- MODUL BARU: Audit Vibe Coding --
     if (lowerText.includes('vibe') || lowerText.includes('audit vibe') || lowerText.includes('pengawal') || lowerText.includes('kunci bocor') || lowerText.includes('regresi')) {
       await this._handleVibeCodingAudit(targetDir, folderName, text, audit);
+    }
+    else if (lowerText.includes('changelog') || lowerText.includes('catatan rilis')) {
+      this._handleGenerateChangelog(targetDir, folderName, audit);
     }
     else if (lowerText.includes('bersihkan') || lowerText.includes('housekeeping') || lowerText.includes('hapus draf')) {
       await this._handleHousekeeping(targetDir, folderName, audit);
@@ -88,86 +90,51 @@ class SaaSWorkflowChatProvider {
   }
 
   // ============================================================
-  // MODUL BARU: AUDIT KUALITAS & KEAMANAN VIBE CODING (4 IN 1)
+  // ADOPSI GIT-TRACK: OTOMASI PEMBUATAN CHANGELOG.MD
   // ============================================================
-  async _handleVibeCodingAudit(targetDir, folderName, userText, audit) {
-    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Kualitas & Keamanan Vibe Coding...</small>`);
+  _updateChangelog(targetDir, folderName, branchName, commits) {
+    const changelogPath = path.join(targetDir, 'CHANGELOG.md');
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-    const diff = CodeReader.getRecentDiff(targetDir);
-    const areas = CodeReader.classifyChanges(targetDir);
-    const vibeResult = VibeGuard.auditAll(targetDir, diff, areas);
+    // Tentukan versi semantic
+    const major = 1;
+    const minor = this._memory.stats.total_rilis || 1;
+    const patch = this._memory.stats.total_penggabungan || 0;
+    const versionStr = `${major}.${minor}.${patch}`;
 
-    let html = `<b>LAPORAN AUDIT PENGAWAL VIBE CODING</b><br/>` +
-      `<small style="color:#94a3b8;">Proyek: ${folderName} | ${this._ai.modelName}</small><br/><br/>`;
+    const commitListStr = commits.slice(0, 5).map(c => `- ${c.message}`).join('\n');
 
-    // 1. Audit Rahasia
-    const secretColor = vibeResult.secretAudit.isSafe ? '#22c55e' : '#ef4444';
-    const secretBadge = vibeResult.secretAudit.isSafe ? '[AMAN - 0 KUNCI BOCOR]' : `[BAHAYA - ${vibeResult.secretAudit.findings.length} KUNCI TERDETEKSI]`;
+    const newEntry = `\n## [${versionStr}] - ${dateStr}\n\n### Pembaruan Fitur & Perubahan (${branchName})\n${commitListStr}\n`;
 
-    html += `<div style="background:#1a2332;border:1px solid ${secretColor};border-radius:4px;padding:8px 10px;margin-bottom:6px;font-size:11.5px;">` +
-      `<b style="color:${secretColor};">1. KEAMANAN KUNCI RAHASIA: ${secretBadge}</b><br/>`;
-
-    if (!vibeResult.secretAudit.isSafe) {
-      html += `<small style="color:#ef4444;">Ditemukan kunci rahasia/password yang tertulis langsung di berkas kode:</small><br/>`;
-      vibeResult.secretAudit.findings.forEach(f => {
-        html += `-- <b>${f.type}:</b> <code>${f.snippet}</code><br/>`;
-      });
-      html += `<small style="color:#f59e0b;">Tindakan WAJIB: Pindahkan nilai rahasia di atas ke berkas .env sebelum di-commit!</small><br/>`;
-    } else {
-      html += `<small style="color:#94a3b8;">Tidak ada API Key, Token, atau Password yang tertulis langsung di berkas kode baru.</small><br/>`;
-    }
-    html += `</div>`;
-
-    // 2. Audit Regresi Fitur Lama
-    const regColor = !vibeResult.regressionAudit.hasRisk ? '#22c55e' : '#f59e0b';
-    const regBadge = !vibeResult.regressionAudit.hasRisk ? '[AMAN - 0 RISIKO REGRESI]' : `[PERHATIAN - ${vibeResult.regressionAudit.riskCount} MODUL INTI TERSENTUH]`;
-
-    html += `<div style="background:#1a2332;border:1px solid ${regColor};border-radius:4px;padding:8px 10px;margin-bottom:6px;font-size:11.5px;">` +
-      `<b style="color:${regColor};">2. KESTABILAN FITUR LAMA: ${regBadge}</b><br/>`;
-
-    if (vibeResult.regressionAudit.hasRisk) {
-      vibeResult.regressionAudit.risks.forEach(r => {
-        html += `-- <code>${r.file}</code> (${r.area}): <small style="color:#94a3b8;">${r.impact}</small><br/>`;
-      });
-    } else {
-      html += `<small style="color:#94a3b8;">Perubahan kode baru tidak menyentuh berkas inti bersama (auth, db, config).</small><br/>`;
-    }
-    html += `</div>`;
-
-    // 3. Audit Kode Duplikat & Sampah
-    const dupColor = !vibeResult.duplicateAudit.hasDuplicates ? '#22c55e' : '#f59e0b';
-    const dupBadge = !vibeResult.duplicateAudit.hasDuplicates ? '[AMAN - KERAPIAN TERJAGA]' : `[TEMUAN - ${vibeResult.duplicateAudit.warnings.length} BERKAS/FUNGSI DRAF]`;
-
-    html += `<div style="background:#1a2332;border:1px solid ${dupColor};border-radius:4px;padding:8px 10px;margin-bottom:6px;font-size:11.5px;">` +
-      `<b style="color:${dupColor};">3. KERAPIAN & KODE DUPLIKAT: ${dupBadge}</b><br/>`;
-
-    if (vibeResult.duplicateAudit.hasDuplicates) {
-      vibeResult.duplicateAudit.warnings.forEach(w => {
-        html += `-- <b>${w.type}:</b> <code>${w.item}</code><br/><small style="color:#94a3b8;">${w.advice}</small><br/>`;
-      });
-    } else {
-      html += `<small style="color:#94a3b8;">Tidak ada berkas draf sementara atau nama fungsi duplikat yang tertinggal.</small><br/>`;
-    }
-    html += `</div>`;
-
-    // 4. Analisis AI Tambahan jika tersedia
-    if (this._ai.isAvailable) {
-      const aiAdvice = await this._ai.ask(
-        `Berikan ulasan pengawal kualasi Vibe Coding singkat untuk hasil prompt ini:\n\n${diff}`,
-        CodeReader.buildFullContext(targetDir)
-      );
-      if (aiAdvice) {
-        html += `<b>SARAN PERAPIAN AI:</b><br/>${this._formatAIResponse(aiAdvice)}<br/><br/>`;
+    let existingContent = '';
+    try {
+      if (fs.existsSync(changelogPath)) {
+        existingContent = fs.readFileSync(changelogPath, 'utf8');
       }
-    }
+    } catch (e) {}
 
-    this._updateWidget(audit, targetDir, vibeResult);
-    this._appendLog(targetDir, folderName, "AUDIT VIBE CODING", `Hasil: ${vibeResult.isFullyPassed ? 'LULUS AMAN' : 'DENGAN TEMUAN'}`, audit);
-    this._reply(html);
+    const header = existingContent ? '' : `# CATATAN RILIS PROYEK (${folderName})\n\nDokumen ini disusun secara otomatis oleh Asisten Joe v7.0 untuk mencatat seluruh riwayat pembaruan sistem.\n\n---\n`;
+
+    try {
+      fs.writeFileSync(changelogPath, header + newEntry + existingContent, 'utf8');
+    } catch (e) {
+      console.error('Gagal memperbarui CHANGELOG.md:', e);
+    }
+  }
+
+  _handleGenerateChangelog(targetDir, folderName, audit) {
+    const commits = CodeReader.getRecentCommits(targetDir, 10);
+    this._updateChangelog(targetDir, folderName, audit.currentBranch, commits);
+    const changelogPath = path.join(targetDir, 'CHANGELOG.md');
+    if (fs.existsSync(changelogPath)) {
+      vscode.commands.executeCommand('vscode.open', vscode.Uri.file(changelogPath));
+      this._reply('[BERHASIL] CHANGELOG.md telah diperbarui dan dibuka di editor.');
+    }
   }
 
   // ============================================================
-  // MODUL: ULASAN KODE CERDAS + INTEGRASI VIBE GUARD SEBELUM MERGE
+  // ADOPSI GITGUARDIAN + KEPLOY + GITLENS: ULASAN PR CERDAS
   // ============================================================
   async _handleSmartCodeReview(targetDir, folderName, audit) {
     const currentBranch = audit.currentBranch;
@@ -177,31 +144,47 @@ class SaaSWorkflowChatProvider {
       return;
     }
 
-    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Pengawal Vibe Coding & Ulasan AI pada <code>${currentBranch}</code>...</small>`);
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard & Uji Kelaikan Mandiri pada <code>${currentBranch}</code>...</small>`);
 
     const diff = CodeReader.getRecentDiff(targetDir);
     const areas = CodeReader.classifyChanges(targetDir);
 
-    // 1. Jalankan Vibe Guard Audit terlebih dahulu
+    // 1. Audit Vibe Guard (25+ Secret Database + Sanity Check)
     const vibeResult = VibeGuard.auditAll(targetDir, diff, areas);
 
     // BLOKIR KERAS JIKA ADA KUNCI RAHASIA BOCOR!
     if (!vibeResult.secretAudit.isSafe) {
       let blockHtml = `<div style="background:rgba(239,68,68,0.15);border:1px solid #ef4444;border-radius:4px;padding:10px;margin:8px 0;font-size:11.5px;">` +
         `<b style="color:#ef4444;">[PENGGABUNGAN DIBLOKIR] KUNCI RAHASIA TERDETEKSI BOCOR</b><br/><br/>` +
-        `Asisten Joe menghentikan penggabungan kode karena ditemukan kunci rahasia/API Key yang tertulis langsung di dalam berkas kode:<br/>`;
+        `Asisten Joe menghentikan penggabungan kode karena terdeteksi kunci rahasia/API Key di berkas kode baru:<br/>`;
 
       vibeResult.secretAudit.findings.forEach(f => {
         blockHtml += `-- <b>${f.type}:</b> <code>${f.snippet}</code><br/>`;
       });
 
-      blockHtml += `<br/><b>SOLUSI WAJIB:</b> Pindahkan kunci rahasia di atas ke berkas <code>.env</code> lalu coba jalankan <i>"Ajukan PR"</i> kembali.</div>`;
+      blockHtml += `<br/><b>SOLUSI WAJIB:</b> Pindahkan nilai rahasia di atas ke berkas <code>.env</code> lalu jalankan <i>"Ajukan PR"</i> kembali.</div>`;
 
       this._reply(blockHtml);
       return;
     }
 
-    // 2. Ulasan AI jika aman dari kunci bocor
+    // BLOKIR JIKA GAGAL UJI KELAIKAN BUILD (Keploy Guard)
+    if (!vibeResult.sanityCheck.isPassed) {
+      let buildBlockHtml = `<div style="background:rgba(239,68,68,0.15);border:1px solid #ef4444;border-radius:4px;padding:10px;margin:8px 0;font-size:11.5px;">` +
+        `<b style="color:#ef4444;">[PENGGABUNGAN DIBLOKIR] GAGAL UJI KELAIKAN KOMPILASI</b><br/><br/>` +
+        `Asisten Joe menahan penggabungan karena proyek mengalami kendala kompilasi build:<br/>`;
+
+      vibeResult.sanityCheck.errors.forEach(err => {
+        buildBlockHtml += `-- <code>${err}</code><br/>`;
+      });
+
+      buildBlockHtml += `<br/>Perbaiki kesalahan sintaks/build di atas sebelum menggabungkan kode.</div>`;
+
+      this._reply(buildBlockHtml);
+      return;
+    }
+
+    // 2. Ulasan AI jika aman
     let reviewHtml = '';
     let hasIssues = false;
 
@@ -222,21 +205,23 @@ class SaaSWorkflowChatProvider {
       }
     }
 
-    // 3. Lakukan Merge aman
+    // 3. Lakukan Merge aman & Perbarui CHANGELOG.md
     try {
-      execSync(`git add . && git commit -m "fitur: pembaruan terverifikasi Vibe Guard Asisten Joe" || true`, { cwd: targetDir });
+      const commits = CodeReader.getRecentCommits(targetDir, 5);
+      execSync(`git add . && git commit -m "fitur: pembaruan terverifikasi Vibe Guard Asisten Joe v7.0" || true`, { cwd: targetDir });
       execSync(`git checkout develop && git merge ${currentBranch}`, { cwd: targetDir });
 
       this._memory.incrementStat('total_penggabungan');
-      this._memory.addDecision(`Penggabungan ${currentBranch} ke develop`, `Vibe Guard: LULUS AMAN`);
+      this._memory.addDecision(`Penggabungan ${currentBranch} ke develop`, `Audit Vibe Guard: LULUS AMAN`);
+      this._updateChangelog(targetDir, folderName, currentBranch, commits);
       this._appendLog(targetDir, folderName, "PENGGABUNGAN + AUDIT VIBE GUARD", `${currentBranch} ke develop`, audit);
 
       const statusText = hasIssues ? '[BERHASIL DENGAN TEMUAN]' : '[BERHASIL]';
       this._reply(
         `<b>${statusText} Penggabungan Kode</b><br/>` +
-        `<small style="color:#94a3b8;">${currentBranch} --> develop | Audit Vibe Guard: AMAN (0 Kunci Bocor)</small><br/>` +
+        `<small style="color:#94a3b8;">${currentBranch} --> develop | Audit 25+ Secret Database & Build Check: AMAN</small><br/>` +
         reviewHtml +
-        `<br/>LOG_AKTIVITAS.md telah diperbarui.`
+        `<br/>Berkas LOG_AKTIVITAS.md dan CHANGELOG.md telah diperbarui.`
       );
     } catch (err) {
       this._memory.addPattern('kesalahan', `Gagal merge ${currentBranch}: ${err.message}`, 'merge');
@@ -245,7 +230,73 @@ class SaaSWorkflowChatProvider {
   }
 
   // ============================================================
-  // MODUL LAINNYA (Pertanyaan Bebas, Inspeksi, Fitur, Risiko, Rilis, Ide)
+  // MODUL AUDIT VIBE CODING (25+ SECRET DATABASE)
+  // ============================================================
+  async _handleVibeCodingAudit(targetDir, folderName, userText, audit) {
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Kualitas & Keamanan (25+ Secret Database)...</small>`);
+
+    const diff = CodeReader.getRecentDiff(targetDir);
+    const areas = CodeReader.classifyChanges(targetDir);
+    const vibeResult = VibeGuard.auditAll(targetDir, diff, areas);
+
+    let html = `<b>LAPORAN AUDIT PENGAWAL VIBE CODING v7.0</b><br/>` +
+      `<small style="color:#94a3b8;">Proyek: ${folderName} | ${this._ai.modelName}</small><br/><br/>`;
+
+    // 1. Audit Rahasia (25+ Pola)
+    const secretColor = vibeResult.secretAudit.isSafe ? '#22c55e' : '#ef4444';
+    const secretBadge = vibeResult.secretAudit.isSafe ? '[AMAN - 0 KUNCI BOCOR]' : `[BAHAYA - ${vibeResult.secretAudit.findings.length} KUNCI TERDETEKSI]`;
+
+    html += `<div style="background:#1a2332;border:1px solid ${secretColor};border-radius:4px;padding:8px 10px;margin-bottom:6px;font-size:11.5px;">` +
+      `<b style="color:${secretColor};">1. KEAMANAN KUNCI RAHASIA (25+ POLA): ${secretBadge}</b><br/>`;
+
+    if (!vibeResult.secretAudit.isSafe) {
+      html += `<small style="color:#ef4444;">Ditemukan kunci rahasia/password yang tertulis langsung di kode baru:</small><br/>`;
+      vibeResult.secretAudit.findings.forEach(f => {
+        html += `-- <b>${f.type}:</b> <code>${f.snippet}</code><br/>`;
+      });
+      html += `<small style="color:#f59e0b;">Tindakan WAJIB: Pindahkan nilai rahasia di atas ke berkas .env sebelum di-commit!</small><br/>`;
+    } else {
+      html += `<small style="color:#94a3b8;">Tidak ada API Key, Token, atau Password yang tertulis langsung di berkas kode baru.</small><br/>`;
+    }
+    html += `</div>`;
+
+    // 2. Audit Build & Sanity Check (Keploy)
+    const sanityColor = vibeResult.sanityCheck.isPassed ? '#22c55e' : '#ef4444';
+    const sanityBadge = vibeResult.sanityCheck.isPassed ? '[LULUS - KOMPILASI KELAIKAN]' : '[GAGAL - EROR KOMPILASI]';
+
+    html += `<div style="background:#1a2332;border:1px solid ${sanityColor};border-radius:4px;padding:8px 10px;margin-bottom:6px;font-size:11.5px;">` +
+      `<b style="color:${sanityColor};">2. UJI KELAIKAN MANDIRI (KEPLOY GUARD): ${sanityBadge}</b><br/>`;
+
+    if (!vibeResult.sanityCheck.isPassed) {
+      vibeResult.sanityCheck.errors.forEach(e => {
+        html += `-- <code>${e}</code><br/>`;
+      });
+    } else {
+      html += `<small style="color:#94a3b8;">Kelaikan struktur proyek dan kompilasi build terverifikasi normal.</small><br/>`;
+    }
+    html += `</div>`;
+
+    // 3. Audit Regresi
+    const regColor = !vibeResult.regressionAudit.hasRisk ? '#22c55e' : '#f59e0b';
+    html += `<div style="background:#1a2332;border:1px solid ${regColor};border-radius:4px;padding:8px 10px;margin-bottom:6px;font-size:11.5px;">` +
+      `<b style="color:${regColor};">3. KESTABILAN FITUR LAMA: [${!vibeResult.regressionAudit.hasRisk ? 'AMAN' : `${vibeResult.regressionAudit.riskCount} MODUL INTI TERSENTUH`}]</b><br/>`;
+
+    if (vibeResult.regressionAudit.hasRisk) {
+      vibeResult.regressionAudit.risks.forEach(r => {
+        html += `-- <code>${r.file}</code> (${r.area})<br/>`;
+      });
+    } else {
+      html += `<small style="color:#94a3b8;">Tidak ada modul inti bersama yang tersentuh.</small><br/>`;
+    }
+    html += `</div>`;
+
+    this._updateWidget(audit, targetDir, vibeResult);
+    this._appendLog(targetDir, folderName, "AUDIT VIBE CODING v7.0", `Hasil: ${vibeResult.isFullyPassed ? 'LULUS AMAN' : 'TEMUAN'}`, audit);
+    this._reply(html);
+  }
+
+  // ============================================================
+  // MODUL LAINNYA
   // ============================================================
   async _handleFreeQuestion(targetDir, folderName, text, audit) {
     this._reply(`<small style="color:#94a3b8;">[PROSES] Mengirim ke ${this._ai.modelName}...</small>`);
@@ -263,7 +314,6 @@ class SaaSWorkflowChatProvider {
 
   async _handleInspection(targetDir, folderName, userText, audit) {
     const techs = CodeReader.detectTechnologies(targetDir);
-    const areas = CodeReader.classifyChanges(targetDir);
     let html = `<b>LAPORAN INSPEKSI PROYEK</b><br/>` +
       `<small style="color:#94a3b8;">Intelegensi: ${this._ai.modelName}</small><br/><br/>` +
       `<table style="width:100%;border-collapse:collapse;font-size:11.5px;">` +
@@ -275,10 +325,6 @@ class SaaSWorkflowChatProvider {
       `<tr><td style="padding:3px 6px;color:#94a3b8;">Tiket Aktif</td><td style="padding:3px 6px;">${audit.ticketCount}</td></tr>` +
       `</table><br/>`;
 
-    if (this._ai.isAvailable) {
-      const aiRec = await this._ai.ask('Berikan 2 rekomendasi singkat langkah kerja berikutnya.', CodeReader.buildFullContext(targetDir));
-      if (aiRec) html += `<b>REKOMENDASI AI:</b><br/>${this._formatAIResponse(aiRec)}`;
-    }
     this._appendLog(targetDir, folderName, "INSPEKSI PROYEK", userText, audit);
     this._reply(html);
   }
@@ -387,23 +433,6 @@ class SaaSWorkflowChatProvider {
       { id: `TK-${baseNum+3}`, title: 'Pengujian & Validasi', desc: 'Memastikan fitur berjalan', priority: 'PENDUKUNG' }
     ];
 
-    if (this._ai.isAvailable) {
-      const aiResult = await this._ai.ask(
-        `Pecah ide ini jadi 3-5 tiket spesifik: "${ideaText}". Format: TIKET|Judul|Deskripsi|UTAMA/PENDUKUNG`,
-        CodeReader.buildFullContext(targetDir)
-      );
-      if (aiResult) {
-        const parsed = [];
-        aiResult.split('\n').filter(l => l.includes('TIKET|')).forEach((line, i) => {
-          const parts = line.split('|').map(p => p.trim());
-          if (parts.length >= 3) {
-            parsed.push({ id: `TK-${baseNum + i}`, title: parts[1], desc: parts[2], priority: (parts[3] || 'UTAMA').toUpperCase() });
-          }
-        });
-        if (parsed.length) tickets = parsed;
-      }
-    }
-
     let html = `<b>PETA JALAN & TIKET TUGAS</b><br/><small style="color:#94a3b8;">"${ideaText}"</small><br/><br/>` +
       `<table style="width:100%;border-collapse:collapse;font-size:11px;">`;
     tickets.forEach(t => {
@@ -426,9 +455,6 @@ class SaaSWorkflowChatProvider {
     }
   }
 
-  // ============================================================
-  // UTILITAS & WIDGET UPDATER
-  // ============================================================
   _inspectProject(targetDir) {
     let currentBranch = 'main', branchesPresent = ['main'], changedFilesCount = 0, hasBlueprint = false, ticketCount = 0;
     try {
@@ -515,7 +541,7 @@ class SaaSWorkflowChatProvider {
       `## 1. TABEL REKAP OPERASI (CRUD)\n\n| Waktu | Aktivitas | Deskripsi | Ruang | Status |\n| :--- | :--- | :--- | :--- | :--- |\n${crudRows}\n\n---\n\n` +
       `## 2. DIAGRAM ALUR PEKERJAAN SESI\n\n\`\`\`mermaid\nflowchart TD\n    START["Awal Sesi"] --> ${this._logHistory.length ? 'N0' : 'END'}\n${mNodes}\n` +
       `    ${this._logHistory.length ? `N${this._logHistory.length-1}` : 'START'} --> END["Terkini: ${audit.currentBranch}"]\n\`\`\`\n\n---\n\n` +
-      `*Disusun otomatis oleh Asisten Joe v6.0 Vibe Guard*\n`;
+      `*Disusun otomatis oleh Asisten Joe v7.0*\n`;
     try { fs.writeFileSync(logPath, content, 'utf8'); } catch (e) {}
   }
 

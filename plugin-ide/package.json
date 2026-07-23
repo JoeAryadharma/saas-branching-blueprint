@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - Native IDE Theme & Vibe Guard",
-  "description": "Asisten Joe v6.1: Antarmuka 100% Native IDE Theme Variables, Pengawal & Auditor Kualitas Vibe Coding (Secret Scanner, Regression Guard, Duplicate Detector, Architecture Mapper).",
-  "version": "6.1.0",
+  "displayName": "Asisten Joe - GitHub Features Adopted Edition",
+  "description": "Asisten Joe v7.0: Adopsi 4 Fitur GitHub Terbaik (GitGuardian 25+ Secret Database, GitLens File Evolution Tracker, Keploy Build Sanity Check, Git-Track Auto CHANGELOG.md).",
+  "version": "7.0.0",
   "publisher": "joecompanyagent-lab",
   "engines": {
     "vscode": "^1.90.0"
@@ -50,7 +50,7 @@
       },
       {
         "command": "saasWorkflow.auditVibeCoding",
-        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (Vibe Guard)"
+        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (Vibe Guard v7.0)"
       },
       {
         "command": "saasWorkflow.initProject",
