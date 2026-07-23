@@ -1,15 +1,16 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - Ultimate Personal Companion",
-  "description": "Asisten Joe v4.0: Analisis Risiko & Biaya, Pengumuman Rilis Otomatis, Pembongkar Ide Jadi Tiket, Widget Kesehatan Proyek, Ikon SVG Vektor",
-  "version": "4.0.0",
+  "displayName": "Asisten Joe - AI-Powered Personal Companion",
+  "description": "Asisten Joe v5.0: Bertenaga AI sesungguhnya via vscode.lm API. 5 Pilar Kecerdasan: AI Engine, Code Awareness, Contextual Tickets, Persistent Memory, Smart Code Review.",
+  "version": "5.0.0",
   "publisher": "joecompanyagent-lab",
   "engines": {
-    "vscode": "^1.80.0"
+    "vscode": "^1.90.0"
   },
   "categories": [
     "Other",
-    "SCM Providers"
+    "SCM Providers",
+    "Machine Learning"
   ],
   "main": "./extension.js",
   "bin": {
@@ -58,7 +59,7 @@
       },
       {
         "command": "saasWorkflow.analyzeRisk",
-        "title": "Asisten Joe: Analisis Risiko & Estimasi Biaya Perubahan"
+        "title": "Asisten Joe: Analisis Risiko & Estimasi Biaya"
       },
       {
         "command": "saasWorkflow.breakdownIdea",

@@ -2,35 +2,41 @@ const vscode = require('vscode');
 const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
+const CodeReader = require('./codeReader');
+const MemoryManager = require('./memoryManager');
+
+// ============================================================
+// ASISTEN JOE v5.0 -- CHAT PROVIDER
+// Bertenaga AI sesungguhnya via vscode.lm API
+// 5 Pilar Kecerdasan: AI Engine, Code Awareness,
+// Contextual Tickets, Persistent Memory, Smart Code Review
+// ============================================================
 
 class SaaSWorkflowChatProvider {
-  constructor(extensionUri) {
+  constructor(extensionUri, aiEngine) {
     this._extensionUri = extensionUri;
-    this._activeModelName = 'Model AI Aktif IDE';
+    this._ai = aiEngine;
+    this._memory = new MemoryManager();
     this._logHistory = [];
   }
 
   resolveWebviewView(webviewView, context, _token) {
     this._view = webviewView;
-
     webviewView.webview.options = {
       enableScripts: true,
       localResourceRoots: [this._extensionUri]
     };
-
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
-
     webviewView.webview.onDidReceiveMessage(async (data) => {
-      switch (data.type) {
-        case 'userInput':
-          await this._handleUserInput(data.text);
-          break;
+      if (data.type === 'userInput') {
+        await this._handleUserInput(data.text);
       }
     });
   }
 
   // ============================================================
-  // DISPATCHER UTAMA -- Mengarahkan instruksi ke modul kompetensi
+  // DISPATCHER CERDAS
+  // Mengarahkan ke modul spesifik atau langsung ke AI
   // ============================================================
   async _handleUserInput(text) {
     const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -43,94 +49,117 @@ class SaaSWorkflowChatProvider {
     const folderName = path.basename(targetDir);
     const lowerText = text.toLowerCase();
 
+    // Muat memori proyek
+    this._memory.load(targetDir);
+
+    // Inspeksi proyek
     const audit = this._inspectProject(targetDir);
     this._updateWidget(audit);
 
-    // ---- MODUL: Bersihkan Branch (Housekeeping) ----
+    // -- Routing ke modul spesifik --
     if (lowerText.includes('bersihkan') || lowerText.includes('housekeeping') || lowerText.includes('hapus draf')) {
-      this._handleHousekeeping(targetDir, folderName, audit);
-      return;
+      await this._handleHousekeeping(targetDir, folderName, audit);
     }
-
-    // ---- MODUL: Inspeksi Proyek / Status ----
-    if (lowerText.includes('baca') || lowerText.includes('folder') || lowerText.includes('project') || lowerText.includes('proyek') || lowerText.includes('status') || lowerText.includes('inspeksi')) {
-      this._handleInspection(targetDir, folderName, text, audit);
-      return;
+    else if (lowerText.includes('inspeksi') || lowerText.includes('status') || lowerText.includes('proyek') || lowerText.includes('project')) {
+      await this._handleInspection(targetDir, folderName, text, audit);
     }
-
-    // ---- MODUL: Fitur Baru ----
-    if (lowerText.includes('fitur baru') || lowerText.includes('buat fitur') || lowerText.includes('tambah fitur')) {
+    else if (lowerText.includes('fitur baru') || lowerText.includes('buat fitur') || lowerText.includes('tambah fitur')) {
       await this._handleCreateFeature(targetDir, folderName, audit);
-      return;
     }
-
-    // ---- MODUL: Ajukan PR / Penggabungan ----
-    if (lowerText.includes('pr') || lowerText.includes('ajukan') || lowerText.includes('pemeriksaan') || lowerText.includes('selesai')) {
-      this._handleSubmitPR(targetDir, folderName, audit);
-      return;
+    else if (lowerText.includes('risiko') || lowerText.includes('biaya') || lowerText.includes('dampak') || lowerText.includes('cost')) {
+      await this._handleRiskAnalysis(targetDir, folderName, text, audit);
     }
-
-    // ---- PILAR 1: Analisis Risiko & Estimasi Biaya ----
-    if (lowerText.includes('risiko') || lowerText.includes('biaya') || lowerText.includes('dampak') || lowerText.includes('analisis risiko') || lowerText.includes('cost')) {
-      this._handleRiskAnalysis(targetDir, folderName, text, audit);
-      return;
+    else if (lowerText.includes('rilis') || lowerText.includes('release') || lowerText.includes('pengumuman') || lowerText.includes('broadcast')) {
+      await this._handleReleaseDraft(targetDir, folderName, text, audit);
     }
-
-    // ---- PILAR 2: Pengumuman Rilis / Konten Komunikasi ----
-    if (lowerText.includes('rilis') || lowerText.includes('release') || lowerText.includes('pengumuman') || lowerText.includes('broadcast')) {
-      this._handleReleaseDraft(targetDir, folderName, text, audit);
-      return;
-    }
-
-    // ---- PILAR 3: Pembongkaran Ide Jadi Tiket Tugas ----
-    if (lowerText.includes('ide') || lowerText.includes('rencana') || lowerText.includes('roadmap') || lowerText.includes('pecah') || lowerText.includes('tiket')) {
+    else if (lowerText.includes('ide') || lowerText.includes('rencana') || lowerText.includes('roadmap') || lowerText.includes('pecah') || lowerText.includes('tiket')) {
       await this._handleIdeaBreakdown(targetDir, folderName, text, audit);
-      return;
     }
-
-    // ---- MODUL: Laporan Log ----
-    if (lowerText.includes('log') || lowerText.includes('laporan')) {
+    else if (lowerText.includes('pr') || lowerText.includes('ajukan') || lowerText.includes('pemeriksaan') || lowerText.includes('gabung') || lowerText.includes('merge')) {
+      await this._handleSmartCodeReview(targetDir, folderName, audit);
+    }
+    else if (lowerText.includes('log') || lowerText.includes('laporan')) {
       this._handleOpenLog(targetDir);
-      return;
+    }
+    else {
+      // KECERDASAN UTAMA: Pertanyaan bebas dikirim ke AI
+      await this._handleFreeQuestion(targetDir, folderName, text, audit);
     }
 
-    // ---- RESPONS UMUM ----
-    this._reply(
-      `<b>Asisten Joe (${this._activeModelName})</b><br/><br/>` +
-      `Instruksi diterima: <i>"${text}"</i><br/>` +
-      `Proyek: <b>${folderName}</b> | Ruang: <code>${audit.currentBranch}</code><br/><br/>` +
-      `Silakan gunakan tombol pintas di bawah, atau ketik salah satu perintah berikut:<br/>` +
-      `-- "Inspeksi Proyek" untuk laporan kesehatan<br/>` +
-      `-- "Analisis Risiko" untuk estimasi dampak biaya<br/>` +
-      `-- "Pengumuman Rilis" untuk draf komunikasi pelanggan<br/>` +
-      `-- "Pecah Ide ke Tiket" untuk memecah rencana menjadi tugas`
-    );
+    // Simpan memori setelah setiap interaksi
+    this._memory.save(targetDir);
   }
 
   // ============================================================
-  // MODUL INTI: Inspeksi Proyek
+  // KECERDASAN UTAMA: Pertanyaan Bebas ke AI
   // ============================================================
-  _handleInspection(targetDir, folderName, userText, audit) {
+  async _handleFreeQuestion(targetDir, folderName, text, audit) {
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Mengirim ke ${this._ai.modelName}...</small>`);
+
+    const projectContext = CodeReader.buildFullContext(targetDir);
+    const memoryContext = this._memory.getRelevantContext(3);
+    const fullContext = projectContext + '\n\n' + memoryContext;
+
+    const aiResponse = await this._ai.ask(text, fullContext);
+
+    if (aiResponse) {
+      const formatted = this._formatAIResponse(aiResponse);
+      this._appendLog(targetDir, folderName, "KONSULTASI AI", text, audit);
+      this._reply(
+        `<b>Asisten Joe</b> <small style="color:#94a3b8;">(${this._ai.modelName})</small><br/><br/>` +
+        formatted
+      );
+    } else {
+      // Fallback tanpa AI
+      this._reply(
+        `<b>Asisten Joe</b> <small style="color:#94a3b8;">(Mode Mandiri)</small><br/><br/>` +
+        `Instruksi diterima: <i>"${text}"</i><br/>` +
+        `Proyek: <b>${folderName}</b> | Ruang: <code>${audit.currentBranch}</code><br/><br/>` +
+        `[INFORMASI] Model AI tidak tersedia. Gunakan tombol pintas di bawah untuk fitur yang tersedia tanpa AI.`
+      );
+    }
+  }
+
+  // ============================================================
+  // MODUL: Inspeksi Proyek (Diperkaya AI + Code Awareness)
+  // ============================================================
+  async _handleInspection(targetDir, folderName, userText, audit) {
+    const techs = CodeReader.detectTechnologies(targetDir);
+    const structure = CodeReader.getProjectStructure(targetDir);
+    const areas = CodeReader.classifyChanges(targetDir);
+
     let html = `<b>LAPORAN INSPEKSI PROYEK</b><br/>` +
-      `<small style="color:#94a3b8;">Intelegensi: ${this._activeModelName}</small><br/><br/>` +
+      `<small style="color:#94a3b8;">Intelegensi: ${this._ai.modelName}</small><br/><br/>` +
       `<table style="width:100%;border-collapse:collapse;font-size:11.5px;">` +
       `<tr><td style="padding:3px 6px;color:#94a3b8;">Nama Proyek</td><td style="padding:3px 6px;"><code>${folderName}</code></td></tr>` +
-      `<tr><td style="padding:3px 6px;color:#94a3b8;">Lokasi</td><td style="padding:3px 6px;"><code>${targetDir}</code></td></tr>` +
       `<tr><td style="padding:3px 6px;color:#94a3b8;">Ruang Kerja</td><td style="padding:3px 6px;"><code>${audit.currentBranch}</code></td></tr>` +
-      `<tr><td style="padding:3px 6px;color:#94a3b8;">Semua Ruang</td><td style="padding:3px 6px;">${audit.branchesPresent.map(b => `<code>${b}</code>`).join(', ')}</td></tr>` +
+      `<tr><td style="padding:3px 6px;color:#94a3b8;">Teknologi</td><td style="padding:3px 6px;">${techs.join(', ')}</td></tr>` +
       `<tr><td style="padding:3px 6px;color:#94a3b8;">Berkas Berubah</td><td style="padding:3px 6px;">${audit.changedFilesCount} berkas</td></tr>` +
-      `<tr><td style="padding:3px 6px;color:#94a3b8;">Tata Kelola SaaS</td><td style="padding:3px 6px;">${audit.hasBlueprint ? '[TERPASANG]' : '[BELUM TERPASANG]'}</td></tr>` +
-      `<tr><td style="padding:3px 6px;color:#94a3b8;">Tiket Peta Jalan</td><td style="padding:3px 6px;">${audit.ticketCount} tiket</td></tr>` +
+      `<tr><td style="padding:3px 6px;color:#94a3b8;">Tata Kelola</td><td style="padding:3px 6px;">${audit.hasBlueprint ? '[TERPASANG]' : '[BELUM]'}</td></tr>` +
+      `<tr><td style="padding:3px 6px;color:#94a3b8;">Tiket Aktif</td><td style="padding:3px 6px;">${audit.ticketCount}</td></tr>` +
+      `<tr><td style="padding:3px 6px;color:#94a3b8;">Riwayat Sesi</td><td style="padding:3px 6px;">${this._memory.stats.total_fitur_dibuat} fitur, ${this._memory.stats.total_penggabungan} merge</td></tr>` +
       `</table><br/>`;
 
-    html += `<b>REKOMENDASI:</b><br/>`;
-    if (!audit.hasBlueprint) {
-      html += `-- Folder belum memiliki SOP & CI/CD. Ketik "Setup Blueprint".<br/>`;
+    // Area perubahan
+    const activeAreas = Object.entries(areas).filter(([, files]) => files.length > 0);
+    if (activeAreas.length > 0) {
+      html += `<b>AREA PERUBAHAN:</b><br/>`;
+      activeAreas.forEach(([area, files]) => {
+        html += `-- ${area}: ${files.length} berkas (${files.join(', ')})<br/>`;
+      });
+      html += `<br/>`;
     }
-    if (audit.currentBranch === 'main') {
-      html += `-- Anda di Ruang Utama. Disarankan buat fitur baru dari develop.<br/>`;
-    } else if (audit.changedFilesCount > 0) {
-      html += `-- Ada ${audit.changedFilesCount} berkas diubah. Ketik "Ajukan PR" untuk menggabungkan.<br/>`;
+
+    // Minta AI untuk rekomendasi jika tersedia
+    if (this._ai.isAvailable) {
+      const projectContext = CodeReader.buildFullContext(targetDir);
+      const aiRec = await this._ai.ask(
+        'Berikan 2-3 rekomendasi singkat langkah kerja berikutnya berdasarkan kondisi proyek ini. Maksimal 3 kalimat per rekomendasi.',
+        projectContext
+      );
+      if (aiRec) {
+        html += `<b>REKOMENDASI AI:</b><br/>${this._formatAIResponse(aiRec)}`;
+      }
     }
 
     this._appendLog(targetDir, folderName, "INSPEKSI PROYEK", userText, audit);
@@ -138,290 +167,237 @@ class SaaSWorkflowChatProvider {
   }
 
   // ============================================================
-  // MODUL INTI: Bersihkan Branch (Housekeeping)
+  // MODUL: Bersihkan Branch
   // ============================================================
-  _handleHousekeeping(targetDir, folderName, audit) {
+  async _handleHousekeeping(targetDir, folderName, audit) {
+    const branches = audit.branchesPresent.filter(b => b.startsWith('feature/'));
+    if (branches.length === 0) {
+      this._reply("[INFORMASI] Penyimpanan proyek sudah bersih. Tidak ada draf ruang fitur lama.");
+      return;
+    }
     try {
-      const branches = audit.branchesPresent.filter(b => b.startsWith('feature/'));
-      if (branches.length === 0) {
-        this._reply("[INFORMASI] Penyimpanan proyek sudah bersih. Tidak ada draf ruang fitur lama.");
-        return;
-      }
-
       try { execSync('git checkout develop', { cwd: targetDir }); } catch(e) {}
       let cleaned = 0;
       branches.forEach(b => {
-        try {
-          execSync(`git branch -d ${b}`, { cwd: targetDir });
-          cleaned++;
-        } catch (e) {}
+        try { execSync(`git branch -d ${b}`, { cwd: targetDir }); cleaned++; } catch (e) {}
       });
-
-      this._appendLog(targetDir, folderName, "PEMBERSIHAN BRANCH", `Membersihkan ${cleaned} cabang draf`, audit);
-      this._reply(`[BERHASIL] Pembersihan selesai. ${cleaned} draf ruang kerja lama telah dihapus secara aman.`);
+      this._memory.addPattern('keberhasilan', `Membersihkan ${cleaned} cabang draf`, 'housekeeping');
+      this._appendLog(targetDir, folderName, "PEMBERSIHAN BRANCH", `${cleaned} cabang`, audit);
+      this._reply(`[BERHASIL] ${cleaned} draf ruang kerja lama telah dibersihkan.`);
     } catch (err) {
       this._reply(`[GAGAL] Kendala pembersihan: ${err.message}`);
     }
   }
 
   // ============================================================
-  // MODUL INTI: Buat Fitur Baru
+  // MODUL: Buat Fitur Baru
   // ============================================================
   async _handleCreateFeature(targetDir, folderName, audit) {
-    const ticketId = await vscode.window.showInputBox({ prompt: 'Masukkan Nomor Tiket Pekerjaan (Contoh: TK-201):' });
+    const ticketId = await vscode.window.showInputBox({ prompt: 'Nomor Tiket Pekerjaan (Contoh: TK-201):' });
     if (!ticketId) return;
-
-    const featureName = await vscode.window.showInputBox({ prompt: 'Masukkan Nama Fitur Singkat (Bahasa Bisnis):' });
+    const featureName = await vscode.window.showInputBox({ prompt: 'Nama Fitur Singkat (Bahasa Bisnis):' });
     if (!featureName) return;
 
     const branchName = `feature/${ticketId}-${featureName.toLowerCase().replace(/\s+/g, '-')}`;
-
     try {
       try {
         execSync(`git checkout develop && git checkout -b ${branchName}`, { cwd: targetDir });
       } catch (e) {
         execSync(`git checkout -b ${branchName}`, { cwd: targetDir });
       }
-      this._appendLog(targetDir, folderName, "MEMBUAT FITUR BARU", `Cabang ${branchName}`, audit);
-      this._reply(`[BERHASIL] Ruang Kerja Fitur Terbuat: <code>${branchName}</code><br/>Setelah selesai, ketik "Ajukan PR".`);
+      this._memory.incrementStat('total_fitur_dibuat');
+      this._memory.addDecision(`Membuat fitur baru: ${featureName} (${ticketId})`, branchName);
+      this._appendLog(targetDir, folderName, "MEMBUAT FITUR BARU", `${branchName}`, audit);
+      this._reply(`[BERHASIL] Ruang Kerja Fitur: <code>${branchName}</code><br/>Setelah selesai, ketik "Ajukan PR" untuk ulasan kode cerdas.`);
     } catch (err) {
-      this._reply(`[GAGAL] Tidak dapat membuat ruang kerja: ${err.message}`);
+      this._reply(`[GAGAL] ${err.message}`);
     }
   }
 
   // ============================================================
-  // MODUL INTI: Ajukan PR / Penggabungan
+  // PILAR 1+2: ANALISIS RISIKO KONTEKSTUAL (AI + Code Awareness)
   // ============================================================
-  _handleSubmitPR(targetDir, folderName, audit) {
-    try {
-      const currentBranch = audit.currentBranch;
-      if (currentBranch === 'main' || currentBranch === 'develop') {
-        this._reply(`[PERINGATAN] Anda sedang di ruang <code>${currentBranch}</code>. Pengajuan hanya bisa dilakukan dari ruang fitur (feature/*).`);
-        return;
-      }
+  async _handleRiskAnalysis(targetDir, folderName, userText, audit) {
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Menganalisis risiko dengan ${this._ai.modelName}...</small>`);
 
-      this._reply(`[PROSES] Menjalankan audit kelaikan pada <code>${currentBranch}</code>...`);
+    const stats = CodeReader.getDiffStats(targetDir);
+    const areas = CodeReader.classifyChanges(targetDir);
+    const diff = CodeReader.getRecentDiff(targetDir);
 
-      execSync(`git add . && git commit -m "fitur: pembaruan mandiri terverifikasi" || true`, { cwd: targetDir });
-      execSync(`git checkout develop && git merge ${currentBranch}`, { cwd: targetDir });
-
-      this._appendLog(targetDir, folderName, "PENGGABUNGAN PEKERJAAN", `${currentBranch} ke develop`, audit);
-      this._reply(`[BERHASIL] Pekerjaan dari <code>${currentBranch}</code> telah lulus audit dan digabungkan ke <b>develop</b>.`);
-    } catch (err) {
-      this._reply(`[GAGAL] Kendala pengajuan: ${err.message}`);
-    }
-  }
-
-  // ============================================================
-  // PILAR 1: INTELIJEN RISIKO & ESTIMASI BIAYA
-  // ============================================================
-  _handleRiskAnalysis(targetDir, folderName, userText, audit) {
-    let diffStat = { filesChanged: 0, insertions: 0, deletions: 0 };
-
-    try {
-      const rawDiff = execSync('git diff --stat HEAD~1 HEAD 2>/dev/null || git diff --stat', { cwd: targetDir }).toString();
-      const summaryLine = rawDiff.split('\n').filter(l => l.includes('changed')).pop() || '';
-      const filesMatch = summaryLine.match(/(\d+)\s+file/);
-      const insertMatch = summaryLine.match(/(\d+)\s+insertion/);
-      const deleteMatch = summaryLine.match(/(\d+)\s+deletion/);
-      diffStat.filesChanged = filesMatch ? parseInt(filesMatch[1]) : 0;
-      diffStat.insertions = insertMatch ? parseInt(insertMatch[1]) : 0;
-      diffStat.deletions = deleteMatch ? parseInt(deleteMatch[1]) : 0;
-    } catch (e) {}
-
-    const totalLines = diffStat.insertions + diffStat.deletions;
-    let riskLevel, riskColor, recommendation;
-
-    if (totalLines < 50) {
-      riskLevel = 'RENDAH';
-      riskColor = '#22c55e';
-      recommendation = 'Perubahan berskala kecil. Aman untuk langsung digabungkan ke tahap berikutnya tanpa pengujian tambahan.';
-    } else if (totalLines < 200) {
-      riskLevel = 'SEDANG';
-      riskColor = '#f59e0b';
-      recommendation = 'Perubahan cukup signifikan. Disarankan melakukan pengujian manual di Ruang Simulasi (staging) sebelum rilis ke Sistem Utama.';
-    } else {
-      riskLevel = 'TINGGI';
-      riskColor = '#ef4444';
-      recommendation = 'Perubahan besar. WAJIB menjalankan pengujian menyeluruh di Ruang Simulasi, audit performa, dan siapkan prosedur pembatalan (rollback) sebelum rilis.';
-    }
-
-    // Estimasi dampak biaya sederhana
-    const estimatedHours = Math.max(0.5, Math.round((totalLines / 30) * 10) / 10);
-    const estimatedTestHours = Math.round(estimatedHours * 0.4 * 10) / 10;
-
-    let html = `<b>LAPORAN ANALISIS RISIKO & ESTIMASI BIAYA</b><br/>` +
-      `<small style="color:#94a3b8;">Proyek: ${folderName} | Ruang: ${audit.currentBranch}</small><br/><br/>` +
-
-      `<table style="width:100%;border-collapse:collapse;font-size:11.5px;">` +
-      `<tr style="border-bottom:1px solid #334155;">` +
-      `<td style="padding:4px 6px;color:#94a3b8;">Berkas Berubah</td>` +
-      `<td style="padding:4px 6px;font-weight:700;">${diffStat.filesChanged} berkas</td></tr>` +
-      `<tr style="border-bottom:1px solid #334155;">` +
-      `<td style="padding:4px 6px;color:#94a3b8;">Baris Ditambah</td>` +
-      `<td style="padding:4px 6px;color:#22c55e;font-weight:700;">+${diffStat.insertions}</td></tr>` +
-      `<tr style="border-bottom:1px solid #334155;">` +
-      `<td style="padding:4px 6px;color:#94a3b8;">Baris Dihapus</td>` +
-      `<td style="padding:4px 6px;color:#ef4444;font-weight:700;">-${diffStat.deletions}</td></tr>` +
-      `<tr style="border-bottom:1px solid #334155;">` +
-      `<td style="padding:4px 6px;color:#94a3b8;">Total Volume Perubahan</td>` +
-      `<td style="padding:4px 6px;font-weight:700;">${totalLines} baris</td></tr>` +
-      `<tr style="border-bottom:1px solid #334155;">` +
-      `<td style="padding:4px 6px;color:#94a3b8;">Tingkat Risiko</td>` +
-      `<td style="padding:4px 6px;font-weight:700;color:${riskColor};">[${riskLevel}]</td></tr>` +
-      `</table><br/>` +
-
-      `<b>ESTIMASI BEBAN OPERASIONAL:</b><br/>` +
-      `-- Waktu pengerjaan perkiraan: <b>${estimatedHours} jam kerja</b><br/>` +
-      `-- Waktu pengujian perkiraan: <b>${estimatedTestHours} jam kerja</b><br/><br/>` +
-
-      `<b>REKOMENDASI MITIGASI:</b><br/>` +
-      `${recommendation}`;
-
-    this._appendLog(targetDir, folderName, "ANALISIS RISIKO & BIAYA", `Tingkat: ${riskLevel}, Volume: ${totalLines} baris`, audit);
-    this._reply(html);
-  }
-
-  // ============================================================
-  // PILAR 2: PEMBUAT KONTEN RILIS & KOMUNIKASI PELANGGAN
-  // ============================================================
-  _handleReleaseDraft(targetDir, folderName, userText, audit) {
-    let recentCommits = [];
-    try {
-      const logOutput = execSync('git log --oneline -10', { cwd: targetDir }).toString().trim();
-      recentCommits = logOutput.split('\n').filter(Boolean);
-    } catch (e) {}
-
-    const now = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-
-    // Rangkum perubahan dari commit messages
-    const changesList = recentCommits.slice(0, 5).map(c => {
-      const msg = c.substring(c.indexOf(' ') + 1);
-      return msg.charAt(0).toUpperCase() + msg.slice(1);
+    // Ringkasan area untuk tampilan
+    const activeAreas = Object.entries(areas).filter(([, files]) => files.length > 0);
+    let areasHtml = '';
+    activeAreas.forEach(([area, files]) => {
+      let color = '#94a3b8';
+      if (area === 'database' || area === 'api') color = '#ef4444';
+      else if (area === 'tampilan') color = '#22c55e';
+      else if (area === 'konfigurasi') color = '#f59e0b';
+      areasHtml += `<tr><td style="padding:3px 6px;color:${color};font-weight:600;">${area.toUpperCase()}</td>` +
+        `<td style="padding:3px 6px;">${files.length} berkas</td>` +
+        `<td style="padding:3px 6px;font-size:10.5px;color:#94a3b8;">${files.join(', ')}</td></tr>`;
     });
 
-    // DRAF 1: Pesan WhatsApp / Email Broadcast
-    const whatsappDraft =
-      `<div style="background:#1a2332;border:1px solid #334155;border-radius:4px;padding:10px;margin:6px 0;font-size:11.5px;">` +
-      `<b style="color:#eab308;">DRAF PESAN WHATSAPP / EMAIL</b><br/>` +
-      `<span style="color:#94a3b8;">--- Salin teks di bawah ini ---</span><br/><br/>` +
-      `Yth. Pelanggan <b>${folderName}</b>,<br/><br/>` +
-      `Kami informasikan bahwa per tanggal <b>${now}</b>, sistem kami telah diperbarui dengan peningkatan berikut:<br/><br/>` +
-      changesList.map((c, i) => `${i + 1}. ${c}`).join('<br/>') +
-      `<br/><br/>` +
-      `Pembaruan ini telah melewati proses pengujian dan audit kelaikan secara menyeluruh untuk memastikan kenyamanan Anda.<br/><br/>` +
-      `Terima kasih atas kepercayaan Anda.<br/>` +
-      `Salam,<br/>Tim Pengembangan ${folderName}` +
-      `</div>`;
+    // Minta AI untuk analisis mendalam
+    let aiAnalysis = '';
+    if (this._ai.isAvailable) {
+      const memoryContext = this._memory.getRelevantContext(3);
+      const aiResult = await this._ai.analyzeStructured(
+        'Analisis risiko dan estimasi dampak biaya dari perubahan kode berikut.',
+        `Statistik: ${stats.filesChanged} berkas, +${stats.insertions}/-${stats.deletions} baris.\n` +
+        `Area tersentuh: ${activeAreas.map(([a, f]) => `${a} (${f.length})`).join(', ')}.\n\n` +
+        `Isi Perubahan:\n${diff}\n\n${memoryContext}`,
+        'Berikan: (1) Tingkat risiko (RENDAH/SEDANG/TINGGI) dengan alasan, (2) Estimasi waktu pengerjaan, (3) Rekomendasi mitigasi 2-3 poin.'
+      );
+      if (aiResult) {
+        aiAnalysis = `<br/><b>ANALISIS CERDAS AI:</b><br/>${this._formatAIResponse(aiResult)}`;
+      }
+    }
 
-    // DRAF 2: Ringkasan Penjualan / Pamflet Fitur
-    const salesDraft =
-      `<div style="background:#1a2332;border:1px solid #334155;border-radius:4px;padding:10px;margin:6px 0;font-size:11.5px;">` +
-      `<b style="color:#3b82f6;">RINGKASAN PENJUALAN (PAMFLET FITUR)</b><br/>` +
-      `<span style="color:#94a3b8;">--- Untuk dibagikan ke tim penjualan ---</span><br/><br/>` +
-      `<b>Produk:</b> ${folderName}<br/>` +
-      `<b>Tanggal Rilis:</b> ${now}<br/>` +
-      `<b>Ruang Rilis:</b> ${audit.currentBranch}<br/><br/>` +
-      `<b>Keunggulan Pembaruan Terbaru:</b><br/>` +
-      changesList.map(c => `-- ${c}`).join('<br/>') +
-      `<br/><br/>` +
-      `<b>Poin Penjualan Utama:</b><br/>` +
-      `-- Sistem telah melewati audit kelaikan otomatis<br/>` +
-      `-- Seluruh perubahan tercatat dan dapat dilacak<br/>` +
-      `-- Prosedur pembatalan (rollback) tersedia jika diperlukan` +
-      `</div>`;
+    // Fallback klasifikasi risiko
+    const total = stats.totalLines;
+    const hasHighRiskArea = areas.database.length > 0 || areas.api.length > 0;
+    let riskLevel, riskColor;
+    if (hasHighRiskArea || total >= 200) { riskLevel = 'TINGGI'; riskColor = '#ef4444'; }
+    else if (total >= 50) { riskLevel = 'SEDANG'; riskColor = '#f59e0b'; }
+    else { riskLevel = 'RENDAH'; riskColor = '#22c55e'; }
 
-    // Simpan draf ke berkas
-    const draftPath = path.join(targetDir, 'DRAF_PENGUMUMAN_RILIS.md');
-    const draftContent = `# DRAF PENGUMUMAN RILIS\n\n` +
-      `- **Proyek:** ${folderName}\n` +
-      `- **Tanggal:** ${now}\n` +
-      `- **Ruang Rilis:** ${audit.currentBranch}\n\n` +
-      `---\n\n` +
-      `## Pesan WhatsApp / Email\n\n` +
-      `Yth. Pelanggan ${folderName},\n\n` +
-      `Kami informasikan bahwa per tanggal ${now}, sistem kami telah diperbarui dengan peningkatan berikut:\n\n` +
-      changesList.map((c, i) => `${i + 1}. ${c}`).join('\n') +
-      `\n\nPembaruan ini telah melewati proses pengujian dan audit kelaikan secara menyeluruh.\n\n` +
-      `Terima kasih atas kepercayaan Anda.\nSalam, Tim Pengembangan ${folderName}\n\n` +
-      `---\n\n` +
-      `## Ringkasan Penjualan\n\n` +
-      changesList.map(c => `- ${c}`).join('\n') + '\n';
+    const html = `<b>LAPORAN ANALISIS RISIKO & ESTIMASI BIAYA</b><br/>` +
+      `<small style="color:#94a3b8;">Proyek: ${folderName} | ${this._ai.modelName}</small><br/><br/>` +
+      `<table style="width:100%;border-collapse:collapse;font-size:11.5px;">` +
+      `<tr style="border-bottom:1px solid #334155;"><td style="padding:4px 6px;color:#94a3b8;">Berkas Berubah</td><td style="padding:4px 6px;font-weight:700;">${stats.filesChanged}</td></tr>` +
+      `<tr style="border-bottom:1px solid #334155;"><td style="padding:4px 6px;color:#94a3b8;">Baris +/-</td><td style="padding:4px 6px;"><span style="color:#22c55e;">+${stats.insertions}</span> / <span style="color:#ef4444;">-${stats.deletions}</span></td></tr>` +
+      `<tr style="border-bottom:1px solid #334155;"><td style="padding:4px 6px;color:#94a3b8;">Tingkat Risiko</td><td style="padding:4px 6px;font-weight:700;color:${riskColor};">[${riskLevel}]</td></tr>` +
+      `</table><br/>` +
+      (areasHtml ? `<b>PETA AREA PERUBAHAN:</b><br/><table style="width:100%;border-collapse:collapse;font-size:11px;">${areasHtml}</table><br/>` : '') +
+      aiAnalysis;
 
-    try {
-      fs.writeFileSync(draftPath, draftContent, 'utf8');
-    } catch (e) {}
-
-    const html = `<b>DRAF KONTEN PENGUMUMAN RILIS</b><br/>` +
-      `<small style="color:#94a3b8;">Dihasilkan otomatis | Proyek: ${folderName}</small><br/><br/>` +
-      whatsappDraft + salesDraft +
-      `<br/><small style="color:#94a3b8;">Draf juga disimpan ke berkas: DRAF_PENGUMUMAN_RILIS.md</small>`;
-
-    this._appendLog(targetDir, folderName, "PENYUSUNAN DRAF PENGUMUMAN RILIS", userText, audit);
+    this._memory.incrementStat('total_analisis_risiko');
+    this._memory.addDecision(`Analisis risiko: ${riskLevel} (${total} baris, ${stats.filesChanged} berkas)`, audit.currentBranch);
+    this._appendLog(targetDir, folderName, "ANALISIS RISIKO (AI)", `Tingkat: ${riskLevel}`, audit);
     this._reply(html);
   }
 
   // ============================================================
-  // PILAR 3: PEMBONGKARAN IDE JADI TIKET TUGAS
+  // PILAR 2: DRAF PENGUMUMAN RILIS (AI-Powered)
+  // ============================================================
+  async _handleReleaseDraft(targetDir, folderName, userText, audit) {
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Menyusun draf rilis dengan ${this._ai.modelName}...</small>`);
+
+    const commits = CodeReader.getRecentCommits(targetDir, 10);
+    const now = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    const commitList = commits.map(c => c.message).join('\n');
+
+    let whatsappDraft = '';
+    let salesDraft = '';
+
+    if (this._ai.isAvailable) {
+      const aiWA = await this._ai.ask(
+        `Susun draf pesan WhatsApp/Email pengumuman rilis untuk pelanggan produk "${folderName}" tanggal ${now}. ` +
+        `Berdasarkan daftar perubahan berikut:\n${commitList}\n\n` +
+        `Buat pesan yang ramah, profesional, ringkas, dan mudah dipahami orang awam. Jangan gunakan emoji. Maksimal 150 kata.`
+      );
+      if (aiWA) whatsappDraft = aiWA;
+
+      const aiSales = await this._ai.ask(
+        `Susun ringkasan penjualan (pamflet fitur) untuk tim penjualan produk "${folderName}". ` +
+        `Berdasarkan perubahan:\n${commitList}\n\n` +
+        `Format: poin-poin keunggulan yang bisa langsung disampaikan ke calon pelanggan. Maksimal 100 kata. Tanpa emoji.`
+      );
+      if (aiSales) salesDraft = aiSales;
+    }
+
+    // Fallback jika AI tidak tersedia
+    if (!whatsappDraft) {
+      const changes = commits.slice(0, 5).map(c => c.message);
+      whatsappDraft = `Yth. Pelanggan ${folderName},\n\nPer tanggal ${now}, sistem telah diperbarui:\n` +
+        changes.map((c, i) => `${i + 1}. ${c}`).join('\n') +
+        `\n\nTerima kasih atas kepercayaan Anda.\nSalam, Tim ${folderName}`;
+    }
+    if (!salesDraft) {
+      salesDraft = commits.slice(0, 5).map(c => `-- ${c.message}`).join('\n');
+    }
+
+    // Simpan ke berkas
+    const draftPath = path.join(targetDir, 'DRAF_PENGUMUMAN_RILIS.md');
+    const draftContent = `# DRAF PENGUMUMAN RILIS\n\n- **Proyek:** ${folderName}\n- **Tanggal:** ${now}\n\n---\n\n## Pesan WhatsApp / Email\n\n${whatsappDraft}\n\n---\n\n## Ringkasan Penjualan\n\n${salesDraft}\n`;
+    try { fs.writeFileSync(draftPath, draftContent, 'utf8'); } catch (e) {}
+
+    const html = `<b>DRAF PENGUMUMAN RILIS</b><br/>` +
+      `<small style="color:#94a3b8;">${this._ai.modelName} | ${now}</small><br/><br/>` +
+      `<div style="background:#1a2332;border:1px solid #334155;border-radius:4px;padding:10px;margin:6px 0;font-size:11.5px;">` +
+      `<b style="color:#eab308;">PESAN WHATSAPP / EMAIL</b><br/><br/>${this._formatAIResponse(whatsappDraft)}</div>` +
+      `<div style="background:#1a2332;border:1px solid #334155;border-radius:4px;padding:10px;margin:6px 0;font-size:11.5px;">` +
+      `<b style="color:#3b82f6;">RINGKASAN PENJUALAN</b><br/><br/>${this._formatAIResponse(salesDraft)}</div>` +
+      `<small style="color:#94a3b8;">Disimpan ke: DRAF_PENGUMUMAN_RILIS.md</small>`;
+
+    this._memory.incrementStat('total_rilis');
+    this._appendLog(targetDir, folderName, "DRAF PENGUMUMAN RILIS (AI)", userText, audit);
+    this._reply(html);
+  }
+
+  // ============================================================
+  // PILAR 3: PEMBONGKARAN IDE KONTEKSTUAL (AI-Powered)
   // ============================================================
   async _handleIdeaBreakdown(targetDir, folderName, userText, audit) {
-    // Minta deskripsi ide jika input terlalu pendek
     let ideaText = userText;
     if (userText.length < 15) {
-      const inputIdea = await vscode.window.showInputBox({
-        prompt: 'Jelaskan ide bisnis Anda secara singkat (contoh: "Bikin program promo diskon 17% Kemerdekaan"):',
-        placeHolder: 'Deskripsikan ide Anda di sini...'
+      const input = await vscode.window.showInputBox({
+        prompt: 'Jelaskan ide bisnis Anda secara singkat:',
+        placeHolder: 'Contoh: Bikin program promo diskon 17% Kemerdekaan'
       });
-      if (!inputIdea) return;
-      ideaText = inputIdea;
+      if (!input) return;
+      ideaText = input;
     }
 
-    // Analisis kata kunci dari ide untuk menghasilkan tiket
-    const keywords = ideaText.toLowerCase().split(/[\s,;.]+/).filter(w => w.length > 3);
-    const now = new Date();
-    const baseTicketNum = Math.floor(now.getTime() / 100000) % 900 + 100;
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Memecah ide menjadi tiket dengan ${this._ai.modelName}...</small>`);
 
-    // Buat 3-5 tiket berdasarkan pola umum pengembangan produk
-    const tickets = [];
+    let tickets = [];
 
-    tickets.push({
-      id: `TK-${baseTicketNum}`,
-      title: `Perancangan & Analisis Kebutuhan: "${ideaText.substring(0, 50)}"`,
-      desc: `Menyusun dokumen kebutuhan bisnis, alur proses, dan desain tampilan awal untuk rencana ini.`,
-      priority: 'UTAMA'
-    });
+    if (this._ai.isAvailable) {
+      const projectContext = CodeReader.buildFullContext(targetDir);
+      const aiResult = await this._ai.ask(
+        `Pecah ide bisnis berikut menjadi 3-6 tiket tugas kerja yang spesifik dan dapat ditindaklanjuti.\n\n` +
+        `IDE: "${ideaText}"\n\n` +
+        `Format setiap tiket PERSIS seperti ini (satu tiket per baris):\n` +
+        `TIKET|Judul Singkat|Deskripsi satu kalimat|UTAMA atau PENDUKUNG\n\n` +
+        `Berikan tiket yang spesifik sesuai konteks proyek, BUKAN tiket generik.`,
+        projectContext
+      );
 
-    tickets.push({
-      id: `TK-${baseTicketNum + 1}`,
-      title: `Pengembangan Modul Inti`,
-      desc: `Membangun logika utama dan struktur data yang diperlukan untuk menjalankan rencana ini.`,
-      priority: 'UTAMA'
-    });
+      if (aiResult) {
+        // Parse respons AI menjadi tiket terstruktur
+        const lines = aiResult.split('\n').filter(l => l.includes('TIKET|') || l.includes('tiket|'));
+        const baseNum = Math.floor(Date.now() / 100000) % 900 + 100;
 
-    tickets.push({
-      id: `TK-${baseTicketNum + 2}`,
-      title: `Pembuatan Tampilan & Antarmuka Pengguna`,
-      desc: `Mendesain dan membangun halaman atau formulir yang dibutuhkan agar pengguna dapat berinteraksi dengan fitur ini.`,
-      priority: 'UTAMA'
-    });
+        lines.forEach((line, i) => {
+          const parts = line.split('|').map(p => p.trim());
+          if (parts.length >= 3) {
+            tickets.push({
+              id: `TK-${baseNum + i}`,
+              title: parts[1] || `Tugas ${i + 1}`,
+              desc: parts[2] || '',
+              priority: (parts[3] || 'UTAMA').toUpperCase().includes('PENDUKUNG') ? 'PENDUKUNG' : 'UTAMA'
+            });
+          }
+        });
+      }
+    }
 
-    tickets.push({
-      id: `TK-${baseTicketNum + 3}`,
-      title: `Pengujian & Validasi Kelaikan`,
-      desc: `Menjalankan pengujian menyeluruh untuk memastikan fitur ini berjalan sesuai harapan bisnis.`,
-      priority: 'PENDUKUNG'
-    });
+    // Fallback jika AI tidak menghasilkan tiket yang bisa diparsing
+    if (tickets.length === 0) {
+      const baseNum = Math.floor(Date.now() / 100000) % 900 + 100;
+      tickets = [
+        { id: `TK-${baseNum}`, title: `Perancangan: ${ideaText.substring(0, 40)}`, desc: 'Menyusun kebutuhan dan desain awal', priority: 'UTAMA' },
+        { id: `TK-${baseNum+1}`, title: 'Pengembangan Modul Inti', desc: 'Membangun logika utama', priority: 'UTAMA' },
+        { id: `TK-${baseNum+2}`, title: 'Pembuatan Tampilan', desc: 'Mendesain antarmuka pengguna', priority: 'UTAMA' },
+        { id: `TK-${baseNum+3}`, title: 'Pengujian & Validasi', desc: 'Memastikan fitur berjalan', priority: 'PENDUKUNG' },
+        { id: `TK-${baseNum+4}`, title: 'Peluncuran', desc: 'Menerbitkan ke sistem utama', priority: 'PENDUKUNG' },
+      ];
+    }
 
-    tickets.push({
-      id: `TK-${baseTicketNum + 4}`,
-      title: `Peluncuran & Pengumuman ke Pelanggan`,
-      desc: `Menerbitkan fitur ke Sistem Utama dan menyusun materi pengumuman untuk pelanggan.`,
-      priority: 'PENDUKUNG'
-    });
-
-    // Output HTML
+    // Tampilkan
     let html = `<b>PETA JALAN & TIKET TUGAS</b><br/>` +
-      `<small style="color:#94a3b8;">Dibongkar dari ide: "${ideaText}"</small><br/><br/>` +
+      `<small style="color:#94a3b8;">"${ideaText}" | ${this._ai.modelName}</small><br/><br/>` +
       `<table style="width:100%;border-collapse:collapse;font-size:11px;">` +
       `<tr style="border-bottom:1px solid #475569;">` +
       `<th style="padding:4px 6px;text-align:left;color:#eab308;">Tiket</th>` +
@@ -435,175 +411,176 @@ class SaaSWorkflowChatProvider {
         `<td style="padding:4px 6px;">${t.title}<br/><small style="color:#94a3b8;">${t.desc}</small></td>` +
         `<td style="padding:4px 6px;color:${pColor};font-weight:600;">[${t.priority}]</td></tr>`;
     });
-
-    html += `</table><br/>` +
-      `<small style="color:#94a3b8;">Peta jalan disimpan ke berkas: PETA_JALAN.md</small>`;
+    html += `</table><br/><small style="color:#94a3b8;">Disimpan ke: PETA_JALAN.md</small>`;
 
     // Simpan ke PETA_JALAN.md
-    const roadmapPath = path.join(targetDir, 'PETA_JALAN.md');
-    let existingContent = '';
-    try { existingContent = fs.readFileSync(roadmapPath, 'utf8'); } catch (e) {}
+    this._saveRoadmap(targetDir, folderName, ideaText, tickets);
 
-    const mermaidDiagram = tickets.map((t, i) => {
-      const nodeId = String.fromCharCode(65 + i);
-      const nextId = i < tickets.length - 1 ? String.fromCharCode(66 + i) : null;
-      const line = `    ${nodeId}["${t.id}: ${t.title.substring(0, 40)}"]`;
-      const arrow = nextId ? `\n    ${nodeId} --> ${nextId}` : '';
-      return line + arrow;
-    }).join('\n');
-
-    const roadmapEntry = `\n---\n\n## Rencana: ${ideaText.substring(0, 60)}\n\n` +
-      `**Dibuat:** ${now.toLocaleString('id-ID')}\n\n` +
-      `| Tiket | Judul | Deskripsi | Prioritas |\n` +
-      `| :--- | :--- | :--- | :--- |\n` +
-      tickets.map(t => `| ${t.id} | ${t.title} | ${t.desc} | ${t.priority} |`).join('\n') +
-      `\n\n### Diagram Alur Peta Jalan\n\n` +
-      '```mermaid\nflowchart TD\n' + mermaidDiagram + '\n```\n';
-
-    const header = existingContent ? '' : `# PETA JALAN PROYEK: ${folderName}\n\nDokumen ini berisi seluruh rencana kerja yang dibongkar dari ide bisnis oleh Asisten Joe.\n`;
-
-    try {
-      fs.writeFileSync(roadmapPath, header + existingContent + roadmapEntry, 'utf8');
-    } catch (e) {}
-
+    this._memory.incrementStat('total_tiket_dibuat');
+    this._memory.addDecision(`Memecah ide: "${ideaText.substring(0, 50)}" menjadi ${tickets.length} tiket`, audit.currentBranch);
+    this._appendLog(targetDir, folderName, "PEMBONGKARAN IDE (AI)", `${tickets.length} tiket`, audit);
     this._updateWidget({ ...audit, ticketCount: (audit.ticketCount || 0) + tickets.length });
-    this._appendLog(targetDir, folderName, "PEMBONGKARAN IDE JADI TIKET", `${tickets.length} tiket dari: "${ideaText.substring(0, 40)}"`, audit);
     this._reply(html);
   }
 
   // ============================================================
-  // MODUL: Buka Laporan Log
+  // PILAR 5: ULASAN KODE CERDAS SEBELUM MERGE
   // ============================================================
-  _handleOpenLog(targetDir) {
-    const logPath = path.join(targetDir, 'LOG_AKTIVITAS.md');
-    if (fs.existsSync(logPath)) {
-      const uri = vscode.Uri.file(logPath);
-      vscode.commands.executeCommand('vscode.open', uri);
-      this._reply('[BERHASIL] Berkas LOG_AKTIVITAS.md telah dibuka di editor.');
-    } else {
-      this._reply('[INFORMASI] Berkas LOG_AKTIVITAS.md belum tersedia. Lakukan inspeksi proyek terlebih dahulu untuk memicu pembuatan log.');
+  async _handleSmartCodeReview(targetDir, folderName, audit) {
+    const currentBranch = audit.currentBranch;
+
+    if (currentBranch === 'main' || currentBranch === 'develop') {
+      this._reply(`[PERINGATAN] Anda di ruang <code>${currentBranch}</code>. Pengajuan hanya dari ruang fitur (feature/*).`);
+      return;
+    }
+
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Mengulas kode di <code>${currentBranch}</code> dengan ${this._ai.modelName}...</small>`);
+
+    // Baca diff untuk ulasan
+    const diff = CodeReader.getRecentDiff(targetDir);
+    const stats = CodeReader.getDiffStats(targetDir);
+    const areas = CodeReader.classifyChanges(targetDir);
+
+    let reviewHtml = '';
+    let hasIssues = false;
+
+    if (this._ai.isAvailable && diff !== '[Tidak ada perubahan terdeteksi]') {
+      const aiReview = await this._ai.ask(
+        `Ulas perubahan kode berikut sebelum digabungkan ke cabang develop.\n\n` +
+        `Identifikasi:\n` +
+        `1. Potensi kesalahan logika\n` +
+        `2. Fungsi tanpa penanganan error\n` +
+        `3. Kerentanan keamanan sederhana\n` +
+        `4. Kode yang bisa dioptimalkan\n\n` +
+        `Jika tidak ada masalah, katakan "LULUS ULASAN".\n` +
+        `Jika ada masalah, awali dengan "DITEMUKAN TEMUAN:" lalu jelaskan.\n\n` +
+        `Perubahan Kode:\n${diff}`,
+        CodeReader.buildFullContext(targetDir)
+      );
+
+      if (aiReview) {
+        hasIssues = !aiReview.toLowerCase().includes('lulus ulasan');
+        reviewHtml = `<div style="background:#1a2332;border:1px solid ${hasIssues ? '#f59e0b' : '#22c55e'};border-radius:4px;padding:10px;margin:8px 0;font-size:11.5px;">` +
+          `<b style="color:${hasIssues ? '#f59e0b' : '#22c55e'};">${hasIssues ? 'ULASAN: TEMUAN TERDETEKSI' : 'ULASAN: LULUS'}</b><br/><br/>` +
+          `${this._formatAIResponse(aiReview)}</div>`;
+      }
+    }
+
+    // Lakukan merge
+    try {
+      execSync(`git add . && git commit -m "fitur: pembaruan terverifikasi oleh Asisten Joe AI" || true`, { cwd: targetDir });
+      execSync(`git checkout develop && git merge ${currentBranch}`, { cwd: targetDir });
+
+      this._memory.incrementStat('total_penggabungan');
+      this._memory.addDecision(`Penggabungan ${currentBranch} ke develop`, `Ulasan AI: ${hasIssues ? 'Ada temuan' : 'Lulus'}`);
+      this._appendLog(targetDir, folderName, "PENGGABUNGAN + ULASAN AI", `${currentBranch} ke develop`, audit);
+
+      const statusText = hasIssues ? '[BERHASIL DENGAN CATATAN]' : '[BERHASIL]';
+      this._reply(
+        `<b>${statusText} Penggabungan Kode</b><br/>` +
+        `<small style="color:#94a3b8;">${currentBranch} --> develop | ${stats.filesChanged} berkas, +${stats.insertions}/-${stats.deletions} baris</small><br/>` +
+        reviewHtml +
+        `<br/>LOG_AKTIVITAS.md telah diperbarui.`
+      );
+    } catch (err) {
+      this._memory.addPattern('kesalahan', `Gagal merge ${currentBranch}: ${err.message}`, 'merge');
+      this._reply(`[GAGAL] Kendala penggabungan: ${err.message}`);
     }
   }
 
   // ============================================================
-  // UTILITAS: Inspeksi Proyek
+  // MODUL: Buka Log
   // ============================================================
-  _inspectProject(targetDir) {
-    let currentBranch = 'main';
-    let branchesPresent = ['main'];
-    let changedFilesCount = 0;
-    let hasBlueprint = false;
-    let ticketCount = 0;
-
-    try {
-      currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim() || 'main';
-      const bOutput = execSync('git branch -a', { cwd: targetDir }).toString();
-      branchesPresent = bOutput.split('\n').map(b => b.replace('*', '').trim()).filter(Boolean);
-    } catch (e) {}
-
-    try {
-      const statusOutput = execSync('git status -s', { cwd: targetDir }).toString().trim();
-      changedFilesCount = statusOutput ? statusOutput.split('\n').length : 0;
-    } catch (e) {}
-
-    hasBlueprint = fs.existsSync(path.join(targetDir, 'BRAND.md')) || fs.existsSync(path.join(targetDir, '.github/workflows'));
-
-    // Hitung tiket dari PETA_JALAN.md
-    try {
-      const roadmap = fs.readFileSync(path.join(targetDir, 'PETA_JALAN.md'), 'utf8');
-      const matches = roadmap.match(/TK-\d+/g);
-      ticketCount = matches ? matches.length : 0;
-    } catch (e) {}
-
-    return { currentBranch, branchesPresent, changedFilesCount, hasBlueprint, ticketCount };
+  _handleOpenLog(targetDir) {
+    const logPath = path.join(targetDir, 'LOG_AKTIVITAS.md');
+    if (fs.existsSync(logPath)) {
+      vscode.commands.executeCommand('vscode.open', vscode.Uri.file(logPath));
+      this._reply('[BERHASIL] LOG_AKTIVITAS.md dibuka di editor.');
+    } else {
+      this._reply('[INFORMASI] Belum ada log. Lakukan inspeksi proyek untuk memulai pencatatan.');
+    }
   }
 
   // ============================================================
-  // UTILITAS: Update Widget
+  // UTILITAS
   // ============================================================
+  _inspectProject(targetDir) {
+    let currentBranch = 'main', branchesPresent = ['main'], changedFilesCount = 0, hasBlueprint = false, ticketCount = 0;
+    try {
+      currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim() || 'main';
+      branchesPresent = execSync('git branch -a', { cwd: targetDir }).toString().split('\n').map(b => b.replace('*', '').trim()).filter(Boolean);
+    } catch (e) {}
+    try {
+      const s = execSync('git status -s', { cwd: targetDir }).toString().trim();
+      changedFilesCount = s ? s.split('\n').length : 0;
+    } catch (e) {}
+    hasBlueprint = fs.existsSync(path.join(targetDir, 'BRAND.md')) || fs.existsSync(path.join(targetDir, '.github/workflows'));
+    try {
+      const roadmap = fs.readFileSync(path.join(targetDir, 'PETA_JALAN.md'), 'utf8');
+      const m = roadmap.match(/TK-\d+/g);
+      ticketCount = m ? m.length : 0;
+    } catch (e) {}
+    return { currentBranch, branchesPresent, changedFilesCount, hasBlueprint, ticketCount };
+  }
+
   _updateWidget(audit) {
     if (this._view) {
       this._view.webview.postMessage({
         type: 'updateWidget',
         branch: audit.currentBranch,
-        tickets: audit.ticketCount || 0
+        tickets: audit.ticketCount || 0,
+        health: audit.hasBlueprint ? '100% OK' : 'Perlu Setup',
       });
     }
   }
 
-  // ============================================================
-  // UTILITAS: Append Log & Simpan LOG_AKTIVITAS.md
-  // ============================================================
+  _saveRoadmap(targetDir, folderName, ideaText, tickets) {
+    const roadmapPath = path.join(targetDir, 'PETA_JALAN.md');
+    let existing = '';
+    try { existing = fs.readFileSync(roadmapPath, 'utf8'); } catch (e) {}
+    const now = new Date().toLocaleString('id-ID');
+    const header = existing ? '' : `# PETA JALAN PROYEK: ${folderName}\n\nDokumen ini berisi rencana kerja yang dibongkar dari ide bisnis oleh Asisten Joe.\n`;
+    const mermaid = tickets.map((t, i) => {
+      const id = String.fromCharCode(65 + i);
+      const next = i < tickets.length - 1 ? String.fromCharCode(66 + i) : null;
+      return `    ${id}["${t.id}: ${t.title.substring(0, 35)}"]` + (next ? `\n    ${id} --> ${next}` : '');
+    }).join('\n');
+    const entry = `\n---\n\n## Rencana: ${ideaText.substring(0, 60)}\n\n**Dibuat:** ${now}\n\n` +
+      `| Tiket | Judul | Deskripsi | Prioritas |\n| :--- | :--- | :--- | :--- |\n` +
+      tickets.map(t => `| ${t.id} | ${t.title} | ${t.desc} | ${t.priority} |`).join('\n') +
+      `\n\n### Diagram Alur\n\n\`\`\`mermaid\nflowchart TD\n${mermaid}\n\`\`\`\n`;
+    try { fs.writeFileSync(roadmapPath, header + existing + entry, 'utf8'); } catch (e) {}
+  }
+
+  _formatAIResponse(text) {
+    if (!text) return '';
+    return text
+      .replace(/\n/g, '<br/>')
+      .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+      .replace(/\*(.*?)\*/g, '<i>$1</i>')
+      .replace(/`(.*?)`/g, '<code>$1</code>');
+  }
+
   _appendLog(targetDir, folderName, actionName, userInstruction, audit) {
     const logPath = path.join(targetDir, 'LOG_AKTIVITAS.md');
     const now = new Date().toLocaleString('id-ID');
-
-    // Tambahkan ke riwayat internal
-    this._logHistory.push({
-      time: now,
-      action: actionName,
-      desc: userInstruction,
-      branch: audit.currentBranch,
-      status: 'BERHASIL'
-    });
-
-    // Bangun tabel CRUD kumulatif
-    const crudRows = this._logHistory.map(entry =>
-      `| ${entry.time} | ${entry.action} | ${entry.desc} | ${entry.branch} | ${entry.status} |`
-    ).join('\n');
-
-    // Bangun diagram Mermaid dari seluruh riwayat
-    const mermaidNodes = this._logHistory.map((entry, i) => {
-      const nodeId = `N${i}`;
-      const nextId = i < this._logHistory.length - 1 ? `N${i + 1}` : null;
-      const line = `    ${nodeId}["${entry.action}"]`;
-      const arrow = nextId ? `\n    ${nodeId} --> ${nextId}` : '';
-      return line + arrow;
+    this._logHistory.push({ time: now, action: actionName, desc: userInstruction, branch: audit.currentBranch, status: 'BERHASIL' });
+    const crudRows = this._logHistory.map(e => `| ${e.time} | ${e.action} | ${e.desc} | ${e.branch} | ${e.status} |`).join('\n');
+    const mNodes = this._logHistory.map((e, i) => {
+      const id = `N${i}`, nxt = i < this._logHistory.length - 1 ? `N${i+1}` : null;
+      return `    ${id}["${e.action}"]` + (nxt ? `\n    ${id} --> ${nxt}` : '');
     }).join('\n');
-
-    const logContent = `# LAPORAN REKAP AKTIVITAS & REKAM KERJA PROYEK
-
-- **Nama Proyek:** ${folderName}
-- **Waktu Pembaruan Terakhir:** ${now}
-- **Ruang Kerja Aktif:** ${audit.currentBranch}
-- **Status Tata Kelola SaaS:** ${audit.hasBlueprint ? 'Terpasang Lengkap' : 'Belum Terpasang'}
-- **Otak Intelegensi AI:** ${this._activeModelName}
-- **Jumlah Tiket Peta Jalan:** ${audit.ticketCount || 0}
-
----
-
-## 1. TABEL REKAP OPERASI SISTEM (CRUD)
-
-| Waktu | Jenis Aktivitas | Deskripsi Operasional | Ruang Kerja | Status |
-| :--- | :--- | :--- | :--- | :--- |
-${crudRows}
-
----
-
-## 2. DIAGRAM VISUAL ALUR SELURUH PEKERJAAN SESI INI
-
-\`\`\`mermaid
-flowchart TD
-    START["Awal Sesi Asisten Joe"] --> ${this._logHistory.length > 0 ? 'N0' : 'END'}
-${mermaidNodes}
-    ${this._logHistory.length > 0 ? `N${this._logHistory.length - 1}` : 'START'} --> END["Status Terkini: ${audit.currentBranch}"]
-\`\`\`
-
----
-
-*Catatan: Dokumen ini disusun secara otomatis oleh Asisten Joe v4.0 untuk memberikan transparansi riwayat pekerjaan dalam bahasa bisnis sederhana.*
-`;
-
-    try {
-      fs.writeFileSync(logPath, logContent, 'utf8');
-    } catch (e) {
-      console.error('Gagal memperbarui LOG_AKTIVITAS.md:', e);
-    }
+    const content = `# LAPORAN REKAP AKTIVITAS & REKAM KERJA PROYEK\n\n` +
+      `- **Nama Proyek:** ${folderName}\n- **Pembaruan Terakhir:** ${now}\n- **Ruang Kerja:** ${audit.currentBranch}\n` +
+      `- **Tata Kelola:** ${audit.hasBlueprint ? 'Terpasang' : 'Belum'}\n- **Intelegensi AI:** ${this._ai.modelName}\n` +
+      `- **Tiket:** ${audit.ticketCount || 0}\n\n---\n\n## 1. TABEL REKAP OPERASI (CRUD)\n\n` +
+      `| Waktu | Aktivitas | Deskripsi | Ruang | Status |\n| :--- | :--- | :--- | :--- | :--- |\n${crudRows}\n\n---\n\n` +
+      `## 2. DIAGRAM ALUR PEKERJAAN SESI\n\n\`\`\`mermaid\nflowchart TD\n    START["Awal Sesi"] --> ${this._logHistory.length ? 'N0' : 'END'}\n${mNodes}\n` +
+      `    ${this._logHistory.length ? `N${this._logHistory.length-1}` : 'START'} --> END["Terkini: ${audit.currentBranch}"]\n\`\`\`\n\n---\n\n` +
+      `*Disusun otomatis oleh Asisten Joe v5.0*\n`;
+    try { fs.writeFileSync(logPath, content, 'utf8'); } catch (e) {}
   }
 
-  // ============================================================
-  // UTILITAS: Reply
-  // ============================================================
   _reply(htmlText) {
     if (this._view) {
       this._view.webview.postMessage({ type: 'response', text: htmlText });
@@ -611,8 +588,7 @@ ${mermaidNodes}
   }
 
   _getHtmlForWebview(webview) {
-    const htmlPath = path.join(this._extensionUri.fsPath, 'chat-view.html');
-    return fs.readFileSync(htmlPath, 'utf8');
+    return fs.readFileSync(path.join(this._extensionUri.fsPath, 'chat-view.html'), 'utf8');
   }
 }
 

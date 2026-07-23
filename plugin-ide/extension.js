@@ -2,99 +2,30 @@ const vscode = require('vscode');
 const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
+const AIEngine = require('./aiEngine');
 const SaaSWorkflowChatProvider = require('./chatProvider');
+const CodeReader = require('./codeReader');
 
 let currentPanel = undefined;
 
 // ============================================================
-// UTILITAS BERSAMA (Dipakai oleh Tab Chat Handler)
+// AKTIVASI EKSTENSI -- Asisten Joe v5.0
 // ============================================================
-function inspectProject(targetDir) {
-  let currentBranch = 'main';
-  let branchesPresent = ['main'];
-  let changedFilesCount = 0;
-  let hasBlueprint = false;
-  let ticketCount = 0;
+async function activate(context) {
+  console.log('Asisten Joe v5.0 -- AI-Powered Personal Companion -- Aktif.');
 
-  try {
-    currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim() || 'main';
-    const bOutput = execSync('git branch -a', { cwd: targetDir }).toString();
-    branchesPresent = bOutput.split('\n').map(b => b.replace('*', '').trim()).filter(Boolean);
-  } catch (e) {}
+  // 1. Inisialisasi AI Engine
+  const aiEngine = new AIEngine();
+  await aiEngine.initialize();
+  console.log(`AIEngine: ${aiEngine.modelName} (Tersedia: ${aiEngine.isAvailable})`);
 
-  try {
-    const statusOutput = execSync('git status -s', { cwd: targetDir }).toString().trim();
-    changedFilesCount = statusOutput ? statusOutput.split('\n').length : 0;
-  } catch (e) {}
-
-  hasBlueprint = fs.existsSync(path.join(targetDir, 'BRAND.md')) || fs.existsSync(path.join(targetDir, '.github/workflows'));
-
-  try {
-    const roadmap = fs.readFileSync(path.join(targetDir, 'PETA_JALAN.md'), 'utf8');
-    const matches = roadmap.match(/TK-\d+/g);
-    ticketCount = matches ? matches.length : 0;
-  } catch (e) {}
-
-  return { currentBranch, branchesPresent, changedFilesCount, hasBlueprint, ticketCount };
-}
-
-function updateLogFile(targetDir, folderName, actionName, userInstruction, audit) {
-  const logPath = path.join(targetDir, 'LOG_AKTIVITAS.md');
-  const now = new Date().toLocaleString('id-ID');
-
-  const logContent = `# LAPORAN REKAP AKTIVITAS & REKAM KERJA PROYEK
-
-- **Nama Proyek:** ${folderName}
-- **Waktu Pembaruan Terakhir:** ${now}
-- **Ruang Kerja Aktif:** ${audit.currentBranch}
-- **Status Tata Kelola SaaS:** ${audit.hasBlueprint ? 'Terpasang Lengkap' : 'Belum Terpasang'}
-- **Otak Intelegensi AI:** Model AI Aktif IDE
-
----
-
-## 1. TABEL REKAP OPERASI SISTEM (CRUD)
-
-| Waktu | Jenis Aktivitas | Deskripsi Operasional | Ruang Kerja | Status |
-| :--- | :--- | :--- | :--- | :--- |
-| ${now} | ${actionName} | ${userInstruction} | ${audit.currentBranch} | BERHASIL |
-
----
-
-## 2. DIAGRAM VISUAL ALUR PEKERJAAN (INPUT KE HASIL)
-
-\`\`\`mermaid
-flowchart TD
-    A["Input Instruksi: '${userInstruction}'"] --> B["Pemrosesan Intelegensi Asisten Joe"]
-    B --> C["Aktivitas Operasional: ${actionName}"]
-    C --> D["Audit Kelaikan System"]
-    D --> E["Hasil Akhir: Ruang ${audit.currentBranch} Terbarui"]
-\`\`\`
-
----
-
-*Catatan: Dokumen ini disusun secara otomatis oleh Asisten Joe v4.0.*
-`;
-
-  try {
-    fs.writeFileSync(logPath, logContent, 'utf8');
-  } catch (e) {
-    console.error('Gagal memperbarui LOG_AKTIVITAS.md:', e);
-  }
-}
-
-// ============================================================
-// AKTIVASI EKSTENSI
-// ============================================================
-function activate(context) {
-  console.log('Asisten Joe v4.0 Ultimate Personal Companion -- Aktif.');
-
-  // 1. Sidebar Webview Chat Provider
-  const chatProvider = new SaaSWorkflowChatProvider(context.extensionUri);
+  // 2. Sidebar Webview Chat Provider (dengan AI Engine)
+  const chatProvider = new SaaSWorkflowChatProvider(context.extensionUri, aiEngine);
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider('saasWorkflow.chatView', chatProvider)
   );
 
-  // 2. Tab Chat Utama (Ikon Header Bar)
+  // 3. Tab Chat Utama (Ikon Header Bar)
   let disposableOpenTab = vscode.commands.registerCommand('saasWorkflow.openChatTab', function () {
     const columnToShowIn = vscode.window.activeTextEditor
       ? vscode.window.activeTextEditor.viewColumn
@@ -107,22 +38,18 @@ function activate(context) {
         'saasWorkflowChatTab',
         'Asisten Joe',
         columnToShowIn,
-        {
-          enableScripts: true,
-          localResourceRoots: [context.extensionUri]
-        }
+        { enableScripts: true, localResourceRoots: [context.extensionUri] }
       );
 
-      const htmlPath = path.join(context.extensionUri.fsPath, 'chat-view.html');
-      currentPanel.webview.html = fs.readFileSync(htmlPath, 'utf8');
+      currentPanel.webview.html = fs.readFileSync(
+        path.join(context.extensionUri.fsPath, 'chat-view.html'), 'utf8'
+      );
 
-      // Riwayat log untuk Tab Chat
-      const tabLogHistory = [];
-
+      // Handler Tab Chat -- memanfaatkan AI Engine
       currentPanel.webview.onDidReceiveMessage(async (data) => {
         const workspaceFolders = vscode.workspace.workspaceFolders;
         if (!workspaceFolders) {
-          currentPanel.webview.postMessage({ type: 'response', text: "[PERINGATAN] Buka folder proyek Anda di Antigravity IDE terlebih dahulu." });
+          currentPanel.webview.postMessage({ type: 'response', text: "[PERINGATAN] Buka folder proyek terlebih dahulu." });
           return;
         }
 
@@ -131,212 +58,177 @@ function activate(context) {
 
         if (data.type === 'userInput') {
           const lowerText = data.text.toLowerCase();
-          const audit = inspectProject(targetDir);
 
-          // Update widget
-          currentPanel.webview.postMessage({
-            type: 'updateWidget',
-            branch: audit.currentBranch,
-            tickets: audit.ticketCount || 0
-          });
+          // Inspeksi cepat
+          let currentBranch = 'main', ticketCount = 0;
+          try { currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim() || 'main'; } catch(e) {}
+          try {
+            const rm = fs.readFileSync(path.join(targetDir, 'PETA_JALAN.md'), 'utf8');
+            const m = rm.match(/TK-\d+/g); ticketCount = m ? m.length : 0;
+          } catch(e) {}
 
-          // ---- Inspeksi Proyek ----
-          if (lowerText.includes('baca') || lowerText.includes('folder') || lowerText.includes('project') || lowerText.includes('proyek') || lowerText.includes('status') || lowerText.includes('inspeksi')) {
-            let html = `<b>LAPORAN INSPEKSI PROYEK</b><br/>` +
-              `<small style="color:#94a3b8;">Intelegensi: Model AI Aktif IDE</small><br/><br/>` +
-              `<table style="width:100%;border-collapse:collapse;font-size:11.5px;">` +
-              `<tr><td style="padding:3px 6px;color:#94a3b8;">Nama Proyek</td><td style="padding:3px 6px;"><code>${folderName}</code></td></tr>` +
-              `<tr><td style="padding:3px 6px;color:#94a3b8;">Ruang Kerja</td><td style="padding:3px 6px;"><code>${audit.currentBranch}</code></td></tr>` +
-              `<tr><td style="padding:3px 6px;color:#94a3b8;">Berkas Berubah</td><td style="padding:3px 6px;">${audit.changedFilesCount} berkas</td></tr>` +
-              `<tr><td style="padding:3px 6px;color:#94a3b8;">Tata Kelola</td><td style="padding:3px 6px;">${audit.hasBlueprint ? '[TERPASANG]' : '[BELUM]'}</td></tr>` +
-              `<tr><td style="padding:3px 6px;color:#94a3b8;">Tiket</td><td style="padding:3px 6px;">${audit.ticketCount}</td></tr>` +
-              `</table>`;
-            updateLogFile(targetDir, folderName, "INSPEKSI PROYEK", data.text, audit);
-            currentPanel.webview.postMessage({ type: 'response', text: html });
-            return;
-          }
+          currentPanel.webview.postMessage({ type: 'updateWidget', branch: currentBranch, tickets: ticketCount });
 
-          // ---- Fitur Baru ----
-          if (lowerText.includes('fitur baru') || lowerText.includes('buat fitur')) {
-            const ticketId = await vscode.window.showInputBox({ prompt: 'Masukkan Nomor Tiket (Contoh: TK-201):' });
-            if (!ticketId) return;
-            const featureName = await vscode.window.showInputBox({ prompt: 'Masukkan Nama Fitur Singkat:' });
-            if (!featureName) return;
+          // Routing kata kunci utama
+          if (lowerText.includes('inspeksi') || lowerText.includes('status') || lowerText.includes('proyek')) {
+            const techs = CodeReader.detectTechnologies(targetDir);
+            const stats = CodeReader.getDiffStats(targetDir);
+            let html = `<b>INSPEKSI PROYEK</b><br/><small style="color:#94a3b8;">${aiEngine.modelName}</small><br/><br/>` +
+              `Proyek: <code>${folderName}</code> | Ruang: <code>${currentBranch}</code><br/>` +
+              `Teknologi: ${techs.join(', ')}<br/>` +
+              `Perubahan: ${stats.filesChanged} berkas (+${stats.insertions}/-${stats.deletions})<br/>` +
+              `Tiket aktif: ${ticketCount}`;
 
-            const branchName = `feature/${ticketId}-${featureName.toLowerCase().replace(/\s+/g, '-')}`;
-            try {
-              try {
-                execSync(`git checkout develop && git checkout -b ${branchName}`, { cwd: targetDir });
-              } catch (e) {
-                execSync(`git checkout -b ${branchName}`, { cwd: targetDir });
-              }
-              updateLogFile(targetDir, folderName, "MEMBUAT FITUR BARU", `Cabang ${branchName}`, audit);
-              currentPanel.webview.postMessage({ type: 'response', text: `[BERHASIL] Ruang Kerja Fitur: <code>${branchName}</code>` });
-            } catch (err) {
-              currentPanel.webview.postMessage({ type: 'response', text: `[GAGAL] ${err.message}` });
+            if (aiEngine.isAvailable) {
+              const ctx = CodeReader.buildFullContext(targetDir);
+              const rec = await aiEngine.ask('Berikan 2 rekomendasi langkah kerja berikutnya. Singkat.', ctx);
+              if (rec) html += `<br/><br/><b>REKOMENDASI AI:</b><br/>${rec.replace(/\n/g, '<br/>')}`;
             }
-            return;
-          }
-
-          // ---- Analisis Risiko ----
-          if (lowerText.includes('risiko') || lowerText.includes('biaya') || lowerText.includes('dampak')) {
-            let diffInfo = { files: 0, ins: 0, del: 0 };
-            try {
-              const raw = execSync('git diff --stat HEAD~1 HEAD 2>/dev/null || git diff --stat', { cwd: targetDir }).toString();
-              const sum = raw.split('\n').filter(l => l.includes('changed')).pop() || '';
-              const fm = sum.match(/(\d+)\s+file/); const im = sum.match(/(\d+)\s+insertion/); const dm = sum.match(/(\d+)\s+deletion/);
-              diffInfo.files = fm ? parseInt(fm[1]) : 0; diffInfo.ins = im ? parseInt(im[1]) : 0; diffInfo.del = dm ? parseInt(dm[1]) : 0;
-            } catch (e) {}
-
-            const total = diffInfo.ins + diffInfo.del;
-            let level, color;
-            if (total < 50) { level = 'RENDAH'; color = '#22c55e'; }
-            else if (total < 200) { level = 'SEDANG'; color = '#f59e0b'; }
-            else { level = 'TINGGI'; color = '#ef4444'; }
-
-            const html = `<b>ANALISIS RISIKO & BIAYA</b><br/><br/>` +
-              `Berkas berubah: <b>${diffInfo.files}</b> | Baris +${diffInfo.ins} / -${diffInfo.del}<br/>` +
-              `Volume total: <b>${total} baris</b><br/>` +
-              `Tingkat risiko: <b style="color:${color};">[${level}]</b>`;
-            updateLogFile(targetDir, folderName, "ANALISIS RISIKO", `Tingkat: ${level}`, audit);
             currentPanel.webview.postMessage({ type: 'response', text: html });
-            return;
           }
+          else if (lowerText.includes('risiko') || lowerText.includes('biaya') || lowerText.includes('dampak')) {
+            const stats = CodeReader.getDiffStats(targetDir);
+            const areas = CodeReader.classifyChanges(targetDir);
+            const diff = CodeReader.getRecentDiff(targetDir);
+            const hasHighRisk = areas.database.length > 0 || areas.api.length > 0;
+            const total = stats.totalLines;
+            let level = hasHighRisk || total >= 200 ? 'TINGGI' : total >= 50 ? 'SEDANG' : 'RENDAH';
 
-          // ---- Pengumuman Rilis ----
-          if (lowerText.includes('rilis') || lowerText.includes('release') || lowerText.includes('pengumuman')) {
+            let html = `<b>ANALISIS RISIKO</b><br/>` +
+              `Berkas: ${stats.filesChanged} | +${stats.insertions}/-${stats.deletions} | Risiko: <b>${level}</b>`;
+
+            if (aiEngine.isAvailable) {
+              const aiR = await aiEngine.ask(`Analisis risiko perubahan kode ini. Singkat.\n\n${diff}`);
+              if (aiR) html += `<br/><br/>${aiR.replace(/\n/g, '<br/>')}`;
+            }
+            currentPanel.webview.postMessage({ type: 'response', text: html });
+          }
+          else if (lowerText.includes('rilis') || lowerText.includes('pengumuman') || lowerText.includes('release')) {
             let commits = [];
-            try {
-              commits = execSync('git log --oneline -5', { cwd: targetDir }).toString().trim().split('\n').filter(Boolean);
-            } catch (e) {}
+            try { commits = execSync('git log --oneline -5', { cwd: targetDir }).toString().trim().split('\n'); } catch(e) {}
             const now = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-            const changes = commits.map(c => c.substring(c.indexOf(' ') + 1));
-            const html = `<b>DRAF PENGUMUMAN RILIS</b><br/><br/>` +
-              `<b>Tanggal:</b> ${now}<br/><b>Proyek:</b> ${folderName}<br/><br/>` +
-              `<b>Pembaruan:</b><br/>` +
-              changes.map((c, i) => `${i + 1}. ${c}`).join('<br/>');
-            updateLogFile(targetDir, folderName, "DRAF PENGUMUMAN RILIS", data.text, audit);
-            currentPanel.webview.postMessage({ type: 'response', text: html });
-            return;
-          }
 
-          // ---- Pecah Ide ke Tiket ----
-          if (lowerText.includes('ide') || lowerText.includes('pecah') || lowerText.includes('tiket') || lowerText.includes('roadmap')) {
+            let html = `<b>DRAF PENGUMUMAN RILIS</b><br/><small style="color:#94a3b8;">${now}</small><br/><br/>`;
+            if (aiEngine.isAvailable) {
+              const aiDraft = await aiEngine.ask(
+                `Susun draf pengumuman rilis singkat untuk pelanggan "${folderName}" tanggal ${now}. Perubahan:\n${commits.join('\n')}\nTanpa emoji. Maksimal 100 kata.`
+              );
+              html += aiDraft ? aiDraft.replace(/\n/g, '<br/>') : commits.map((c,i) => `${i+1}. ${c}`).join('<br/>');
+            } else {
+              html += commits.map((c,i) => `${i+1}. ${c}`).join('<br/>');
+            }
+            currentPanel.webview.postMessage({ type: 'response', text: html });
+          }
+          else if (lowerText.includes('ide') || lowerText.includes('pecah') || lowerText.includes('tiket')) {
             let ideaText = data.text;
             if (ideaText.length < 15) {
-              const input = await vscode.window.showInputBox({ prompt: 'Jelaskan ide bisnis Anda:' });
-              if (!input) return;
-              ideaText = input;
+              const inp = await vscode.window.showInputBox({ prompt: 'Jelaskan ide bisnis Anda:' });
+              if (!inp) return;
+              ideaText = inp;
             }
-            const base = Math.floor(Date.now() / 100000) % 900 + 100;
-            const tickets = [
-              { id: `TK-${base}`, t: 'Perancangan & Analisis Kebutuhan' },
-              { id: `TK-${base+1}`, t: 'Pengembangan Modul Inti' },
-              { id: `TK-${base+2}`, t: 'Pembuatan Tampilan Pengguna' },
-              { id: `TK-${base+3}`, t: 'Pengujian & Validasi' },
-              { id: `TK-${base+4}`, t: 'Peluncuran & Pengumuman' },
-            ];
-            const html = `<b>TIKET TUGAS DARI IDE</b><br/>` +
-              `<small style="color:#94a3b8;">"${ideaText}"</small><br/><br/>` +
-              tickets.map(tk => `<code>${tk.id}</code> ${tk.t}`).join('<br/>');
-            updateLogFile(targetDir, folderName, "PEMBONGKARAN IDE", `${tickets.length} tiket`, audit);
-            currentPanel.webview.postMessage({ type: 'response', text: html });
-            return;
-          }
 
-          // ---- Respons Umum ----
-          currentPanel.webview.postMessage({
-            type: 'response',
-            text: `Asisten Joe v4.0 membaca proyek <b>${folderName}</b>.<br/>` +
-              `Instruksi: <i>"${data.text}"</i>.<br/>` +
-              `Gunakan tombol pintas di bawah atau ketik perintah spesifik.`
-          });
+            let html = `<b>TIKET TUGAS</b><br/><small style="color:#94a3b8;">"${ideaText}"</small><br/><br/>`;
+            if (aiEngine.isAvailable) {
+              const aiTk = await aiEngine.ask(
+                `Pecah ide ini jadi 3-5 tiket kerja spesifik: "${ideaText}". Format: nomor. judul - deskripsi. Tanpa emoji.`,
+                CodeReader.buildFullContext(targetDir)
+              );
+              html += aiTk ? aiTk.replace(/\n/g, '<br/>') : '[Tidak tersedia]';
+            } else {
+              const b = Math.floor(Date.now() / 100000) % 900 + 100;
+              html += [`TK-${b}: Perancangan`, `TK-${b+1}: Modul Inti`, `TK-${b+2}: Tampilan`, `TK-${b+3}: Pengujian`, `TK-${b+4}: Peluncuran`].map(t => `<code>${t}</code>`).join('<br/>');
+            }
+            currentPanel.webview.postMessage({ type: 'response', text: html });
+          }
+          else if (lowerText.includes('fitur baru') || lowerText.includes('buat fitur')) {
+            const ticketId = await vscode.window.showInputBox({ prompt: 'Nomor Tiket (Contoh: TK-201):' });
+            if (!ticketId) return;
+            const fName = await vscode.window.showInputBox({ prompt: 'Nama Fitur Singkat:' });
+            if (!fName) return;
+            const bn = `feature/${ticketId}-${fName.toLowerCase().replace(/\s+/g, '-')}`;
+            try {
+              try { execSync(`git checkout develop && git checkout -b ${bn}`, { cwd: targetDir }); }
+              catch(e) { execSync(`git checkout -b ${bn}`, { cwd: targetDir }); }
+              currentPanel.webview.postMessage({ type: 'response', text: `[BERHASIL] Fitur: <code>${bn}</code>` });
+            } catch(err) {
+              currentPanel.webview.postMessage({ type: 'response', text: `[GAGAL] ${err.message}` });
+            }
+          }
+          else {
+            // Pertanyaan bebas ke AI
+            let html = '';
+            if (aiEngine.isAvailable) {
+              currentPanel.webview.postMessage({ type: 'response', text: `<small style="color:#94a3b8;">[PROSES] Berpikir dengan ${aiEngine.modelName}...</small>` });
+              const ctx = CodeReader.buildFullContext(targetDir);
+              const aiResp = await aiEngine.ask(data.text, ctx);
+              html = aiResp ? `<b>Asisten Joe</b> <small style="color:#94a3b8;">(${aiEngine.modelName})</small><br/><br/>${aiResp.replace(/\n/g, '<br/>')}` :
+                `Proyek: <b>${folderName}</b>. Gunakan tombol pintas di bawah.`;
+            } else {
+              html = `Proyek: <b>${folderName}</b> | Ruang: <code>${currentBranch}</code>.<br/>Model AI tidak tersedia. Gunakan tombol pintas.`;
+            }
+            currentPanel.webview.postMessage({ type: 'response', text: html });
+          }
         }
       });
 
-      currentPanel.onDidDispose(
-        () => { currentPanel = undefined; },
-        null,
-        context.subscriptions
-      );
+      currentPanel.onDidDispose(() => { currentPanel = undefined; }, null, context.subscriptions);
     }
   });
 
-  // 3. Inisialisasi Blueprint
+  // 4. Command Palette: Inisialisasi Blueprint
   let disposableInit = vscode.commands.registerCommand('saasWorkflow.initProject', function () {
-    const workspaceFolders = vscode.workspace.workspaceFolders;
-    if (!workspaceFolders) {
-      vscode.window.showErrorMessage('Silakan buka folder proyek Anda terlebih dahulu di Antigravity IDE!');
-      return;
-    }
-    const targetDir = workspaceFolders[0].uri.fsPath;
-    const cliScript = path.join(__dirname, 'cli.js');
+    const wf = vscode.workspace.workspaceFolders;
+    if (!wf) { vscode.window.showErrorMessage('Buka folder proyek terlebih dahulu!'); return; }
     try {
-      execSync(`node "${cliScript}" "${targetDir}"`);
-      vscode.window.showInformationMessage('Berhasil! Cetakan Tata Kelola SaaS disuntikkan oleh Asisten Joe.');
+      execSync(`node "${path.join(__dirname, 'cli.js')}" "${wf[0].uri.fsPath}"`);
+      vscode.window.showInformationMessage('Berhasil! Cetakan Tata Kelola SaaS disuntikkan.');
     } catch (err) {
-      vscode.window.showErrorMessage(`Gagal menyuntikkan template: ${err.message}`);
+      vscode.window.showErrorMessage(`Gagal: ${err.message}`);
     }
   });
 
-  // 4. Buat Ruang Kerja Fitur Baru
+  // 5. Command Palette: Buat Fitur
   let disposableFeature = vscode.commands.registerCommand('saasWorkflow.createFeatureBranch', async function () {
-    const workspaceFolders = vscode.workspace.workspaceFolders;
-    if (!workspaceFolders) return;
-    const targetDir = workspaceFolders[0].uri.fsPath;
-    const ticketId = await vscode.window.showInputBox({ prompt: 'Masukkan Nomor Tiket Pekerjaan (Contoh: TK-102):' });
+    const wf = vscode.workspace.workspaceFolders;
+    if (!wf) return;
+    const ticketId = await vscode.window.showInputBox({ prompt: 'Nomor Tiket (Contoh: TK-102):' });
     if (!ticketId) return;
-    const featureName = await vscode.window.showInputBox({ prompt: 'Masukkan Nama Fitur Singkat (Bahasa Bisnis):' });
-    if (!featureName) return;
-    const branchName = `feature/${ticketId}-${featureName.toLowerCase().replace(/\s+/g, '-')}`;
+    const fName = await vscode.window.showInputBox({ prompt: 'Nama Fitur Singkat:' });
+    if (!fName) return;
+    const bn = `feature/${ticketId}-${fName.toLowerCase().replace(/\s+/g, '-')}`;
     try {
-      execSync(`git checkout develop && git checkout -b ${branchName}`, { cwd: targetDir });
-      vscode.window.showInformationMessage(`Berhasil: Ruang Kerja Fitur Terbuat ${branchName}`);
+      execSync(`git checkout develop && git checkout -b ${bn}`, { cwd: wf[0].uri.fsPath });
+      vscode.window.showInformationMessage(`Berhasil: ${bn}`);
     } catch (err) {
-      vscode.window.showErrorMessage(`Gagal membuat ruang kerja: ${err.message}`);
+      vscode.window.showErrorMessage(`Gagal: ${err.message}`);
     }
   });
 
-  // 5. Analisis Risiko (Command Palette)
-  let disposableRisk = vscode.commands.registerCommand('saasWorkflow.analyzeRisk', function () {
-    const workspaceFolders = vscode.workspace.workspaceFolders;
-    if (!workspaceFolders) return;
-    const targetDir = workspaceFolders[0].uri.fsPath;
-    const folderName = path.basename(targetDir);
-    const audit = inspectProject(targetDir);
-
-    let total = 0;
-    try {
-      const raw = execSync('git diff --stat HEAD~1 HEAD 2>/dev/null || git diff --stat', { cwd: targetDir }).toString();
-      const sum = raw.split('\n').filter(l => l.includes('changed')).pop() || '';
-      const im = sum.match(/(\d+)\s+insertion/); const dm = sum.match(/(\d+)\s+deletion/);
-      total = (im ? parseInt(im[1]) : 0) + (dm ? parseInt(dm[1]) : 0);
-    } catch (e) {}
-
-    let level = total < 50 ? 'RENDAH' : total < 200 ? 'SEDANG' : 'TINGGI';
-    vscode.window.showInformationMessage(`Asisten Joe -- Analisis Risiko: [${level}] (${total} baris berubah)`);
-    updateLogFile(targetDir, folderName, "ANALISIS RISIKO (MANUAL)", `Tingkat: ${level}`, audit);
+  // 6. Command Palette: Analisis Risiko
+  let disposableRisk = vscode.commands.registerCommand('saasWorkflow.analyzeRisk', async function () {
+    const wf = vscode.workspace.workspaceFolders;
+    if (!wf) return;
+    const stats = CodeReader.getDiffStats(wf[0].uri.fsPath);
+    const areas = CodeReader.classifyChanges(wf[0].uri.fsPath);
+    const hasHigh = areas.database.length > 0 || areas.api.length > 0;
+    const level = hasHigh || stats.totalLines >= 200 ? 'TINGGI' : stats.totalLines >= 50 ? 'SEDANG' : 'RENDAH';
+    vscode.window.showInformationMessage(`Asisten Joe -- Risiko: [${level}] (${stats.totalLines} baris, area: ${Object.entries(areas).filter(([,f])=>f.length>0).map(([a,f])=>`${a}:${f.length}`).join(', ')})`);
   });
 
-  // 6. Pembongkaran Ide (Command Palette)
+  // 7. Command Palette: Pecah Ide
   let disposableIdea = vscode.commands.registerCommand('saasWorkflow.breakdownIdea', async function () {
-    const workspaceFolders = vscode.workspace.workspaceFolders;
-    if (!workspaceFolders) return;
-    const targetDir = workspaceFolders[0].uri.fsPath;
-
-    const idea = await vscode.window.showInputBox({ prompt: 'Jelaskan ide bisnis Anda secara singkat:' });
+    const wf = vscode.workspace.workspaceFolders;
+    if (!wf) return;
+    const idea = await vscode.window.showInputBox({ prompt: 'Jelaskan ide bisnis Anda:' });
     if (!idea) return;
 
-    const base = Math.floor(Date.now() / 100000) % 900 + 100;
-    const tickets = [
-      `TK-${base}: Perancangan & Analisis`,
-      `TK-${base+1}: Pengembangan Modul Inti`,
-      `TK-${base+2}: Tampilan Pengguna`,
-      `TK-${base+3}: Pengujian & Validasi`,
-      `TK-${base+4}: Peluncuran`,
-    ];
-
-    vscode.window.showInformationMessage(`Asisten Joe -- ${tickets.length} tiket tugas dibuat dari ide Anda.`);
+    if (aiEngine.isAvailable) {
+      const ctx = CodeReader.buildFullContext(wf[0].uri.fsPath);
+      const result = await aiEngine.ask(`Pecah ide ini jadi 3-5 tiket kerja: "${idea}". Format ringkas.`, ctx);
+      vscode.window.showInformationMessage(result ? `Asisten Joe: ${result.substring(0, 200)}` : 'Gagal memproses ide.');
+    } else {
+      vscode.window.showInformationMessage('Asisten Joe: Model AI tidak tersedia. Gunakan chat untuk fitur ini.');
+    }
   });
 
   context.subscriptions.push(disposableOpenTab, disposableInit, disposableFeature, disposableRisk, disposableIdea);
@@ -344,7 +236,4 @@ function activate(context) {
 
 function deactivate() {}
 
-module.exports = {
-  activate,
-  deactivate
-};
+module.exports = { activate, deactivate };
