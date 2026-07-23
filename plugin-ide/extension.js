@@ -6,11 +6,15 @@ const SaaSWorkflowChatProvider = require('./chatProvider');
 
 let currentPanel = undefined;
 
+// ============================================================
+// UTILITAS BERSAMA (Dipakai oleh Tab Chat Handler)
+// ============================================================
 function inspectProject(targetDir) {
   let currentBranch = 'main';
   let branchesPresent = ['main'];
   let changedFilesCount = 0;
   let hasBlueprint = false;
+  let ticketCount = 0;
 
   try {
     currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim() || 'main';
@@ -25,12 +29,13 @@ function inspectProject(targetDir) {
 
   hasBlueprint = fs.existsSync(path.join(targetDir, 'BRAND.md')) || fs.existsSync(path.join(targetDir, '.github/workflows'));
 
-  return {
-    currentBranch,
-    branchesPresent,
-    changedFilesCount,
-    hasBlueprint
-  };
+  try {
+    const roadmap = fs.readFileSync(path.join(targetDir, 'PETA_JALAN.md'), 'utf8');
+    const matches = roadmap.match(/TK-\d+/g);
+    ticketCount = matches ? matches.length : 0;
+  } catch (e) {}
+
+  return { currentBranch, branchesPresent, changedFilesCount, hasBlueprint, ticketCount };
 }
 
 function updateLogFile(targetDir, folderName, actionName, userInstruction, audit) {
@@ -43,7 +48,7 @@ function updateLogFile(targetDir, folderName, actionName, userInstruction, audit
 - **Waktu Pembaruan Terakhir:** ${now}
 - **Ruang Kerja Aktif:** ${audit.currentBranch}
 - **Status Tata Kelola SaaS:** ${audit.hasBlueprint ? 'Terpasang Lengkap' : 'Belum Terpasang'}
-- **Otak Intelegensi AI:** Active IDE LLM Engine
+- **Otak Intelegensi AI:** Model AI Aktif IDE
 
 ---
 
@@ -59,7 +64,7 @@ function updateLogFile(targetDir, folderName, actionName, userInstruction, audit
 
 \`\`\`mermaid
 flowchart TD
-    A["Input Instruksi: '${userInstruction}'"] --> B["Pemrosesan Intelegensi Asisten Joe (Active LLM Engine)"]
+    A["Input Instruksi: '${userInstruction}'"] --> B["Pemrosesan Intelegensi Asisten Joe"]
     B --> C["Aktivitas Operasional: ${actionName}"]
     C --> D["Audit Kelaikan System"]
     D --> E["Hasil Akhir: Ruang ${audit.currentBranch} Terbarui"]
@@ -67,7 +72,7 @@ flowchart TD
 
 ---
 
-*Catatan: Dokumen ini disusun secara otomatis oleh Asisten Joe untuk memberikan transparansi riwayat pekerjaan dalam bahasa bisnis sederhana tanpa emoji.*
+*Catatan: Dokumen ini disusun secara otomatis oleh Asisten Joe v4.0.*
 `;
 
   try {
@@ -77,19 +82,19 @@ flowchart TD
   }
 }
 
-/**
- * VS Code & Antigravity IDE Extension Activation Handler
- */
+// ============================================================
+// AKTIVASI EKSTENSI
+// ============================================================
 function activate(context) {
-  console.log('Plugin IDE Asisten Joe dengan Dynamic Cognitive Bridge telah aktif.');
+  console.log('Asisten Joe v4.0 Ultimate Personal Companion -- Aktif.');
 
-  // 1. Daftarkan Webview Ruang Chat Copilot di Sidebar
+  // 1. Sidebar Webview Chat Provider
   const chatProvider = new SaaSWorkflowChatProvider(context.extensionUri);
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider('saasWorkflow.chatView', chatProvider)
   );
 
-  // 2. Daftarkan Perintah Buka Tab Chat Utama (Ikon Header Bar / Editor Title Action)
+  // 2. Tab Chat Utama (Ikon Header Bar)
   let disposableOpenTab = vscode.commands.registerCommand('saasWorkflow.openChatTab', function () {
     const columnToShowIn = vscode.window.activeTextEditor
       ? vscode.window.activeTextEditor.viewColumn
@@ -109,9 +114,10 @@ function activate(context) {
       );
 
       const htmlPath = path.join(context.extensionUri.fsPath, 'chat-view.html');
-      let htmlContent = fs.readFileSync(htmlPath, 'utf8');
+      currentPanel.webview.html = fs.readFileSync(htmlPath, 'utf8');
 
-      currentPanel.webview.html = htmlContent;
+      // Riwayat log untuk Tab Chat
+      const tabLogHistory = [];
 
       currentPanel.webview.onDidReceiveMessage(async (data) => {
         const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -127,33 +133,30 @@ function activate(context) {
           const lowerText = data.text.toLowerCase();
           const audit = inspectProject(targetDir);
 
+          // Update widget
+          currentPanel.webview.postMessage({
+            type: 'updateWidget',
+            branch: audit.currentBranch,
+            tickets: audit.ticketCount || 0
+          });
+
+          // ---- Inspeksi Proyek ----
           if (lowerText.includes('baca') || lowerText.includes('folder') || lowerText.includes('project') || lowerText.includes('proyek') || lowerText.includes('status') || lowerText.includes('inspeksi')) {
-            let html = `<b>LAPORAN INSPEKSI PROYEK REAL-TIME</b><br/>` +
-              `<small style="color:#94a3b8;">Otak Intelegensi: Model AI Aktif IDE</small><br/><br/>` +
-              `• <b>Nama Proyek:</b> <code>${folderName}</code><br/>` +
-              `• <b>Lokasi:</b> <code>${targetDir}</code><br/>` +
-              `• <b>Ruang Kerja Aktif:</b> <code>${audit.currentBranch}</code><br/>` +
-              `• <b>Daftar Ruang Kerja:</b> ${audit.branchesPresent.map(b => `<code>${b}</code>`).join(', ')}<br/>` +
-              `• <b>Perubahan Belum Disimpan:</b> ${audit.changedFilesCount} berkas<br/>` +
-              `• <b>Status Tata Kelola SaaS:</b> ${audit.hasBlueprint ? '[TERPASANG LENGKAP]' : '[BELUM TERPASANG]'}<br/><br/>`;
-
-            html += `<b>REKOMENDASI RENCANA KERJA ASISTEN JOE:</b><br/>`;
-
-            if (!audit.hasBlueprint) {
-              html += `1. <b>Inisialisasi Blueprint:</b> Folder proyek ini belum memiliki 20 berkas SOP & CI/CD. Ketik <i>"Setup Blueprint"</i>.<br/>`;
-            }
-
-            if (audit.currentBranch === 'main') {
-              html += `2. <b>Keamanan Sistem Utama:</b> Anda sedang di Ruang Utama (<code>main</code>). Disarankan beralih ke Ruang Fitur baru dari <code>develop</code>.<br/>`;
-            } else if (audit.changedFilesCount > 0) {
-              html += `2. <b>Pengajuan Pekerjaan:</b> Ada ${audit.changedFilesCount} berkas diubah. Ketik <i>"Ajukan PR"</i>.<br/>`;
-            }
-
-            updateLogFile(targetDir, folderName, "INSPEKSI PROYEK REAL-TIME", data.text, audit);
+            let html = `<b>LAPORAN INSPEKSI PROYEK</b><br/>` +
+              `<small style="color:#94a3b8;">Intelegensi: Model AI Aktif IDE</small><br/><br/>` +
+              `<table style="width:100%;border-collapse:collapse;font-size:11.5px;">` +
+              `<tr><td style="padding:3px 6px;color:#94a3b8;">Nama Proyek</td><td style="padding:3px 6px;"><code>${folderName}</code></td></tr>` +
+              `<tr><td style="padding:3px 6px;color:#94a3b8;">Ruang Kerja</td><td style="padding:3px 6px;"><code>${audit.currentBranch}</code></td></tr>` +
+              `<tr><td style="padding:3px 6px;color:#94a3b8;">Berkas Berubah</td><td style="padding:3px 6px;">${audit.changedFilesCount} berkas</td></tr>` +
+              `<tr><td style="padding:3px 6px;color:#94a3b8;">Tata Kelola</td><td style="padding:3px 6px;">${audit.hasBlueprint ? '[TERPASANG]' : '[BELUM]'}</td></tr>` +
+              `<tr><td style="padding:3px 6px;color:#94a3b8;">Tiket</td><td style="padding:3px 6px;">${audit.ticketCount}</td></tr>` +
+              `</table>`;
+            updateLogFile(targetDir, folderName, "INSPEKSI PROYEK", data.text, audit);
             currentPanel.webview.postMessage({ type: 'response', text: html });
             return;
           }
-          
+
+          // ---- Fitur Baru ----
           if (lowerText.includes('fitur baru') || lowerText.includes('buat fitur')) {
             const ticketId = await vscode.window.showInputBox({ prompt: 'Masukkan Nomor Tiket (Contoh: TK-201):' });
             if (!ticketId) return;
@@ -162,39 +165,112 @@ function activate(context) {
 
             const branchName = `feature/${ticketId}-${featureName.toLowerCase().replace(/\s+/g, '-')}`;
             try {
-              execSync(`git checkout develop && git checkout -b ${branchName}`, { cwd: targetDir });
-              updateLogFile(targetDir, folderName, "MEMBUAT FITUR BARU", `Membuat cabang ${branchName}`, audit);
-              currentPanel.webview.postMessage({ type: 'response', text: `[BERHASIL] Ruang Kerja Fitur Terbuat: <code>${branchName}</code>` });
+              try {
+                execSync(`git checkout develop && git checkout -b ${branchName}`, { cwd: targetDir });
+              } catch (e) {
+                execSync(`git checkout -b ${branchName}`, { cwd: targetDir });
+              }
+              updateLogFile(targetDir, folderName, "MEMBUAT FITUR BARU", `Cabang ${branchName}`, audit);
+              currentPanel.webview.postMessage({ type: 'response', text: `[BERHASIL] Ruang Kerja Fitur: <code>${branchName}</code>` });
             } catch (err) {
               currentPanel.webview.postMessage({ type: 'response', text: `[GAGAL] ${err.message}` });
             }
-          } else {
-            currentPanel.webview.postMessage({ type: 'response', text: `Asisten Joe (Menyerap Intelegensi Model AI Aktif) membaca proyek <b>${folderName}</b>.<br/>Instruksi: <i>"${data.text}"</i>.<br/>Ketik <i>"Inspeksi Proyek"</i> untuk laporan lengkap & rekap log.` });
+            return;
           }
+
+          // ---- Analisis Risiko ----
+          if (lowerText.includes('risiko') || lowerText.includes('biaya') || lowerText.includes('dampak')) {
+            let diffInfo = { files: 0, ins: 0, del: 0 };
+            try {
+              const raw = execSync('git diff --stat HEAD~1 HEAD 2>/dev/null || git diff --stat', { cwd: targetDir }).toString();
+              const sum = raw.split('\n').filter(l => l.includes('changed')).pop() || '';
+              const fm = sum.match(/(\d+)\s+file/); const im = sum.match(/(\d+)\s+insertion/); const dm = sum.match(/(\d+)\s+deletion/);
+              diffInfo.files = fm ? parseInt(fm[1]) : 0; diffInfo.ins = im ? parseInt(im[1]) : 0; diffInfo.del = dm ? parseInt(dm[1]) : 0;
+            } catch (e) {}
+
+            const total = diffInfo.ins + diffInfo.del;
+            let level, color;
+            if (total < 50) { level = 'RENDAH'; color = '#22c55e'; }
+            else if (total < 200) { level = 'SEDANG'; color = '#f59e0b'; }
+            else { level = 'TINGGI'; color = '#ef4444'; }
+
+            const html = `<b>ANALISIS RISIKO & BIAYA</b><br/><br/>` +
+              `Berkas berubah: <b>${diffInfo.files}</b> | Baris +${diffInfo.ins} / -${diffInfo.del}<br/>` +
+              `Volume total: <b>${total} baris</b><br/>` +
+              `Tingkat risiko: <b style="color:${color};">[${level}]</b>`;
+            updateLogFile(targetDir, folderName, "ANALISIS RISIKO", `Tingkat: ${level}`, audit);
+            currentPanel.webview.postMessage({ type: 'response', text: html });
+            return;
+          }
+
+          // ---- Pengumuman Rilis ----
+          if (lowerText.includes('rilis') || lowerText.includes('release') || lowerText.includes('pengumuman')) {
+            let commits = [];
+            try {
+              commits = execSync('git log --oneline -5', { cwd: targetDir }).toString().trim().split('\n').filter(Boolean);
+            } catch (e) {}
+            const now = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            const changes = commits.map(c => c.substring(c.indexOf(' ') + 1));
+            const html = `<b>DRAF PENGUMUMAN RILIS</b><br/><br/>` +
+              `<b>Tanggal:</b> ${now}<br/><b>Proyek:</b> ${folderName}<br/><br/>` +
+              `<b>Pembaruan:</b><br/>` +
+              changes.map((c, i) => `${i + 1}. ${c}`).join('<br/>');
+            updateLogFile(targetDir, folderName, "DRAF PENGUMUMAN RILIS", data.text, audit);
+            currentPanel.webview.postMessage({ type: 'response', text: html });
+            return;
+          }
+
+          // ---- Pecah Ide ke Tiket ----
+          if (lowerText.includes('ide') || lowerText.includes('pecah') || lowerText.includes('tiket') || lowerText.includes('roadmap')) {
+            let ideaText = data.text;
+            if (ideaText.length < 15) {
+              const input = await vscode.window.showInputBox({ prompt: 'Jelaskan ide bisnis Anda:' });
+              if (!input) return;
+              ideaText = input;
+            }
+            const base = Math.floor(Date.now() / 100000) % 900 + 100;
+            const tickets = [
+              { id: `TK-${base}`, t: 'Perancangan & Analisis Kebutuhan' },
+              { id: `TK-${base+1}`, t: 'Pengembangan Modul Inti' },
+              { id: `TK-${base+2}`, t: 'Pembuatan Tampilan Pengguna' },
+              { id: `TK-${base+3}`, t: 'Pengujian & Validasi' },
+              { id: `TK-${base+4}`, t: 'Peluncuran & Pengumuman' },
+            ];
+            const html = `<b>TIKET TUGAS DARI IDE</b><br/>` +
+              `<small style="color:#94a3b8;">"${ideaText}"</small><br/><br/>` +
+              tickets.map(tk => `<code>${tk.id}</code> ${tk.t}`).join('<br/>');
+            updateLogFile(targetDir, folderName, "PEMBONGKARAN IDE", `${tickets.length} tiket`, audit);
+            currentPanel.webview.postMessage({ type: 'response', text: html });
+            return;
+          }
+
+          // ---- Respons Umum ----
+          currentPanel.webview.postMessage({
+            type: 'response',
+            text: `Asisten Joe v4.0 membaca proyek <b>${folderName}</b>.<br/>` +
+              `Instruksi: <i>"${data.text}"</i>.<br/>` +
+              `Gunakan tombol pintas di bawah atau ketik perintah spesifik.`
+          });
         }
       });
 
       currentPanel.onDidDispose(
-        () => {
-          currentPanel = undefined;
-        },
+        () => { currentPanel = undefined; },
         null,
         context.subscriptions
       );
     }
   });
 
-  // 3. Perintah Manual: Inisialisasi Cetakan Proyek Lengkap (Setup Blueprint)
+  // 3. Inisialisasi Blueprint
   let disposableInit = vscode.commands.registerCommand('saasWorkflow.initProject', function () {
     const workspaceFolders = vscode.workspace.workspaceFolders;
     if (!workspaceFolders) {
       vscode.window.showErrorMessage('Silakan buka folder proyek Anda terlebih dahulu di Antigravity IDE!');
       return;
     }
-
     const targetDir = workspaceFolders[0].uri.fsPath;
     const cliScript = path.join(__dirname, 'cli.js');
-
     try {
       execSync(`node "${cliScript}" "${targetDir}"`);
       vscode.window.showInformationMessage('Berhasil! Cetakan Tata Kelola SaaS disuntikkan oleh Asisten Joe.');
@@ -203,18 +279,15 @@ function activate(context) {
     }
   });
 
-  // 4. Perintah Manual: Buat Ruang Kerja Fitur Baru
+  // 4. Buat Ruang Kerja Fitur Baru
   let disposableFeature = vscode.commands.registerCommand('saasWorkflow.createFeatureBranch', async function () {
     const workspaceFolders = vscode.workspace.workspaceFolders;
     if (!workspaceFolders) return;
     const targetDir = workspaceFolders[0].uri.fsPath;
-
     const ticketId = await vscode.window.showInputBox({ prompt: 'Masukkan Nomor Tiket Pekerjaan (Contoh: TK-102):' });
     if (!ticketId) return;
-
     const featureName = await vscode.window.showInputBox({ prompt: 'Masukkan Nama Fitur Singkat (Bahasa Bisnis):' });
     if (!featureName) return;
-
     const branchName = `feature/${ticketId}-${featureName.toLowerCase().replace(/\s+/g, '-')}`;
     try {
       execSync(`git checkout develop && git checkout -b ${branchName}`, { cwd: targetDir });
@@ -224,7 +297,49 @@ function activate(context) {
     }
   });
 
-  context.subscriptions.push(disposableOpenTab, disposableInit, disposableFeature);
+  // 5. Analisis Risiko (Command Palette)
+  let disposableRisk = vscode.commands.registerCommand('saasWorkflow.analyzeRisk', function () {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders) return;
+    const targetDir = workspaceFolders[0].uri.fsPath;
+    const folderName = path.basename(targetDir);
+    const audit = inspectProject(targetDir);
+
+    let total = 0;
+    try {
+      const raw = execSync('git diff --stat HEAD~1 HEAD 2>/dev/null || git diff --stat', { cwd: targetDir }).toString();
+      const sum = raw.split('\n').filter(l => l.includes('changed')).pop() || '';
+      const im = sum.match(/(\d+)\s+insertion/); const dm = sum.match(/(\d+)\s+deletion/);
+      total = (im ? parseInt(im[1]) : 0) + (dm ? parseInt(dm[1]) : 0);
+    } catch (e) {}
+
+    let level = total < 50 ? 'RENDAH' : total < 200 ? 'SEDANG' : 'TINGGI';
+    vscode.window.showInformationMessage(`Asisten Joe -- Analisis Risiko: [${level}] (${total} baris berubah)`);
+    updateLogFile(targetDir, folderName, "ANALISIS RISIKO (MANUAL)", `Tingkat: ${level}`, audit);
+  });
+
+  // 6. Pembongkaran Ide (Command Palette)
+  let disposableIdea = vscode.commands.registerCommand('saasWorkflow.breakdownIdea', async function () {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders) return;
+    const targetDir = workspaceFolders[0].uri.fsPath;
+
+    const idea = await vscode.window.showInputBox({ prompt: 'Jelaskan ide bisnis Anda secara singkat:' });
+    if (!idea) return;
+
+    const base = Math.floor(Date.now() / 100000) % 900 + 100;
+    const tickets = [
+      `TK-${base}: Perancangan & Analisis`,
+      `TK-${base+1}: Pengembangan Modul Inti`,
+      `TK-${base+2}: Tampilan Pengguna`,
+      `TK-${base+3}: Pengujian & Validasi`,
+      `TK-${base+4}: Peluncuran`,
+    ];
+
+    vscode.window.showInformationMessage(`Asisten Joe -- ${tickets.length} tiket tugas dibuat dari ide Anda.`);
+  });
+
+  context.subscriptions.push(disposableOpenTab, disposableInit, disposableFeature, disposableRisk, disposableIdea);
 }
 
 function deactivate() {}

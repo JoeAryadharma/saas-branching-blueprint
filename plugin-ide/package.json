@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
   "displayName": "Asisten Joe - Ultimate Personal Companion",
-  "description": "Asisten Joe v3.0: Personal Companion, Ikon Vektor Clean (Bebas Emoji), Widget Kesehatan Proyek & Pembersihan Draf Branch",
-  "version": "3.0.0",
+  "description": "Asisten Joe v4.0: Analisis Risiko & Biaya, Pengumuman Rilis Otomatis, Pembongkar Ide Jadi Tiket, Widget Kesehatan Proyek, Ikon SVG Vektor",
+  "version": "4.0.0",
   "publisher": "joecompanyagent-lab",
   "engines": {
     "vscode": "^1.80.0"
@@ -19,7 +19,9 @@
     "onView:saasWorkflow.chatView",
     "onCommand:saasWorkflow.openChatTab",
     "onCommand:saasWorkflow.initProject",
-    "onCommand:saasWorkflow.createFeatureBranch"
+    "onCommand:saasWorkflow.createFeatureBranch",
+    "onCommand:saasWorkflow.analyzeRisk",
+    "onCommand:saasWorkflow.breakdownIdea"
   ],
   "contributes": {
     "viewsContainers": {
@@ -48,11 +50,19 @@
       },
       {
         "command": "saasWorkflow.initProject",
-        "title": "Asisten Joe: Inisialisasi Cetakan Proyek (Setup Blueprint & Protection)"
+        "title": "Asisten Joe: Inisialisasi Cetakan Proyek (Setup Blueprint)"
       },
       {
         "command": "saasWorkflow.createFeatureBranch",
-        "title": "Asisten Joe: Buat Ruang Kerja Fitur Baru (Create Feature Branch)"
+        "title": "Asisten Joe: Buat Ruang Kerja Fitur Baru"
+      },
+      {
+        "command": "saasWorkflow.analyzeRisk",
+        "title": "Asisten Joe: Analisis Risiko & Estimasi Biaya Perubahan"
+      },
+      {
+        "command": "saasWorkflow.breakdownIdea",
+        "title": "Asisten Joe: Pecah Ide Bisnis Jadi Tiket Tugas"
       }
     ],
     "menus": {
