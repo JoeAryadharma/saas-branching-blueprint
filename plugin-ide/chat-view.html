@@ -20,9 +20,17 @@
     body { background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; height: 100vh; font-size: 13px; }
 
     /* Header Bar */
-    .header { padding: 12px; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-    .header-title { font-weight: 600; font-size: 14px; color: var(--accent-gold); display: flex; align-items: center; gap: 8px; }
-    .badge-personal { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .header { padding: 10px 12px; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+    .header-title { font-weight: 600; font-size: 13.5px; color: var(--accent-gold); display: flex; align-items: center; gap: 8px; }
+    .badge-personal { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); padding: 3px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 600; border: 1px solid rgba(59, 130, 246, 0.3); }
+
+    /* Project Health Widget */
+    .health-widget { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 8px 12px; background: rgba(15, 23, 42, 0.6); border-bottom: 1px solid var(--border-color); }
+    .widget-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 4px; padding: 6px 8px; text-align: center; }
+    .widget-label { font-size: 9.5px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.3px; }
+    .widget-value { font-size: 12px; font-weight: 700; color: var(--text-color); margin-top: 2px; }
+    .widget-value.green { color: var(--accent-green); }
+    .widget-value.gold { color: var(--accent-gold); }
 
     /* Chat Area */
     .chat-container { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
@@ -30,7 +38,7 @@
     .message.user { align-self: flex-end; }
     .message.assistant { align-self: flex-start; }
 
-    .bubble { padding: 10px 14px; border-radius: 8px; line-height: 1.5; font-size: 12.5px; }
+    .bubble { padding: 10px 14px; border-radius: 6px; line-height: 1.5; font-size: 12.5px; }
     .message.user .bubble { background: #2563eb; color: #ffffff; border-bottom-right-radius: 2px; }
     .message.assistant .bubble { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); border-bottom-left-radius: 2px; }
 
@@ -38,7 +46,7 @@
 
     /* Quick Action Chips */
     .chips-container { padding: 8px 12px; display: flex; gap: 6px; overflow-x: auto; border-top: 1px solid var(--border-color); background-color: rgba(30, 41, 59, 0.5); }
-    .chip { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; white-space: nowrap; transition: all 0.2s; font-weight: 500; }
+    .chip { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; white-space: nowrap; transition: all 0.2s; font-weight: 500; display: flex; align-items: center; gap: 5px; }
     .chip:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
 
     /* Input Area */
@@ -48,6 +56,9 @@
     .send-btn { background: var(--accent-blue); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 12px; }
     .send-btn:hover { background: #1d4ed8; }
 
+    /* SVG Icon Helpers */
+    .icon { width: 13px; height: 13px; fill: currentColor; display: inline-block; vertical-align: middle; }
+
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
@@ -56,10 +67,27 @@
   <!-- Header Bar -->
   <div class="header">
     <div class="header-title">
+      <svg class="icon" viewBox="0 0 16 16"><path d="M8 0L1 3v5c0 4.4 3 8.5 7 9.5 4-1 7-5.1 7-9.5V3L8 0zm0 15C4.8 14.1 2.5 10.7 2.5 7V4.1L8 1.8l5.5 2.3V7c0 3.7-2.3 7.1-5.5 8z"/></svg>
       Asisten Joe
     </div>
     <div class="badge-personal">
-      PERSONAL COMPANION
+      PERSONAL EDITION
+    </div>
+  </div>
+
+  <!-- Project Health Widget (Kartu Meteran Kesehatan Proyek) -->
+  <div class="health-widget">
+    <div class="widget-card">
+      <div class="widget-label">Kelaikan Kode</div>
+      <div class="widget-value green">100% OK</div>
+    </div>
+    <div class="widget-card">
+      <div class="widget-label">Celah Keamanan</div>
+      <div class="widget-value green">0 Celah</div>
+    </div>
+    <div class="widget-card">
+      <div class="widget-label">Ruang Aktif</div>
+      <div class="widget-value gold" id="activeBranchWidget">main</div>
     </div>
   </div>
 
@@ -69,17 +97,33 @@
       <div class="sender-label">Asisten Joe</div>
       <div class="bubble">
         Selamat datang. Saya <b>Asisten Joe</b>, asisten tata kelola proyek pribadi Anda.<br/><br/>
-        Saya akan mencatat seluruh riwayat aktivitas proyek Anda, mengaudit kelaikan alur kerja, dan menyusun laporan rekap perubahan (CRUD) serta diagram hubungan secara otomatis.
+        Saya akan mencatat seluruh riwayat aktivitas proyek Anda, mengaudit kelaikan alur kerja, dan menyusun laporan rekap perubahan (CRUD) serta diagram hubungan secara otomatis tanpa emoji.
       </div>
     </div>
   </div>
 
-  <!-- Quick Action Chips (Tanpa Emoji) -->
+  <!-- Quick Action Chips (Menggunakan Vektor Ikon SVG Vektor Clean) -->
   <div class="chips-container">
-    <div class="chip" onclick="quickAction('Inspeksi status proyek')">Inspeksi Proyek</div>
-    <div class="chip" onclick="quickAction('Buat fitur baru')">Fitur Baru</div>
-    <div class="chip" onclick="quickAction('Ajukan pemeriksaan PR')">Ajukan PR</div>
-    <div class="chip" onclick="quickAction('Buka laporan log')">Laporan Log</div>
+    <div class="chip" onclick="quickAction('Inspeksi status proyek')">
+      <svg class="icon" viewBox="0 0 16 16"><path d="M8 2a6 6 0 100 12A6 6 0 008 2zM0 8a8 8 0 1116 0A8 8 0 010 8z"/></svg>
+      Inspeksi Proyek
+    </div>
+    <div class="chip" onclick="quickAction('Buat fitur baru')">
+      <svg class="icon" viewBox="0 0 16 16"><path d="M8 2a.75.75 0 01.75.75v4.5h4.5a.75.75 0 010 1.5h-4.5v4.5a.75.75 0 01-1.5 0v-4.5h-4.5a.75.75 0 010-1.5h4.5v-4.5A.75.75 0 018 2z"/></svg>
+      Fitur Baru
+    </div>
+    <div class="chip" onclick="quickAction('Ajukan pemeriksaan PR')">
+      <svg class="icon" viewBox="0 0 16 16"><path d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 9.5a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm7.5-4.75a.75.75 0 100-1.5.75.75 0 000 1.5z"/></svg>
+      Ajukan PR
+    </div>
+    <div class="chip" onclick="quickAction('Bersihkan draf branch')">
+      <svg class="icon" viewBox="0 0 16 16"><path d="M6.5 1.75a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75V3h3.25a.75.75 0 010 1.5H13v9.25A1.75 1.75 0 0111.25 15.5H4.75A1.75 1.75 0 013 13.75V4.5H2.25a.75.75 0 010-1.5H5.5V1.75z"/></svg>
+      Bersihkan Branch
+    </div>
+    <div class="chip" onclick="quickAction('Buka laporan log')">
+      <svg class="icon" viewBox="0 0 16 16"><path d="M4 1.75C4 .784 4.784 0 5.75 0h5.5c.966 0 1.75.784 1.75 1.75v12.5A1.75 1.75 0 0111.25 16h-5.5A1.75 1.75 0 014 14.25V1.75z"/></svg>
+      Laporan Log
+    </div>
   </div>
 
   <!-- Input Field -->
@@ -122,15 +166,18 @@
       container.scrollTop = container.scrollHeight;
     }
 
-    // Listen for responses from Extension Backend
     window.addEventListener('message', event => {
       const data = event.data;
       if (data.type === 'response') {
         appendMessage('assistant', data.text);
       }
+      if (data.type === 'updateWidget') {
+        if (data.branch) {
+          document.getElementById('activeBranchWidget').innerText = data.branch;
+        }
+      }
     });
 
-    // Enter to Send
     document.getElementById('promptInput').addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();

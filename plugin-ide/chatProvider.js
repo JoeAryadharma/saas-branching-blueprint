@@ -3,10 +3,6 @@ const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
 
-/**
- * ASISTEN JOE - DYNAMIC COGNITIVE BRIDGE PROVIDER
- * Menyerap 100% kompetensi, parameter, dan alur berpikir dari model AI yang aktif.
- */
 class SaaSWorkflowChatProvider {
   constructor(extensionUri) {
     this._extensionUri = extensionUri;
@@ -44,8 +40,33 @@ class SaaSWorkflowChatProvider {
     const lowerText = text.toLowerCase();
 
     const audit = this._inspectProject(targetDir);
+    this._updateWidget(audit.currentBranch);
 
-    // 1. Pertanyaan Membaca Folder / Inspeksi Proyek / Status
+    // 1. Bersihkan Branch (Housekeeping)
+    if (lowerText.includes('bersihkan') || lowerText.includes('housekeeping') || lowerText.includes('hapus draf')) {
+      try {
+        const branches = audit.branchesPresent.filter(b => b.startsWith('feature/'));
+        if (branches.length === 0) {
+          this._reply("[INFORMASI] Tempat penyimpanan proyek Anda sudah bersih. Tidak ada draf ruang fitur lama yang perlu dibersihkan.");
+          return;
+        }
+
+        execSync('git checkout develop', { cwd: targetDir });
+        branches.forEach(b => {
+          try {
+            execSync(`git branch -d ${b}`, { cwd: targetDir });
+          } catch (e) {}
+        });
+
+        this._updateLogFile(targetDir, folderName, "PEMBERSIHAN BRANCH (HOUSEKEEPING)", `Pembersihan ${branches.length} cabang draf`, audit);
+        this._reply(`[BERHASIL] Pembersihan selesai. ${branches.length} draf ruang kerja lama telah dibersihkan secara aman dari komputer Anda.`);
+      } catch (err) {
+        this._reply(`[GAGAL] Kendala pembersihan: ${err.message}`);
+      }
+      return;
+    }
+
+    // 2. Pertanyaan Membaca Folder / Inspeksi Proyek / Status
     if (lowerText.includes('baca') || lowerText.includes('folder') || lowerText.includes('project') || lowerText.includes('proyek') || lowerText.includes('status') || lowerText.includes('inspeksi')) {
       
       let html = `<b>LAPORAN INSPEKSI PROYEK REAL-TIME</b><br/>` +
@@ -74,7 +95,7 @@ class SaaSWorkflowChatProvider {
       return;
     }
 
-    // 2. Fitur Baru / Membuat Fitur
+    // 3. Fitur Baru / Membuat Fitur
     if (lowerText.includes('fitur baru') || lowerText.includes('buat fitur') || lowerText.includes('tambah fitur')) {
       const ticketId = await vscode.window.showInputBox({ prompt: 'Masukkan Nomor Tiket Pekerjaan (Contoh: TK-201):' });
       if (!ticketId) return;
@@ -87,7 +108,7 @@ class SaaSWorkflowChatProvider {
       try {
         execSync(`git checkout develop && git checkout -b ${branchName}`, { cwd: targetDir });
         this._updateLogFile(targetDir, folderName, "MEMBUAT FITUR BARU", `Membuat cabang ${branchName}`, audit);
-        this._reply(`[BERHASIL] Ruang Kerja Fitur Terbuat: <code>${branchName}</code><br/>Asisten Joe (Menyerap Intelegensi ${this._activeModelName}) siap mengawal. Setelah selesai mengisi kodingan, ketik <i>"Ajukan PR"</i>.`);
+        this._reply(`[BERHASIL] Ruang Kerja Fitur Terbuat: <code>${branchName}</code><br/>Asisten Joe siap mengawal. Setelah selesai mengisi kodingan, ketik <i>"Ajukan PR"</i>.`);
       } catch (err) {
         try {
           execSync(`git checkout -b ${branchName}`, { cwd: targetDir });
@@ -100,7 +121,7 @@ class SaaSWorkflowChatProvider {
       return;
     }
 
-    // 3. Ajukan PR / Pemeriksaan & Audit Mandiri
+    // 4. Ajukan PR / Pemeriksaan & Audit Mandiri
     if (lowerText.includes('pr') || lowerText.includes('ajukan') || lowerText.includes('pemeriksaan') || lowerText.includes('selesai')) {
       try {
         const currentBranch = audit.currentBranch;
@@ -157,6 +178,12 @@ class SaaSWorkflowChatProvider {
       changedFilesCount,
       hasBlueprint
     };
+  }
+
+  _updateWidget(branchName) {
+    if (this._view) {
+      this._view.webview.postMessage({ type: 'updateWidget', branch: branchName });
+    }
   }
 
   _updateLogFile(targetDir, folderName, actionName, userInstruction, audit) {

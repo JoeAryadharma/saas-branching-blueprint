@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - Dynamic Cognitive Bridge",
-  "description": "Asisten Joe: Dynamic Cognitive Bridge Penyerapan Kompetensi Model AI Aktif & Otomasi Tata Kelola SaaS",
-  "version": "2.1.0",
+  "displayName": "Asisten Joe - Ultimate Personal Companion",
+  "description": "Asisten Joe v3.0: Personal Companion, Ikon Vektor Clean (Bebas Emoji), Widget Kesehatan Proyek & Pembersihan Draf Branch",
+  "version": "3.0.0",
   "publisher": "joecompanyagent-lab",
   "engines": {
     "vscode": "^1.80.0"
