@@ -45,11 +45,39 @@ function activate(context) {
       // Handle chat messages in Tab Mode
       currentPanel.webview.onDidReceiveMessage(async (data) => {
         const workspaceFolders = vscode.workspace.workspaceFolders;
-        if (!workspaceFolders) return;
+        if (!workspaceFolders) {
+          currentPanel.webview.postMessage({ type: 'response', text: "⚠️ Buka folder proyek Anda di Antigravity IDE terlebih dahulu!" });
+          return;
+        }
+
         const targetDir = workspaceFolders[0].uri.fsPath;
+        const folderName = path.basename(targetDir);
 
         if (data.type === 'userInput') {
           const lowerText = data.text.toLowerCase();
+
+          // Pertanyaan membaca folder / project
+          if (lowerText.includes('baca') || lowerText.includes('folder') || lowerText.includes('project') || lowerText.includes('proyek') || lowerText.includes('bisa')) {
+            try {
+              const currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim() || 'main';
+              const hasBlueprint = fs.existsSync(path.join(targetDir, 'BRAND.md'));
+              const filesCount = fs.readdirSync(targetDir).length;
+
+              let replyMsg = `<b>Ya, Asisten Joe sudah bisa membaca Folder Proyek Anda secara real-time! 📂</b><br/><br/>` +
+                `• <b>Nama Proyek:</b> <code>${folderName}</code><br/>` +
+                `• <b>Lokasi Folder:</b> <code>${targetDir}</code><br/>` +
+                `• <b>Ruang Kerja Aktif:</b> <code>${currentBranch}</code><br/>` +
+                `• <b>Jumlah Berkas Root:</b> ${filesCount} berkas<br/>` +
+                `• <b>Status Tata Kelola SaaS:</b> ${hasBlueprint ? '✅ Terpasang Lengkap (SOP & CI/CD)' : '⚠️ Belum Terpasang (Klik "Fitur Baru" atau jalankan Setup)'}<br/><br/>` +
+                `Ada yang bisa Asisten Joe bantu jalankan untuk proyek <b>${folderName}</b> ini?`;
+
+              currentPanel.webview.postMessage({ type: 'response', text: replyMsg });
+              return;
+            } catch (err) {
+              currentPanel.webview.postMessage({ type: 'response', text: `📂 <b>Folder Proyek Terdeteksi:</b> <code>${folderName}</code> (${targetDir}).` });
+              return;
+            }
+          }
           
           if (lowerText.includes('fitur baru') || lowerText.includes('buat fitur')) {
             const ticketId = await vscode.window.showInputBox({ prompt: 'Masukkan Nomor Tiket (Contoh: TK-201):' });
@@ -65,7 +93,7 @@ function activate(context) {
               currentPanel.webview.postMessage({ type: 'response', text: `❌ Gagal: ${err.message}` });
             }
           } else {
-            currentPanel.webview.postMessage({ type: 'response', text: `Asisten Joe menerima pesan Anda: <i>"${data.text}"</i>` });
+            currentPanel.webview.postMessage({ type: 'response', text: `Asisten Joe membaca folder <b>${folderName}</b>. Anda mengetik: <i>"${data.text}"</i>.<br/>💡 Coba tanyakan: <i>"Bagaimana status folder proyek saya?"</i>` });
           }
         }
       });

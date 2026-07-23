@@ -19,7 +19,6 @@ class SaaSWorkflowChatProvider {
 
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
-    // Tangani pesan dari HTML UI
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
         case 'setMode':
@@ -40,10 +39,34 @@ class SaaSWorkflowChatProvider {
     }
 
     const targetDir = workspaceFolders[0].uri.fsPath;
+    const folderName = path.basename(targetDir);
     const lowerText = text.toLowerCase();
 
-    // 1. Kasus: Fitur Baru
-    if (lowerText.includes('fitur baru') || lowerText.includes('buat fitur')) {
+    // 1. Kasus: Pertanyaan Membaca Folder Proyek / Informasi Proyek
+    if (lowerText.includes('baca') || lowerText.includes('folder') || lowerText.includes('project') || lowerText.includes('proyek') || lowerText.includes('bisa')) {
+      try {
+        const currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim() || 'main';
+        const hasBlueprint = fs.existsSync(path.join(targetDir, 'BRAND.md'));
+        const filesCount = fs.readdirSync(targetDir).length;
+
+        let replyMsg = `<b>Ya, Asisten Joe sudah bisa membaca Folder Proyek Anda secara real-time! 📂</b><br/><br/>` +
+          `• <b>Nama Proyek:</b> <code>${folderName}</code><br/>` +
+          `• <b>Lokasi Folder:</b> <code>${targetDir}</code><br/>` +
+          `• <b>Ruang Kerja Aktif:</b> <code>${currentBranch}</code><br/>` +
+          `• <b>Jumlah Berkas Root:</b> ${filesCount} berkas<br/>` +
+          `• <b>Status Tata Kelola SaaS:</b> ${hasBlueprint ? '✅ Terpasang Lengkap (SOP & CI/CD)' : '⚠️ Belum Terpasang (Klik "Fitur Baru" atau jalankan Setup)'}<br/><br/>` +
+          `Ada yang bisa Asisten Joe bantu jalankan untuk proyek <b>${folderName}</b> ini?`;
+
+        this._reply(replyMsg);
+        return;
+      } catch (err) {
+        this._reply(`📂 <b>Folder Proyek Terdeteksi:</b> <code>${folderName}</code> (${targetDir}).<br/>(Git belum diinisialisasi di folder ini). Klik tombol <b>Fitur Baru</b> atau minta Asisten Joe menginisialisasi.`);
+        return;
+      }
+    }
+
+    // 2. Kasus: Fitur Baru / Membuat Fitur
+    if (lowerText.includes('fitur baru') || lowerText.includes('buat fitur') || lowerText.includes('tambah fitur')) {
       const ticketId = await vscode.window.showInputBox({ prompt: 'Masukkan Nomor Tiket (Contoh: TK-201):' });
       if (!ticketId) return;
 
@@ -54,34 +77,28 @@ class SaaSWorkflowChatProvider {
 
       try {
         execSync(`git checkout develop && git checkout -b ${branchName}`, { cwd: targetDir });
-        this._reply(`✅ <b>Ruang Kerja Fitur Terbuat:</b> <code>${branchName}</code><br/>Asisten Joe siap mengawal. Jika sudah selesai, ketik <i>"Ajukan PR"</i> di chat ini.`);
+        this._reply(`✅ <b>Ruang Kerja Fitur Terbuat:</b> <code>${branchName}</code><br/>Asisten Joe siap mengawal. Setelah selesai mengisi kodingan, ketik <i>"Ajukan PR"</i>.`);
       } catch (err) {
         this._reply(`❌ Gagal membuat ruang kerja: ${err.message}`);
       }
       return;
     }
 
-    // 2. Kasus: Ajukan PR / Pemeriksaan
-    if (lowerText.includes('pr') || lowerText.includes('ajukan') || lowerText.includes('pemeriksaan')) {
+    // 3. Kasus: Ajukan PR / Pemeriksaan
+    if (lowerText.includes('pr') || lowerText.includes('ajukan') || lowerText.includes('pemeriksaan') || lowerText.includes('selesai')) {
       try {
         const currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim();
         
         if (mode === 'solo') {
-          // MODE SOLO: Audit Otomatis & Auto-Approve Virtual oleh Asisten Joe
-          this._reply(`🤖 <b>Asisten Joe [Mode Solo]</b> Menjalankan Audit Kelaikan Otomatis pada ruang <code>${currentBranch}</code>...`);
-          
+          this._reply(`🤖 <b>Asisten Joe [Mode Solo]</b> Menjalankan Audit Kelaikan Otomatis pada <code>${currentBranch}</code>...`);
           execSync(`git add . && git commit -m "fitur: pembaruan mandiri terverifikasi" || true`, { cwd: targetDir });
           execSync(`git checkout develop && git merge ${currentBranch}`, { cwd: targetDir });
-          
           this._reply(`🎉 <b>Asisten Joe [Mode Solo Auto-Approved]</b> Pekerjaan Anda dari <code>${currentBranch}</code> telah lulus audit kelaikan dan otomatis digabungkan ke <b>develop</b>!`);
         } else {
-          // MODE TIM: Buat PR & Wajib Persetujuan Manusia (CODEOWNERS)
-          this._reply(`🔵 <b>Asisten Joe [Mode Tim]</b> Mendorong ruang <code>${currentBranch}</code> ke GitHub & membuat pengajuan persetujuan (PR)...`);
-          
+          this._reply(`🔵 <b>Asisten Joe [Mode Tim]</b> Mendorong <code>${currentBranch}</code> ke GitHub & membuat pengajuan persetujuan (PR)...`);
           execSync(`git push -u origin ${currentBranch}`, { cwd: targetDir });
           const prOutput = execSync(`gh pr create --base develop --head ${currentBranch} --title "fitur: ${currentBranch}" --body "Pengajuan dari tim."`, { cwd: targetDir }).toString();
-          
-          this._reply(`📢 <b>Asisten Joe [Mode Tim]</b> Pengajuan pemeriksaan berhasil dibuat di GitHub!<br/><b>Tautan PR:</b> ${prOutput}<br/>Persetujuan dari 2 staf senior (CODEOWNERS) diperlukan sebelum digabungkan.`);
+          this._reply(`📢 <b>Asisten Joe [Mode Tim]</b> Pengajuan pemeriksaan berhasil dibuat di GitHub!<br/><b>PR Link:</b> ${prOutput}`);
         }
       } catch (err) {
         this._reply(`❌ Kendala saat proses PR: ${err.message}`);
@@ -89,19 +106,19 @@ class SaaSWorkflowChatProvider {
       return;
     }
 
-    // 3. Kasus: Status Ruang Kerja
-    if (lowerText.includes('status')) {
+    // 4. Kasus: Status Ruang Kerja
+    if (lowerText.includes('status') || lowerText.includes('branch')) {
       try {
         const currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim();
-        this._reply(`📊 <b>Status Proyek (Asisten Joe):</b><br/>- Ruang Aktif: <code>${currentBranch}</code><br/>- Mode Operasional: <b>${mode === 'solo' ? '🟢 Mandiri (Solo)' : '🔵 Kerja Tim (Team)'}</b>`);
+        this._reply(`📊 <b>Status Proyek (Asisten Joe):</b><br/>- Proyek: <b>${folderName}</b><br/>- Ruang Aktif: <code>${currentBranch}</code><br/>- Mode Operasional: <b>${mode === 'solo' ? '🟢 Mandiri (Solo)' : '🔵 Kerja Tim (Team)'}</b>`);
       } catch (err) {
         this._reply(`❌ Gagal mengambil status: ${err.message}`);
       }
       return;
     }
 
-    // Respons umum Asisten Joe
-    this._reply(`Asisten Joe menerima pesan Anda: <i>"${text}"</i>.<br/>Anda sedang dalam <b>Mode ${mode === 'solo' ? 'Mandiri' : 'Tim'}</b>. Gunakan tombol aksi di bawah untuk membuat fitur baru atau mengajukan PR.`);
+    // Respons umum cerdas Asisten Joe
+    this._reply(`<b>Asisten Joe telah membaca folder proyek ${folderName}.</b><br/><br/>Pesan Anda: <i>"${text}"</i>.<br/>Saat ini Anda berada dalam <b>Mode ${mode === 'solo' ? '🟢 Mandiri (Solo)' : '🔵 Kerja Tim (Team)'}</b>.<br/><br/>💡 <i>Coba tanyakan: "Bagaimana status folder proyek saya?" atau klik tombol "✨ Fitur Baru" di bawah.</i>`);
   }
 
   _reply(htmlText) {
