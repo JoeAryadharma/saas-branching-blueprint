@@ -27,6 +27,9 @@ class SaaSWorkflowChatProvider {
         case 'userInput':
           await this._handleUserInput(data.text, data.mode);
           break;
+        case 'execAction':
+          await this._handleAction(data.action);
+          break;
       }
     });
   }
@@ -42,30 +45,45 @@ class SaaSWorkflowChatProvider {
     const folderName = path.basename(targetDir);
     const lowerText = text.toLowerCase();
 
-    // 1. Kasus: Pertanyaan Membaca Folder Proyek / Informasi Proyek
-    if (lowerText.includes('baca') || lowerText.includes('folder') || lowerText.includes('project') || lowerText.includes('proyek') || lowerText.includes('bisa')) {
-      try {
-        const currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim() || 'main';
-        const hasBlueprint = fs.existsSync(path.join(targetDir, 'BRAND.md'));
-        const filesCount = fs.readdirSync(targetDir).length;
+    // Jalankan Audit & Analisis Mendalam
+    const projectAudit = this._inspectProject(targetDir);
 
-        let replyMsg = `<b>Ya, Asisten Joe sudah bisa membaca Folder Proyek Anda secara real-time! 📂</b><br/><br/>` +
-          `• <b>Nama Proyek:</b> <code>${folderName}</code><br/>` +
-          `• <b>Lokasi Folder:</b> <code>${targetDir}</code><br/>` +
-          `• <b>Ruang Kerja Aktif:</b> <code>${currentBranch}</code><br/>` +
-          `• <b>Jumlah Berkas Root:</b> ${filesCount} berkas<br/>` +
-          `• <b>Status Tata Kelola SaaS:</b> ${hasBlueprint ? '✅ Terpasang Lengkap (SOP & CI/CD)' : '⚠️ Belum Terpasang (Klik "Fitur Baru" atau jalankan Setup)'}<br/><br/>` +
-          `Ada yang bisa Asisten Joe bantu jalankan untuk proyek <b>${folderName}</b> ini?`;
+    // 1. Kasus: Pertanyaan Membaca Isi Folder / Proyek / GitHub Sync / Status
+    if (lowerText.includes('baca') || lowerText.includes('folder') || lowerText.includes('project') || lowerText.includes('proyek') || lowerText.includes('status') || lowerText.includes('isi') || lowerText.includes('pull')) {
+      
+      let html = `<b>🔍 LAPORAN INSPEKSI PROYEK REAL-TIME (ASISTEN JOE)</b><br/><br/>` +
+        `📁 <b>Folder Proyek:</b> <code>${folderName}</code><br/>` +
+        `📍 <b>Lokasi:</b> <code>${targetDir}</code><br/>` +
+        `🌿 <b>Ruang Kerja Aktif:</b> <code>${projectAudit.currentBranch}</code><br/>` +
+        `📊 <b>Ruang Kerja Terdeteksi:</b> ${projectAudit.branchesPresent.map(b => `<code>${b}</code>`).join(', ')}<br/>` +
+        `📝 <b>Perubahan Belum Disimpan:</b> ${projectAudit.changedFilesCount} berkas<br/>` +
+        `🛡️ <b>Tata Kelola & SOP SaaS:</b> ${projectAudit.hasBlueprint ? '✅ Lengkap' : '❌ Belum Terpasang'}<br/><br/>`;
 
-        this._reply(replyMsg);
-        return;
-      } catch (err) {
-        this._reply(`📂 <b>Folder Proyek Terdeteksi:</b> <code>${folderName}</code> (${targetDir}).<br/>(Git belum diinisialisasi di folder ini). Klik tombol <b>Fitur Baru</b> atau minta Asisten Joe menginisialisasi.`);
-        return;
+      if (projectAudit.rootStructure.length > 0) {
+        html += `📂 <b>Struktur Berkas Utama:</b><br/><code>` + projectAudit.rootStructure.slice(0, 8).join(', ') + `</code><br/><br/>`;
       }
+
+      html += `🎯 <b>REKOMENDASI RENCANA KERJA ASISTEN JOE:</b><br/>`;
+
+      if (!projectAudit.hasBlueprint) {
+        html += `1. <b>Suntikkan Tata Kelola SaaS:</b> Folder proyek ini belum memiliki 20 berkas SOP & CI/CD. Ketik <i>"Setup Blueprint"</i> atau klik tombol <b>Inisialisasi Blueprint</b> di bawah.<br/>`;
+      }
+
+      if (!projectAudit.branchesPresent.includes('develop')) {
+        html += `2. <b>Siapkan Ruang Kerja Integrasi:</b> Proyek ini belum memiliki cabang <code>develop</code>. Diperlukan untuk penggabungan tim.<br/>`;
+      }
+
+      if (projectAudit.currentBranch === 'main') {
+        html += `💡 <b>Peringatan Keamanan:</b> Anda sedang berada di Ruang Utama (<code>main</code>). Untuk mulai bekerja, Asisten Joe menyarankan Anda beralih ke Ruang Fitur baru dari <code>develop</code>.<br/>`;
+      } else if (projectAudit.changedFilesCount > 0) {
+        html += `💡 <b>Rekomendasi Pekerjaan:</b> Ada ${projectAudit.changedFilesCount} berkas diubah. Ketik <i>"Ajukan PR"</i> untuk menguji & menggabungkan ke <code>develop</code>.<br/>`;
+      }
+
+      this._reply(html);
+      return;
     }
 
-    // 2. Kasus: Fitur Baru / Membuat Fitur
+    // 2. Kasus: Fitur Baru
     if (lowerText.includes('fitur baru') || lowerText.includes('buat fitur') || lowerText.includes('tambah fitur')) {
       const ticketId = await vscode.window.showInputBox({ prompt: 'Masukkan Nomor Tiket (Contoh: TK-201):' });
       if (!ticketId) return;
@@ -79,7 +97,13 @@ class SaaSWorkflowChatProvider {
         execSync(`git checkout develop && git checkout -b ${branchName}`, { cwd: targetDir });
         this._reply(`✅ <b>Ruang Kerja Fitur Terbuat:</b> <code>${branchName}</code><br/>Asisten Joe siap mengawal. Setelah selesai mengisi kodingan, ketik <i>"Ajukan PR"</i>.`);
       } catch (err) {
-        this._reply(`❌ Gagal membuat ruang kerja: ${err.message}`);
+        // Fallback jika develop belum ada, buat dari branch aktif
+        try {
+          execSync(`git checkout -b ${branchName}`, { cwd: targetDir });
+          this._reply(`✅ <b>Ruang Kerja Fitur Terbuat:</b> <code>${branchName}</code><br/>Silakan isi kodingan Anda.`);
+        } catch (e) {
+          this._reply(`❌ Gagal membuat ruang kerja: ${err.message}`);
+        }
       }
       return;
     }
@@ -87,7 +111,7 @@ class SaaSWorkflowChatProvider {
     // 3. Kasus: Ajukan PR / Pemeriksaan
     if (lowerText.includes('pr') || lowerText.includes('ajukan') || lowerText.includes('pemeriksaan') || lowerText.includes('selesai')) {
       try {
-        const currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim();
+        const currentBranch = projectAudit.currentBranch;
         
         if (mode === 'solo') {
           this._reply(`🤖 <b>Asisten Joe [Mode Solo]</b> Menjalankan Audit Kelaikan Otomatis pada <code>${currentBranch}</code>...`);
@@ -106,19 +130,41 @@ class SaaSWorkflowChatProvider {
       return;
     }
 
-    // 4. Kasus: Status Ruang Kerja
-    if (lowerText.includes('status') || lowerText.includes('branch')) {
-      try {
-        const currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim();
-        this._reply(`📊 <b>Status Proyek (Asisten Joe):</b><br/>- Proyek: <b>${folderName}</b><br/>- Ruang Aktif: <code>${currentBranch}</code><br/>- Mode Operasional: <b>${mode === 'solo' ? '🟢 Mandiri (Solo)' : '🔵 Kerja Tim (Team)'}</b>`);
-      } catch (err) {
-        this._reply(`❌ Gagal mengambil status: ${err.message}`);
-      }
-      return;
-    }
-
     // Respons umum cerdas Asisten Joe
-    this._reply(`<b>Asisten Joe telah membaca folder proyek ${folderName}.</b><br/><br/>Pesan Anda: <i>"${text}"</i>.<br/>Saat ini Anda berada dalam <b>Mode ${mode === 'solo' ? '🟢 Mandiri (Solo)' : '🔵 Kerja Tim (Team)'}</b>.<br/><br/>💡 <i>Coba tanyakan: "Bagaimana status folder proyek saya?" atau klik tombol "✨ Fitur Baru" di bawah.</i>`);
+    this._reply(`<b>Asisten Joe telah menganalisis proyek ${folderName}.</b><br/><br/>Pesan Anda: <i>"${text}"</i>.<br/>Ruang Aktif: <code>${projectAudit.currentBranch}</code> | Mode: <b>${mode === 'solo' ? '🟢 Mandiri' : '🔵 Tim'}</b>.<br/><br/>💡 <i>Ketik "baca folder" untuk melihat laporan analisis lengkap & rekomendasi rencana kerja.</i>`);
+  }
+
+  _inspectProject(targetDir) {
+    let currentBranch = 'main';
+    let branchesPresent = ['main'];
+    let changedFilesCount = 0;
+    let hasBlueprint = false;
+    let rootStructure = [];
+
+    try {
+      currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim() || 'main';
+      const bOutput = execSync('git branch -a', { cwd: targetDir }).toString();
+      branchesPresent = bOutput.split('\n').map(b => b.replace('*', '').trim()).filter(Boolean);
+    } catch (e) {}
+
+    try {
+      const statusOutput = execSync('git status -s', { cwd: targetDir }).toString().trim();
+      changedFilesCount = statusOutput ? statusOutput.split('\n').length : 0;
+    } catch (e) {}
+
+    hasBlueprint = fs.existsSync(path.join(targetDir, 'BRAND.md')) || fs.existsSync(path.join(targetDir, '.github/workflows'));
+
+    try {
+      rootStructure = fs.readdirSync(targetDir).filter(f => !f.startsWith('.git'));
+    } catch (e) {}
+
+    return {
+      currentBranch,
+      branchesPresent,
+      changedFilesCount,
+      hasBlueprint,
+      rootStructure
+    };
   }
 
   _reply(htmlText) {

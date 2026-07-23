@@ -6,6 +6,39 @@ const SaaSWorkflowChatProvider = require('./chatProvider');
 
 let currentPanel = undefined;
 
+function inspectProject(targetDir) {
+  let currentBranch = 'main';
+  let branchesPresent = ['main'];
+  let changedFilesCount = 0;
+  let hasBlueprint = false;
+  let rootStructure = [];
+
+  try {
+    currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim() || 'main';
+    const bOutput = execSync('git branch -a', { cwd: targetDir }).toString();
+    branchesPresent = bOutput.split('\n').map(b => b.replace('*', '').trim()).filter(Boolean);
+  } catch (e) {}
+
+  try {
+    const statusOutput = execSync('git status -s', { cwd: targetDir }).toString().trim();
+    changedFilesCount = statusOutput ? statusOutput.split('\n').length : 0;
+  } catch (e) {}
+
+  hasBlueprint = fs.existsSync(path.join(targetDir, 'BRAND.md')) || fs.existsSync(path.join(targetDir, '.github/workflows'));
+
+  try {
+    rootStructure = fs.readdirSync(targetDir).filter(f => !f.startsWith('.git'));
+  } catch (e) {}
+
+  return {
+    currentBranch,
+    branchesPresent,
+    changedFilesCount,
+    hasBlueprint,
+    rootStructure
+  };
+}
+
 /**
  * VS Code & Antigravity IDE Extension Activation Handler
  */
@@ -55,28 +88,40 @@ function activate(context) {
 
         if (data.type === 'userInput') {
           const lowerText = data.text.toLowerCase();
+          const audit = inspectProject(targetDir);
 
-          // Pertanyaan membaca folder / project
-          if (lowerText.includes('baca') || lowerText.includes('folder') || lowerText.includes('project') || lowerText.includes('proyek') || lowerText.includes('bisa')) {
-            try {
-              const currentBranch = execSync('git branch --show-current', { cwd: targetDir }).toString().trim() || 'main';
-              const hasBlueprint = fs.existsSync(path.join(targetDir, 'BRAND.md'));
-              const filesCount = fs.readdirSync(targetDir).length;
+          // Pertanyaan membaca folder / project / status / pull
+          if (lowerText.includes('baca') || lowerText.includes('folder') || lowerText.includes('project') || lowerText.includes('proyek') || lowerText.includes('status') || lowerText.includes('isi') || lowerText.includes('pull')) {
+            let html = `<b>🔍 LAPORAN INSPEKSI PROYEK REAL-TIME (ASISTEN JOE)</b><br/><br/>` +
+              `📁 <b>Folder Proyek:</b> <code>${folderName}</code><br/>` +
+              `📍 <b>Lokasi:</b> <code>${targetDir}</code><br/>` +
+              `🌿 <b>Ruang Kerja Aktif:</b> <code>${audit.currentBranch}</code><br/>` +
+              `📊 <b>Ruang Kerja Terdeteksi:</b> ${audit.branchesPresent.map(b => `<code>${b}</code>`).join(', ')}<br/>` +
+              `📝 <b>Perubahan Belum Disimpan:</b> ${audit.changedFilesCount} berkas<br/>` +
+              `🛡️ <b>Tata Kelola & SOP SaaS:</b> ${audit.hasBlueprint ? '✅ Terpasang Lengkap' : '❌ Belum Terpasang'}<br/><br/>`;
 
-              let replyMsg = `<b>Ya, Asisten Joe sudah bisa membaca Folder Proyek Anda secara real-time! 📂</b><br/><br/>` +
-                `• <b>Nama Proyek:</b> <code>${folderName}</code><br/>` +
-                `• <b>Lokasi Folder:</b> <code>${targetDir}</code><br/>` +
-                `• <b>Ruang Kerja Aktif:</b> <code>${currentBranch}</code><br/>` +
-                `• <b>Jumlah Berkas Root:</b> ${filesCount} berkas<br/>` +
-                `• <b>Status Tata Kelola SaaS:</b> ${hasBlueprint ? '✅ Terpasang Lengkap (SOP & CI/CD)' : '⚠️ Belum Terpasang (Klik "Fitur Baru" atau jalankan Setup)'}<br/><br/>` +
-                `Ada yang bisa Asisten Joe bantu jalankan untuk proyek <b>${folderName}</b> ini?`;
-
-              currentPanel.webview.postMessage({ type: 'response', text: replyMsg });
-              return;
-            } catch (err) {
-              currentPanel.webview.postMessage({ type: 'response', text: `📂 <b>Folder Proyek Terdeteksi:</b> <code>${folderName}</code> (${targetDir}).` });
-              return;
+            if (audit.rootStructure.length > 0) {
+              html += `📂 <b>Struktur Berkas Utama:</b><br/><code>` + audit.rootStructure.slice(0, 8).join(', ') + `</code><br/><br/>`;
             }
+
+            html += `🎯 <b>REKOMENDASI RENCANA KERJA ASISTEN JOE:</b><br/>`;
+
+            if (!audit.hasBlueprint) {
+              html += `1. <b>Suntikkan Tata Kelola SaaS:</b> Folder proyek ini belum memiliki 20 berkas SOP & CI/CD. Ketik <i>"Setup Blueprint"</i> atau klik tombol <b>Inisialisasi Blueprint</b>.<br/>`;
+            }
+
+            if (!audit.branchesPresent.includes('develop')) {
+              html += `2. <b>Siapkan Ruang Kerja Integrasi:</b> Proyek ini belum memiliki cabang <code>develop</code>.<br/>`;
+            }
+
+            if (audit.currentBranch === 'main') {
+              html += `💡 <b>Peringatan Keamanan:</b> Anda sedang berada di Ruang Utama (<code>main</code>). Untuk mulai bekerja, Asisten Joe menyarankan Anda beralih ke Ruang Fitur baru dari <code>develop</code>.<br/>`;
+            } else if (audit.changedFilesCount > 0) {
+              html += `💡 <b>Rekomendasi Pekerjaan:</b> Ada ${audit.changedFilesCount} berkas diubah. Ketik <i>"Ajukan PR"</i> untuk menguji & menggabungkan ke <code>develop</code>.<br/>`;
+            }
+
+            currentPanel.webview.postMessage({ type: 'response', text: html });
+            return;
           }
           
           if (lowerText.includes('fitur baru') || lowerText.includes('buat fitur')) {
@@ -93,7 +138,7 @@ function activate(context) {
               currentPanel.webview.postMessage({ type: 'response', text: `❌ Gagal: ${err.message}` });
             }
           } else {
-            currentPanel.webview.postMessage({ type: 'response', text: `Asisten Joe membaca folder <b>${folderName}</b>. Anda mengetik: <i>"${data.text}"</i>.<br/>💡 Coba tanyakan: <i>"Bagaimana status folder proyek saya?"</i>` });
+            currentPanel.webview.postMessage({ type: 'response', text: `Asisten Joe membaca proyek <b>${folderName}</b> (Ruang: <code>${audit.currentBranch}</code>).<br/>Anda mengetik: <i>"${data.text}"</i>.<br/>💡 Ketik <i>"baca folder"</i> untuk melihat laporan inspeksi proyek secara lengkap.` });
           }
         }
       });
