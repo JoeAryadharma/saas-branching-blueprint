@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - SAST & Conventional Commits Edition",
-  "description": "Asisten Joe v8.0: Adopsi 4 Repo GitHub Tingkat Tinggi (Semgrep SAST Code Vulnerability Scanner, OpenCommit AI Conventional Commits, Flagsmith Feature Flag Guard, Code2Flow Logic Mapper).",
-  "version": "8.0.0",
+  "displayName": "Asisten Joe - Ultimate Vibe Coder Suite",
+  "description": "Asisten Joe v9.0: Ultimate Vibe Coder Suite (.env.example Synchronizer, Prompt Refiner, Atomic Commit Slicer, Auto Test Spec Drafter, SAST & Conventional Commits).",
+  "version": "9.0.0",
   "publisher": "joecompanyagent-lab",
   "license": "MIT",
   "engines": {
@@ -51,7 +51,7 @@
       },
       {
         "command": "saasWorkflow.auditVibeCoding",
-        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (SAST v8.0)"
+        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.0)"
       },
       {
         "command": "saasWorkflow.initProject",

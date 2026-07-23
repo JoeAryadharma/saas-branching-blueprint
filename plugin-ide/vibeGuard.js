@@ -2,28 +2,18 @@ const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
 const SASTScanner = require('./sastScanner');
+const VibeOptimizer = require('./vibeOptimizer');
 
 // ============================================================
-// VIBE GUARD v8.0 -- ADOPSI REPO GITHUB TINGKAT TINGGI
-// 1. Semgrep SAST Code Vulnerability Scanner
-// 2. OpenCommit / PR-Agent AI Conventional Commits
-// 3. Flagsmith Feature Flag Guard
-// 4. GitGuardian 25+ Secret Database
-// 5. Keploy Build Sanity Check & GitLens File Evolution
+// VIBE GUARD v9.0 -- ULTIMATE VIBE CODER SUITE
+// Integrasi VibeGuard + SASTScanner + VibeOptimizer
 // ============================================================
 
 class VibeGuard {
 
-  // ============================================================
-  // 1. SENSOR KEAMANAN RAHASIA (25+ POLA PRESISI HIGH)
-  // Adopsi dari GitGuardian
-  // ============================================================
   static scanHardcodedSecrets(diffContent) {
     const findings = [];
-
-    if (!diffContent || diffContent === '[Tidak ada perubahan terdeteksi]') {
-      return { isSafe: true, findings };
-    }
+    if (!diffContent || diffContent === '[Tidak ada perubahan terdeteksi]') return { isSafe: true, findings };
 
     const addedLines = diffContent.split('\n')
       .filter(line => line.startsWith('+') && !line.startsWith('+++'))
@@ -60,25 +50,14 @@ class VibeGuard {
     addedLines.forEach((line, index) => {
       secretPatterns.forEach(p => {
         if (p.pattern.test(line)) {
-          const linePreview = line.trim().substring(0, 55);
-          findings.push({
-            type: p.name,
-            snippet: linePreview,
-            lineNum: index + 1
-          });
+          findings.push({ type: p.name, snippet: line.trim().substring(0, 55), lineNum: index + 1 });
         }
       });
     });
 
-    return {
-      isSafe: findings.length === 0,
-      findings
-    };
+    return { isSafe: findings.length === 0, findings };
   }
 
-  // ============================================================
-  // 2. PELACAK RIWAYAT PERUBAHAN BERKAS (GitLens Adoption)
-  // ============================================================
   static traceFileEvolution(targetDir, filePath) {
     try {
       const relativePath = path.relative(targetDir, filePath);
@@ -95,9 +74,6 @@ class VibeGuard {
     }
   }
 
-  // ============================================================
-  // 3. UJI KELAIKAN MANDIRI / BUILD CHECK (Keploy Adoption)
-  // ============================================================
   static runSanityCheck(targetDir) {
     const results = { isPassed: true, errors: [] };
     try {
@@ -117,9 +93,6 @@ class VibeGuard {
     return results;
   }
 
-  // ============================================================
-  // 4. PENJAGA KESTABILAN FITUR LAMA (REGRESSION GUARD)
-  // ============================================================
   static detectRegressionRisk(targetDir, diffContent, areas) {
     const risks = [];
     const coreKeywords = ['auth', 'user', 'session', 'db', 'database', 'config', 'middleware', 'payment', 'kasir', 'inti'];
@@ -128,7 +101,6 @@ class VibeGuard {
     highRiskFiles.forEach(file => {
       const lower = file.toLowerCase();
       const matchedKeyword = coreKeywords.find(kw => lower.includes(kw));
-
       if (matchedKeyword) {
         risks.push({
           file,
@@ -138,16 +110,9 @@ class VibeGuard {
       }
     });
 
-    return {
-      hasRisk: risks.length > 0,
-      riskCount: risks.length,
-      risks
-    };
+    return { hasRisk: risks.length > 0, riskCount: risks.length, risks };
   }
 
-  // ============================================================
-  // 5. DETEKTOR KODE DUPLIKAT & BERKAS SAMPAH
-  // ============================================================
   static scanDuplicateLogic(targetDir, diffContent) {
     const warnings = [];
     try {
@@ -187,34 +152,17 @@ class VibeGuard {
       });
     }
 
-    return {
-      hasDuplicates: warnings.length > 0,
-      warnings
-    };
+    return { hasDuplicates: warnings.length > 0, warnings };
   }
 
-  // ============================================================
-  // 6. PEMETA ALUR ARSITEKTUR OTOMATIS (Code2Flow Adoption)
-  // ============================================================
   static generateArchitectureMap(diffContent, areas) {
     const changedComponents = [];
+    if (areas.database && areas.database.length > 0) changedComponents.push({ id: 'DB', label: 'Modul Data (Database)', files: areas.database });
+    if (areas.api && areas.api.length > 0) changedComponents.push({ id: 'API', label: 'Modul Logika & API', files: areas.api });
+    if (areas.tampilan && areas.tampilan.length > 0) changedComponents.push({ id: 'UI', label: 'Modul Tampilan (UI)', files: areas.tampilan });
+    if (areas.konfigurasi && areas.konfigurasi.length > 0) changedComponents.push({ id: 'CONF', label: 'Modul Konfigurasi', files: areas.konfigurasi });
 
-    if (areas.database && areas.database.length > 0) {
-      changedComponents.push({ id: 'DB', label: 'Modul Data (Database)', files: areas.database });
-    }
-    if (areas.api && areas.api.length > 0) {
-      changedComponents.push({ id: 'API', label: 'Modul Logika & API', files: areas.api });
-    }
-    if (areas.tampilan && areas.tampilan.length > 0) {
-      changedComponents.push({ id: 'UI', label: 'Modul Tampilan (UI)', files: areas.tampilan });
-    }
-    if (areas.konfigurasi && areas.konfigurasi.length > 0) {
-      changedComponents.push({ id: 'CONF', label: 'Modul Konfigurasi', files: areas.konfigurasi });
-    }
-
-    if (changedComponents.length === 0) {
-      return '    A["Perubahan Kode Ringan"] --> B["Audit Kelaikan"]';
-    }
+    if (changedComponents.length === 0) return '    A["Perubahan Kode Ringan"] --> B["Audit Kelaikan"]';
 
     const mermaidLines = [];
     changedComponents.forEach((comp, idx) => {
@@ -229,21 +177,19 @@ class VibeGuard {
     return mermaidLines.join('\n');
   }
 
-  // ============================================================
-  // AUDIT LENGKAP VIBE CODING v8.0 (ALL-IN-ONE + SAST & FLAGS)
-  // ============================================================
   static auditAll(targetDir, diffContent, areas) {
     const secretAudit = VibeGuard.scanHardcodedSecrets(diffContent);
     const regressionAudit = VibeGuard.detectRegressionRisk(targetDir, diffContent, areas);
     const duplicateAudit = VibeGuard.scanDuplicateLogic(targetDir, diffContent);
     const sanityCheck = VibeGuard.runSanityCheck(targetDir);
 
-    // Integrasi SAST Scanner (Semgrep adoption)
     const sastAudit = SASTScanner.scanVulnerabilities(diffContent);
-
-    // Integrasi Feature Flags Audit (Flagsmith adoption)
     const totalLines = diffContent.split('\n').length;
     const flagAudit = SASTScanner.auditFeatureFlags(diffContent, totalLines);
+
+    // Integrasi VibeOptimizer (dotenv-safe sync & test spec drafting)
+    const envSync = VibeOptimizer.syncDotenvExample(targetDir, diffContent);
+    const testDraft = VibeOptimizer.draftTestSpec(targetDir, diffContent, areas);
 
     const archDiagram = VibeGuard.generateArchitectureMap(diffContent, areas);
 
@@ -261,6 +207,8 @@ class VibeGuard {
       sanityCheck,
       sastAudit,
       flagAudit,
+      envSync,
+      testDraft,
       archDiagram
     };
   }
