@@ -1,0 +1,14 @@
+# Dependency & Cache
+node_modules/
+.DS_Store
+*.log
+*.tmp
+
+# Environment Files
+.env
+.env.local
+
+# IDE & Temporary Files
+.vscode/
+.idea/
+.saas-blueprint-memory.json
