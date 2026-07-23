@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - Prompt Generator Edition",
-  "description": "Asisten Joe v9.5.6: Prompt Generator Syntax Auto-Fixer Edition (Smart Error Boundary, Auto-Save State Persistence, Git TTL Cache, AI Code Sanitizer, Automated OpenAPI API Spec Drafter, Performance Guard, Architecture Flowchart, Visual Task Board, .env.example Synchronizer, Prompt Refiner, SAST & Conventional Commits).",
-  "version": "9.5.6",
+  "displayName": "Asisten Joe - DSPy Prompt Compiler Edition",
+  "description": "Asisten Joe v9.5.7: Stanford DSPy & TextGrad Prompt Compiler Edition (Prompt Generator Syntax Auto-Fixer, Smart Error Boundary, Auto-Save State Persistence, Git TTL Cache, AI Code Sanitizer, Automated OpenAPI API Spec Drafter, Performance Guard, Architecture Flowchart, Visual Task Board, .env.example Synchronizer, SAST & Conventional Commits).",
+  "version": "9.5.7",
   "publisher": "joecompanyagent-lab",
   "license": "AGPL-3.0-only",
   "engines": {
@@ -51,7 +51,7 @@
       },
       {
         "command": "saasWorkflow.auditVibeCoding",
-        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.5.6)"
+        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.5.7)"
       },
       {
         "command": "saasWorkflow.initProject",

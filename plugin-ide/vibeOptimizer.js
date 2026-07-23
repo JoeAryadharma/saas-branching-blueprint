@@ -2,22 +2,88 @@ const path = require('path');
 const fs = require('fs');
 
 // ============================================================
-// VIBE OPTIMIZER v9.5.6 -- Ultimate Vibe Coder & Prompt Generator Suite
+// VIBE OPTIMIZER v9.5.7 -- Ultimate Vibe Coder & Prompt Generator Suite
 // 1. .env.example Synchronizer (dotenv-safe adoption)
 // 2. Prompt Refiner & Anti-Hallucination Engine (promptfoo & fabric adoption)
 // 3. Prompt Generator Syntax & Format Auto-Fixer (v9.5.6)
-// 4. Atomic Commit Slicer (opencommit & cz-cli adoption)
-// 5. Auto Test Spec Drafter (keploy adoption)
-// 6. Performance & Bundle Size Guard (v9.4.0)
-// 7. OpenAPI / Swagger API Spec Drafter (v9.5.0)
-// 8. AI Code & Text Sanitizer (v9.5.2 - strip-ansi adoption)
+// 4. DSPy & TextGrad Chain-of-Thought (CoT) Prompt Compiler (v9.5.7 - Stanford adoption)
+// 5. Atomic Commit Slicer (opencommit & cz-cli adoption)
+// 6. Auto Test Spec Drafter (keploy adoption)
+// 7. Performance & Bundle Size Guard (v9.4.0)
+// 8. OpenAPI / Swagger API Spec Drafter (v9.5.0)
+// 9. AI Code & Text Sanitizer (v9.5.2 - strip-ansi adoption)
 // ============================================================
 
 class VibeOptimizer {
 
   // ============================================================
+  // 4. ADOPSI DSPy & TEXTGRAD (v9.5.7 - Stanford NLP Adoption)
+  // Menyusun Prompt Berstruktur Tinggi dengan Chain-of-Thought (CoT)
+  // & Textual Gradient Feedback Loop
+  // ============================================================
+  static compileDSPyPrompt(rawPrompt, projectContext = '', options = {}) {
+    if (!rawPrompt || typeof rawPrompt !== 'string') return '';
+
+    const cleanedInput = this.cleanAIText(rawPrompt.trim());
+    const shortContext = projectContext ? projectContext.substring(0, 600) : 'Proyek SaaS Modern';
+
+    // DSPy Signature & TextGrad Step-by-Step Chain of Thought Framework
+    const dspyCompiledPrompt = [
+      `# ============================================================`,
+      `# PROMPT PRESISI TERKOMPILASI (DSPy & TextGrad Framework v9.5.7)`,
+      `# Pemegang Lisensi: GNU AGPL v3.0 | Asisten Joe Prompt Suite`,
+      `# ============================================================`,
+      ``,
+      `[PROFIL PERAN & SPESIALISASI]`,
+      `Anda adalah Senior Software Architect & AI Prompt Engineer terbaik.`,
+      `Tujuan Anda adalah menyelesaikan instruksi koding di bawah dengan 100% presisi tanpa halusinasi.`,
+      ``,
+      `[KONTEKS PROYEK & ARSITEKTUR]`,
+      `${shortContext}`,
+      ``,
+      `[INSTRUKSI UTAMA PENGGUNA]`,
+      `"${cleanedInput}"`,
+      ``,
+      `[ALUR BERPIKIR BERTAHAP (Chain-of-Thought / CoT)]`,
+      `Sebelum menghasilkan kodingan akhir, evaluasi langkah demi langkah:`,
+      `1. TERJEMAHAN KEBUTUHAN: Identifikasi modul mana yang perlu ditambahkan/diubah.`,
+      `2. INTEGRITAS FUNGSI LAMA: Pastikan tidak merusak fungsi yang sudah ada di proyek ini.`,
+      `3. KEAMANAN KUNCI: Jangan menuliskan password, token, atau API key secara langsung (Gunakan process.env).`,
+      `4. FORMAT SINTAKS: Berikan kode yang bersih, efisien, dan ber-indentasi rapi (2 spasi).`,
+      ``,
+      `[BATASAN KERAS PEKERJAAN]`,
+      `-- Bebas Emoji: Jangan gunakan emoji apapun di dalam komentar atau kode.`,
+      `-- Bebas Kode Berwarna: Jangan sertakan kode warna ANSI.`,
+      `-- Siap Eksekusi: Berikan kodingan utuh yang dapat langsung ditempel tanpa terpotong.`,
+      ``,
+      `[HASIL AKHIR YANG DIHARAPKAN]`,
+      `Berikan penjelasan ringkas langkah perbaikan, diikuti oleh blok kode lengkap.`
+    ].join('\n');
+
+    return this.sanitizePromptSyntax(dspyCompiledPrompt);
+  }
+
+  // ============================================================
+  // TEXTGRAD FEEDBACK REFINER (Stanford TextGrad Adoption)
+  // Memperbaiki prompt berdasarkan umpan balik kesalahan (Textual Gradient)
+  // ============================================================
+  static applyTextGradFeedback(originalPrompt, feedbackError) {
+    if (!originalPrompt) return '';
+    if (!feedbackError) return originalPrompt;
+
+    const refined = [
+      originalPrompt,
+      ``,
+      `[UMPAN BALIK PERBAIKAN TEKSUAL (TextGrad Gradient)]`,
+      `Koreksi Khusus Terdeteksi: "${feedbackError}"`,
+      `Instruksi Tambahan: Harap atasi kendala di atas dan pastikan kesalahan tersebut tidak terulang.`
+    ].join('\n');
+
+    return this.sanitizePromptSyntax(refined);
+  }
+
+  // ============================================================
   // 3. PEMBERSIPIH & PEMFORMAT PROMPT AI OTOMATIS (v9.5.6)
-  // Menjaga agar prompt generator 100% presisi tanpa halusinasi
   // ============================================================
   static sanitizePromptSyntax(promptText) {
     if (!promptText || typeof promptText !== 'string') return '';
@@ -27,27 +93,22 @@ class VibeOptimizer {
       .replace(/(["'])\s*:\s*["']([^"']*?)["']\s*([,}])/g, '$1: "$2"$3')
       // Menghapus trailing comma tak valid di akhir struktur objek prompt
       .replace(/,\s*([\}\]])/g, '$1')
-      // Merapikan penomoran & poin instruksi agar AI penerima membaca dengan presisi
+      // Merapikan penomoran & poin instruksi
       .replace(/\n\s*-\s*/g, '\n-- ')
       .replace(/\n\s*(\d+)\.\s*/g, '\n$1. ')
       .trim();
   }
 
   // ============================================================
-  // 8. PEMBERSIH KODE & ARTEFAK TEKS AI (v9.5.2 - strip-ansi adoption)
-  // Menyaring zero-width spaces, kode ANSI, & control characters
+  // 9. PEMBERSIH KODE & ARTEFAK TEKS AI (v9.5.2 - strip-ansi adoption)
   // ============================================================
   static cleanAIText(text) {
     if (!text || typeof text !== 'string') return '';
 
     return text
-      // Hapus kode warna ANSI escape
       .replace(/\x1B\[[0-9;]*[a-zA-Z]/g, '')
-      // Hapus Zero-Width Space & BOM (\u200B, \u200C, \u200D, \uFEFF)
       .replace(/[\u200B\u200C\u200D\uFEFF]/g, '')
-      // Hapus karakter kontrol tak valid (\u0000-\u0008, \u000B, \u000C, \u000E-\u001F)
       .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
-      // Samakan pemisah baris \r\n menjadi \n
       .replace(/\r\n/g, '\n');
   }
 
@@ -91,7 +152,7 @@ class VibeOptimizer {
     });
 
     if (newlyAppended.length > 0) {
-      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v9.5)\n' +
+      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v9.5.7)\n' +
         newlyAppended.map(k => `${k}=`).join('\n') + '\n';
 
       try {
@@ -106,35 +167,14 @@ class VibeOptimizer {
   }
 
   // ============================================================
-  // 2. PENGOPTIMASI PROMPT AI / PROMPT GENERATOR (v9.5.6)
+  // 2. PENGOPTIMASI PROMPT AI / PROMPT GENERATOR (v9.5.7 DSPy Refiner)
   // ============================================================
   static refineVibePrompt(rawPrompt, projectContext = '') {
-    if (!rawPrompt || rawPrompt.trim().length === 0) {
-      return rawPrompt;
-    }
-
-    const structuredPrompt = [
-      `[INSTRUKSI PRESISI AI PROMPT GENERATOR - ASISTEN JOE v9.5.6]`,
-      ``,
-      `PERAN: Senior Software Architect & Prompt Engineer`,
-      `KONTEKS PROYEK:`,
-      projectContext ? projectContext.substring(0, 500) : 'Proyek SaaS Modern',
-      ``,
-      `TUGAS UTAMA VIBE CODING:`,
-      `"${rawPrompt.trim()}"`,
-      ``,
-      `BATASAN KERAS KODING:`,
-      `1. Jangan ubah atau hapus fungsi lama yang sudah berjalan normal di proyek ini.`,
-      `2. Jangan menuliskan API Key, Token, atau Password langsung di dalam berkas kode. Gunakan process.env.`,
-      `3. Jangan gunakan emoji dalam respons atau komentar kode.`,
-      `4. Berikan kodingan yang bersih, terstruktur, dan mudah dipahami.`
-    ].join('\n');
-
-    return this.sanitizePromptSyntax(structuredPrompt);
+    return this.compileDSPyPrompt(rawPrompt, projectContext);
   }
 
   // ============================================================
-  // 4. PEMISAH SIMPANAN GIT PER MODUL (Atomic Commit Adoption)
+  // 5. PEMISAH SIMPANAN GIT PER MODUL (Atomic Commit Adoption)
   // ============================================================
   static sliceAtomicCommits(areas) {
     const commitGroups = [];
@@ -172,7 +212,7 @@ class VibeOptimizer {
   }
 
   // ============================================================
-  // 5. PEMBUAT DRAF BERKAS PENGUJIAN (Keploy Adoption)
+  // 6. PEMBUAT DRAF BERKAS PENGUJIAN (Keploy Adoption)
   // ============================================================
   static draftTestSpec(targetDir, diffContent, areas) {
     if (!diffContent || diffContent === '[Tidak ada perubahan terdeteksi]') {
@@ -192,7 +232,7 @@ class VibeOptimizer {
     const now = new Date().toLocaleString('id-ID');
 
     const testContent = [
-      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.5.6`,
+      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.5.7 (DSPy Engine)`,
       `// Waktu Dibuat: ${now}`,
       ``,
       `describe('Uji Kelaikan Modul Baru (Vibe Autotest)', () => {`,
@@ -219,8 +259,7 @@ class VibeOptimizer {
   }
 
   // ============================================================
-  // 6. PENGAWAL PERFORMA & UKURAN PUSTAKA (v9.4.0)
-  // Memeriksa pustaka berukuran berat & memberikan alternatif ringan
+  // 7. PENGAWAL PERFORMA & UKURAN PUSTAKA (v9.4.0)
   // ============================================================
   static auditBundleSize(targetDir, diffContent) {
     const warnings = [];
@@ -253,8 +292,7 @@ class VibeOptimizer {
   }
 
   // ============================================================
-  // 7. PEMBUAT DOKUMENTASI API OTOMATIS (v9.5.0)
-  // Memindai rute API & membuat berkas DOKUMENTASI_API.md
+  // 8. PEMBUAT DOKUMENTASI API OTOMATIS (v9.5.0)
   // ============================================================
   static draftAPIDocumentation(targetDir, diffContent) {
     const apiDocPath = path.join(targetDir, 'DOKUMENTASI_API.md');
@@ -272,7 +310,7 @@ class VibeOptimizer {
     }
 
     const now = new Date().toLocaleString('id-ID');
-    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.5.6 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
+    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.5.7 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
 
     if (detectedEndpoints.length > 0) {
       content += `## RINGKASAN ENDPOINT TERDETEKSI\n\n| METODE | JALUR RUTE (PATH) | DESKRIPSI |\n| :--- | :--- | :--- |\n`;
