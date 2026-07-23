@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - Speed Accelerator Edition",
-  "description": "Asisten Joe v9.5.3: Git TTL Cache & Speed Accelerator - simple-git adoption (AI Code Sanitizer, Automated OpenAPI API Spec Drafter, Performance Guard, Architecture Flowchart, Visual Task Board, .env.example Synchronizer, Prompt Refiner, SAST & Conventional Commits).",
-  "version": "9.5.3",
+  "displayName": "Asisten Joe - Auto-Save State Edition",
+  "description": "Asisten Joe v9.5.4: Auto-Save State Persistence - continuedev adoption (Git TTL Cache, AI Code Sanitizer, Automated OpenAPI API Spec Drafter, Performance Guard, Architecture Flowchart, Visual Task Board, .env.example Synchronizer, Prompt Refiner, SAST & Conventional Commits).",
+  "version": "9.5.4",
   "publisher": "joecompanyagent-lab",
   "license": "MIT",
   "engines": {
@@ -51,7 +51,7 @@
       },
       {
         "command": "saasWorkflow.auditVibeCoding",
-        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.5.3)"
+        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.5.4)"
       },
       {
         "command": "saasWorkflow.initProject",

@@ -86,7 +86,7 @@
       Asisten Joe
     </div>
     <div class="badge-personal">
-      v9.5.3 SPEED ACCELERATOR SUITE
+      v9.5.4 AUTO-SAVE SUITE
     </div>
   </div>
 
@@ -115,11 +115,11 @@
     <div class="message assistant">
       <div class="sender-label">Asisten Joe</div>
       <div class="bubble">
-        Selamat datang. Saya <b>Asisten Joe v9.5.3</b> -- Speed Accelerator Edition.<br/><br/>
-        Fitur Baru v9.5.3 (Patch Upgrade):<br/>
-        -- <b>Akselerasi Cache Git 500ms (simple-git):</b> Panel merespons 3x lebih cepat & menghemat CPU<br/>
-        -- <b>Pembersih Teks AI (v9.5.2):</b> Sanitasi zero-width spaces & kode ANSI<br/>
-        -- <b>Pembuat Dokumentasi API (v9.5.0):</b> OpenAPI / Swagger Spec
+        Selamat datang. Saya <b>Asisten Joe v9.5.4</b> -- Auto-Save State Persistence Edition.<br/><br/>
+        Fitur Baru v9.5.4 (Patch Upgrade):<br/>
+        -- <b>Pemulihan Obrolan Otomatis (continuedev):</b> Draf ketikan tersimpan otomatis & aman saat tab tertutup/reload<br/>
+        -- <b>Akselerasi Cache Git 500ms (v9.5.3):</b> Respon 3x lebih cepat<br/>
+        -- <b>Pembersih Teks AI (v9.5.2):</b> Sanitasi zero-width & ANSI
       </div>
     </div>
   </div>
@@ -167,6 +167,16 @@
   <script>
     const vscode = acquireVsCodeApi();
 
+    // v9.5.4: Pemulihan Status Draf Otomatis (continuedev adoption)
+    const previousState = vscode.getState();
+    if (previousState && previousState.draftText) {
+      document.getElementById('promptInput').value = previousState.draftText;
+    }
+
+    document.getElementById('promptInput').addEventListener('input', (e) => {
+      vscode.setState({ draftText: e.target.value });
+    });
+
     function sendMessage() {
       const input = document.getElementById('promptInput');
       const text = input.value.trim();
@@ -174,6 +184,7 @@
 
       appendMessage('user', text);
       input.value = '';
+      vscode.setState({ draftText: '' }); // Bersihkan draf tersimpan setelah terkirim
 
       vscode.postMessage({ type: 'userInput', text: text });
     }
