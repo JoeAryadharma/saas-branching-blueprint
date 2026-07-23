@@ -9,8 +9,8 @@ const SASTScanner = require('./sastScanner');
 const VibeOptimizer = require('./vibeOptimizer');
 
 // ============================================================
-// ASISTEN JOE v9.0 -- CHAT PROVIDER
-// Ultimate Vibe Coder Suite + Robust Conflict Auto-Recovery
+// ASISTEN JOE v9.1.1 -- CHAT PROVIDER
+// Ultimate Vibe Coder Suite + Executive Summary Visualizer
 // ============================================================
 
 class SaaSWorkflowChatProvider {
@@ -57,7 +57,10 @@ class SaaSWorkflowChatProvider {
     const diff = CodeReader.getRecentDiff(targetDir);
     VibeOptimizer.syncDotenvExample(targetDir, diff);
 
-    if (lowerText.includes('optimalkan prompt') || lowerText.includes('refine prompt') || lowerText.includes('rapikan prompt')) {
+    if (lowerText.includes('ringkasan eksekutif') || lowerText.includes('executive summary') || lowerText.includes('laporan eksekutif')) {
+      await this._handleExecutiveSummary(targetDir, folderName, audit, diff);
+    }
+    else if (lowerText.includes('optimalkan prompt') || lowerText.includes('refine prompt') || lowerText.includes('rapikan prompt')) {
       await this._handleRefinePrompt(targetDir, folderName, text, audit);
     }
     else if (lowerText.includes('vibe') || lowerText.includes('audit vibe') || lowerText.includes('pengawal') || lowerText.includes('sast') || lowerText.includes('kunci bocor') || lowerText.includes('regresi')) {
@@ -98,6 +101,35 @@ class SaaSWorkflowChatProvider {
   }
 
   // ============================================================
+  // FITUR BARU v9.1.0: RINGKASAN EKSEKUTIF UNTUK MANAJEMEN
+  // ============================================================
+  async _handleExecutiveSummary(targetDir, folderName, audit, diff) {
+    const areas = CodeReader.classifyChanges(targetDir);
+    const vibeResult = VibeGuard.auditAll(targetDir, diff, areas);
+    const commits = CodeReader.getRecentCommits(targetDir, 5);
+
+    let html = `<b>LAPORAN RINGKASAN EKSEKUTIF (v9.1.1)</b><br/>` +
+      `<small style="color:#94a3b8;">Dibuat untuk Manajemen & Pemilik Bisnis | Proyek: ${folderName}</small><br/><br/>` +
+      `<div style="background:#1a2332;border:1px solid #3b82f6;border-radius:4px;padding:10px;font-size:11.5px;">` +
+      `<b>1. STATUS KESEHATAN SISTEM:</b><br/>` +
+      `-- Ruang Kerja Aktif: <code>${audit.currentBranch}</code><br/>` +
+      `-- Kunci Rahasia Database: <b style="color:${vibeResult.secretAudit.isSafe ? '#22c55e' : '#ef4444'};">${vibeResult.secretAudit.isSafe ? 'AMAN' : 'BAHAYA'}</b><br/>` +
+      `-- Pemindaian Celah SAST: <b style="color:${vibeResult.sastAudit.isClean ? '#22c55e' : '#ef4444'};">${vibeResult.sastAudit.isClean ? 'BERSIH' : 'ADA CELAH'}</b><br/>` +
+      `-- Sinkronisasi .env.example: <b>TERJAGA</b><br/><br/>` +
+      `<b>2. RIWAYAT PEMBARUAN TERKINI (5 COMMIT):</b><br/>`;
+
+    commits.forEach(c => {
+      html += `-- <code>${c.hash}</code>: ${c.message}<br/>`;
+    });
+
+    html += `<br/><b>3. REKOMENDASI MANAJEMEN:</b><br/>` +
+      `${vibeResult.isFullyPassed ? 'Sistem dalam kondisi prima dan siap untuk rilis simulasi/produksi.' : 'Selesaikan perbaikan audit teknis sebelum melakukan penggabungan kode.'}</div>`;
+
+    this._appendLog(targetDir, folderName, "RINGKASAN EKSEKUTIF v9.1.1", "Menerbitkan Laporan Eksekutif", audit);
+    this._reply(html);
+  }
+
+  // ============================================================
   // PENGOPTIMASI PROMPT VIBE CODING (promptfoo & fabric adoption)
   // ============================================================
   async _handleRefinePrompt(targetDir, folderName, userText, audit) {
@@ -135,7 +167,7 @@ class SaaSWorkflowChatProvider {
       return;
     }
 
-    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.0 & Uji Kelaikan Mandiri...</small>`);
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.1.1 & Uji Kelaikan Mandiri...</small>`);
 
     const diff = preFetchedDiff || CodeReader.getRecentDiff(targetDir);
     const areas = CodeReader.classifyChanges(targetDir);
@@ -202,7 +234,7 @@ class SaaSWorkflowChatProvider {
       this._memory.incrementStat('total_penggabungan');
       this._memory.addDecision(`Penggabungan ${currentBranch} ke develop`, `Conventional Commit: ${convCommit.commitHeader}`);
       this._updateChangelog(targetDir, folderName, currentBranch, commits);
-      this._appendLog(targetDir, folderName, "PENGGABUNGAN + ULTIMATE VIBE GUARD v9.0", `${currentBranch} ke develop`, audit);
+      this._appendLog(targetDir, folderName, "PENGGABUNGAN + ULTIMATE VIBE GUARD v9.1.1", `${currentBranch} ke develop`, audit);
 
       const statusText = hasIssues ? '[BERHASIL DENGAN TEMUAN]' : '[BERHASIL]';
       this._reply(
@@ -218,16 +250,16 @@ class SaaSWorkflowChatProvider {
   }
 
   // ============================================================
-  // AUDIT VIBE CODING v9.0
+  // AUDIT VIBE CODING v9.1.1
   // ============================================================
   async _handleVibeCodingAudit(targetDir, folderName, userText, audit, preFetchedDiff = null) {
-    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.0...</small>`);
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.1.1...</small>`);
 
     const diff = preFetchedDiff || CodeReader.getRecentDiff(targetDir);
     const areas = CodeReader.classifyChanges(targetDir);
     const vibeResult = VibeGuard.auditAll(targetDir, diff, areas);
 
-    let html = `<b>LAPORAN AUDIT PENGAWAL VIBE CODING v9.0</b><br/>` +
+    let html = `<b>LAPORAN AUDIT PENGAWAL VIBE CODING v9.1.1</b><br/>` +
       `<small style="color:#94a3b8;">Proyek: ${folderName} | ${this._ai.modelName}</small><br/><br/>`;
 
     // 1. Audit Rahasia
@@ -246,7 +278,7 @@ class SaaSWorkflowChatProvider {
       `<b style="color:${envColor};">3. SINKRONISASI .ENV.EXAMPLE: [${vibeResult.envSync.isUpdated ? `${vibeResult.envSync.addedKeys.length} KUNCI DISINKRONKAN` : 'TERJAGA'}]</b></div>`;
 
     this._updateWidget(audit, targetDir, vibeResult);
-    this._appendLog(targetDir, folderName, "AUDIT VIBE CODING v9.0", `SAST: ${vibeResult.sastAudit.isClean ? 'BERSIH' : 'ADA CELAH'}`, audit);
+    this._appendLog(targetDir, folderName, "AUDIT VIBE CODING v9.1.1", `SAST: ${vibeResult.sastAudit.isClean ? 'BERSIH' : 'ADA CELAH'}`, audit);
     this._reply(html);
   }
 
@@ -263,7 +295,7 @@ class SaaSWorkflowChatProvider {
 
     let existingContent = '';
     try { if (fs.existsSync(changelogPath)) existingContent = fs.readFileSync(changelogPath, 'utf8'); } catch (e) {}
-    const header = existingContent ? '' : `# CATATAN RILIS PROYEK (${folderName})\n\nDokumen ini disusun secara otomatis oleh Asisten Joe v9.0.\n\n---\n`;
+    const header = existingContent ? '' : `# CATATAN RILIS PROYEK (${folderName})\n\nDokumen ini disusun secara otomatis oleh Asisten Joe v9.1.1.\n\n---\n`;
     try { fs.writeFileSync(changelogPath, header + newEntry + existingContent, 'utf8'); } catch (e) {}
   }
 
@@ -520,7 +552,7 @@ class SaaSWorkflowChatProvider {
       `## 1. TABEL REKAP OPERASI (CRUD)\n\n| Waktu | Aktivitas | Deskripsi | Ruang | Status |\n| :--- | :--- | :--- | :--- | :--- |\n${crudRows}\n\n---\n\n` +
       `## 2. DIAGRAM ALUR PEKERJAAN SESI\n\n\`\`\`mermaid\nflowchart TD\n    START["Awal Sesi"] --> ${this._logHistory.length ? 'N0' : 'END'}\n${mNodes}\n` +
       `    ${this._logHistory.length ? `N${this._logHistory.length-1}` : 'START'} --> END["Terkini: ${audit.currentBranch}"]\n\`\`\`\n\n---\n\n` +
-      `*Disusun otomatis oleh Asisten Joe v9.0 Ultimate Vibe Suite*\n`;
+      `*Disusun otomatis oleh Asisten Joe v9.1.1 Executive Visualizer Suite*\n`;
     try { fs.writeFileSync(logPath, content, 'utf8'); } catch (e) {}
   }
 
