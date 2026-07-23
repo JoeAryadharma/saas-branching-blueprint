@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - Vibe Coding Safety & Quality Guard",
-  "description": "Asisten Joe v6.0: Pengawal & Auditor Kualitas Vibe Coding (Secret & Credential Scanner, Regression Risk Guard, Duplicate Logic Detector, Auto Architecture Mapper).",
-  "version": "6.0.0",
+  "displayName": "Asisten Joe - Native IDE Theme & Vibe Guard",
+  "description": "Asisten Joe v6.1: Antarmuka 100% Native IDE Theme Variables, Pengawal & Auditor Kualitas Vibe Coding (Secret Scanner, Regression Guard, Duplicate Detector, Architecture Mapper).",
+  "version": "6.1.0",
   "publisher": "joecompanyagent-lab",
   "engines": {
     "vscode": "^1.90.0"

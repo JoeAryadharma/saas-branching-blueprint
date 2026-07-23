@@ -5,70 +5,249 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Asisten Joe</title>
   <style>
+    /* ============================================================
+       NATIVE IDE UI/UX THEME (VS Code Theme Variables)
+       100% Mengikuti sistem dan tema warna bawaan IDE secara otomatis
+       ============================================================ */
     :root {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
-      --text-color: #f8fafc;
-      --text-muted: #94a3b8;
-      --accent-gold: #eab308;
-      --accent-blue: #3b82f6;
-      --accent-green: #22c55e;
-      --accent-amber: #f59e0b;
-      --accent-red: #ef4444;
-      --border-color: #334155;
+      --bg-color: var(--vscode-editor-background, #1e1e1e);
+      --card-bg: var(--vscode-editorWidget-background, #252526);
+      --text-color: var(--vscode-editor-foreground, #cccccc);
+      --text-muted: var(--vscode-descriptionForeground, #717171);
+      --border-color: var(--vscode-widget-border, var(--vscode-panel-border, #454545));
+      
+      --btn-bg: var(--vscode-button-background, #0e639c);
+      --btn-fg: var(--vscode-button-foreground, #ffffff);
+      --btn-hover: var(--vscode-button-hoverBackground, #1177bb);
+      
+      --input-bg: var(--vscode-input-background, #3c3c3c);
+      --input-fg: var(--vscode-input-foreground, #cccccc);
+      --input-border: var(--vscode-input-border, #3c3c3c);
+      
+      --badge-bg: var(--vscode-badge-background, #4d4d4d);
+      --badge-fg: var(--vscode-badge-foreground, #ffffff);
+      
+      --accent-green: var(--vscode-testing-iconPassed, #4ec9b0);
+      --accent-gold: var(--vscode-editorWarning-foreground, #cca700);
+      --accent-blue: var(--vscode-textLink-foreground, #3794ff);
+      --accent-red: var(--vscode-errorForeground, #f48771);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; height: 100vh; font-size: 13px; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: var(--vscode-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif); 
+    }
+    
+    body { 
+      background-color: var(--bg-color); 
+      color: var(--text-color); 
+      display: flex; 
+      flex-direction: column; 
+      height: 100vh; 
+      font-size: var(--vscode-font-size, 13px); 
+    }
 
-    /* Header Bar */
-    .header { padding: 10px 12px; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-    .header-title { font-weight: 600; font-size: 13.5px; color: var(--accent-gold); display: flex; align-items: center; gap: 8px; }
-    .badge-personal { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); padding: 3px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 600; border: 1px solid rgba(59, 130, 246, 0.3); }
+    /* Header Bar -- Native Panel Style */
+    .header { 
+      padding: 8px 12px; 
+      background-color: var(--card-bg); 
+      border-bottom: 1px solid var(--border-color); 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+    }
+    .header-title { 
+      font-weight: 600; 
+      font-size: 13px; 
+      color: var(--text-color); 
+      display: flex; 
+      align-items: center; 
+      gap: 6px; 
+    }
+    .badge-personal { 
+      background: var(--badge-bg); 
+      color: var(--badge-fg); 
+      padding: 2px 6px; 
+      border-radius: 2px; 
+      font-size: 10px; 
+      font-weight: 600; 
+      letter-spacing: 0.3px; 
+    }
 
-    /* Project Health Widget (4 Kartu Meteran) */
-    .health-widget { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 8px 12px; background: rgba(15, 23, 42, 0.6); border-bottom: 1px solid var(--border-color); }
-    .widget-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 4px; padding: 6px 8px; text-align: center; }
-    .widget-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.3px; }
-    .widget-value { font-size: 11px; font-weight: 700; color: var(--text-color); margin-top: 2px; }
+    /* Project Health Widget -- Native Card Grid */
+    .health-widget { 
+      display: grid; 
+      grid-template-columns: repeat(4, 1fr); 
+      gap: 4px; 
+      padding: 6px 12px; 
+      background-color: var(--bg-color); 
+      border-bottom: 1px solid var(--border-color); 
+    }
+    .widget-card { 
+      background: var(--card-bg); 
+      border: 1px solid var(--border-color); 
+      border-radius: 3px; 
+      padding: 5px 6px; 
+      text-align: center; 
+    }
+    .widget-label { 
+      font-size: 8.5px; 
+      color: var(--text-muted); 
+      text-transform: uppercase; 
+      font-weight: 600; 
+      letter-spacing: 0.3px; 
+    }
+    .widget-value { 
+      font-size: 11px; 
+      font-weight: 700; 
+      color: var(--text-color); 
+      margin-top: 1px; 
+    }
     .widget-value.green { color: var(--accent-green); }
     .widget-value.gold { color: var(--accent-gold); }
     .widget-value.blue { color: var(--accent-blue); }
     .widget-value.red { color: var(--accent-red); }
 
-    /* Chat Area */
-    .chat-container { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
-    .message { display: flex; flex-direction: column; max-width: 90%; animation: fadeIn 0.2s ease-in-out; }
+    /* Chat Log Area */
+    .chat-container { 
+      flex: 1; 
+      overflow-y: auto; 
+      padding: 12px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 10px; 
+    }
+    .message { 
+      display: flex; 
+      flex-direction: column; 
+      max-width: 92%; 
+      animation: fadeIn 0.15s ease-in-out; 
+    }
     .message.user { align-self: flex-end; }
     .message.assistant { align-self: flex-start; }
 
-    .bubble { padding: 10px 14px; border-radius: 6px; line-height: 1.5; font-size: 12.5px; }
-    .message.user .bubble { background: #2563eb; color: #ffffff; border-bottom-right-radius: 2px; }
-    .message.assistant .bubble { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); border-bottom-left-radius: 2px; }
+    .bubble { 
+      padding: 8px 12px; 
+      border-radius: 4px; 
+      line-height: 1.5; 
+      font-size: 12px; 
+    }
+    .message.user .bubble { 
+      background: var(--btn-bg); 
+      color: var(--btn-fg); 
+      border-bottom-right-radius: 1px; 
+    }
+    .message.assistant .bubble { 
+      background: var(--card-bg); 
+      color: var(--text-color); 
+      border: 1px solid var(--border-color); 
+      border-bottom-left-radius: 1px; 
+    }
 
-    .sender-label { font-size: 10px; color: var(--text-muted); margin-bottom: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .sender-label { 
+      font-size: 9.5px; 
+      color: var(--text-muted); 
+      margin-bottom: 2px; 
+      font-weight: 600; 
+      text-transform: uppercase; 
+      letter-spacing: 0.5px; 
+    }
 
-    /* Quick Action Chips -- 2 Baris */
-    .chips-area { border-top: 1px solid var(--border-color); background-color: rgba(30, 41, 59, 0.5); padding: 8px 12px; display: flex; flex-direction: column; gap: 6px; }
-    .chips-row { display: flex; gap: 6px; overflow-x: auto; }
-    .chip { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; white-space: nowrap; transition: all 0.2s; font-weight: 500; display: flex; align-items: center; gap: 5px; }
-    .chip:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
-    .chip:active { background: rgba(234, 179, 8, 0.1); }
-    .chip.highlight { border-color: rgba(234, 179, 8, 0.4); background: rgba(234, 179, 8, 0.08); color: var(--accent-gold); }
+    /* Quick Action Chips Area -- Native Widget Style */
+    .chips-area { 
+      border-top: 1px solid var(--border-color); 
+      background-color: var(--card-bg); 
+      padding: 6px 12px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 4px; 
+    }
+    .chips-row { 
+      display: flex; 
+      gap: 4px; 
+      overflow-x: auto; 
+    }
+    .chip { 
+      background: var(--bg-color); 
+      border: 1px solid var(--border-color); 
+      color: var(--text-color); 
+      padding: 4px 8px; 
+      border-radius: 3px; 
+      font-size: 11px; 
+      cursor: pointer; 
+      white-space: nowrap; 
+      transition: background 0.15s, border-color 0.15s; 
+      font-weight: 500; 
+      display: flex; 
+      align-items: center; 
+      gap: 4px; 
+    }
+    .chip:hover { 
+      background: var(--card-bg); 
+      border-color: var(--accent-blue); 
+      color: var(--accent-blue); 
+    }
+    .chip.highlight { 
+      border-color: var(--accent-gold); 
+      color: var(--accent-gold); 
+    }
 
-    /* Input Area */
-    .input-container { padding: 10px 12px; background: var(--card-bg); border-top: 1px solid var(--border-color); display: flex; gap: 8px; align-items: center; }
-    textarea { flex: 1; background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 4px; padding: 8px 10px; font-size: 12px; resize: none; outline: none; height: 38px; }
-    textarea:focus { border-color: var(--accent-blue); }
-    textarea::placeholder { color: var(--text-muted); }
-    .send-btn { background: var(--accent-blue); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 12px; transition: background 0.15s; }
-    .send-btn:hover { background: #1d4ed8; }
-    .send-btn:active { background: #1e40af; }
+    /* Input Area -- Native IDE Input Style */
+    .input-container { 
+      padding: 8px 12px; 
+      background: var(--card-bg); 
+      border-top: 1px solid var(--border-color); 
+      display: flex; 
+      gap: 6px; 
+      align-items: center; 
+    }
+    textarea { 
+      flex: 1; 
+      background: var(--input-bg); 
+      border: 1px solid var(--input-border); 
+      color: var(--input-fg); 
+      border-radius: 2px; 
+      padding: 6px 8px; 
+      font-size: 12px; 
+      resize: none; 
+      outline: none; 
+      height: 36px; 
+    }
+    textarea:focus { 
+      border-color: var(--accent-blue); 
+    }
+    textarea::placeholder { 
+      color: var(--text-muted); 
+    }
+    .send-btn { 
+      background: var(--btn-bg); 
+      color: var(--btn-fg); 
+      border: none; 
+      padding: 6px 14px; 
+      border-radius: 2px; 
+      cursor: pointer; 
+      font-weight: 600; 
+      font-size: 11.5px; 
+      transition: background 0.15s; 
+      height: 36px;
+    }
+    .send-btn:hover { 
+      background: var(--btn-hover); 
+    }
 
     /* SVG Icon Helpers */
-    .icon { width: 13px; height: 13px; fill: currentColor; display: inline-block; vertical-align: middle; flex-shrink: 0; }
+    .icon { 
+      width: 12px; 
+      height: 12px; 
+      fill: currentColor; 
+      display: inline-block; 
+      vertical-align: middle; 
+      flex-shrink: 0; 
+    }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
@@ -80,11 +259,11 @@
       Asisten Joe
     </div>
     <div class="badge-personal">
-      v6.0 VIBE GUARD
+      NATIVE IDE THEME
     </div>
   </div>
 
-  <!-- Project Health Widget (4 Kartu Meteran Vibe Coding Guard) -->
+  <!-- Project Health Widget (4 Kartu Meteran Native IDE) -->
   <div class="health-widget">
     <div class="widget-card">
       <div class="widget-label">Rahasia API</div>
@@ -109,19 +288,20 @@
     <div class="message assistant">
       <div class="sender-label">Asisten Joe</div>
       <div class="bubble">
-        Selamat datang. Saya <b>Asisten Joe v6.0</b> -- Pengawal & Auditor Kualitas Vibe Coding.<br/><br/>
-        Saya bertugas mengawal hasil prompt AI Anda agar:<br/>
-        -- <b>0% Kunci Rahasia/API Bocor</b> di dalam berkas kode<br/>
-        -- <b>0% Fitur Lama Rusak</b> akibat perubahan kode baru<br/>
-        -- <b>Bebas Berkas Sampah & Kode Duplikat</b> di dalam proyek<br/>
-        -- <b>Alur Arsitektur Terpetakan Otomatis</b> di LOG_AKTIVITAS.md tanpa emoji
+        Selamat datang. Saya <b>Asisten Joe</b> -- Pengawal & Auditor Kualitas Proyek Anda.<br/><br/>
+        Antarmuka ini kini 100% menggunakan tema dan gaya bawaan IDE Anda secara otomatis.<br/><br/>
+        Kompetensi aktif:<br/>
+        -- <b>Audit Keamanan Kunci API</b> (Mencegah kebocoran rahasia)<br/>
+        -- <b>Penjaga Kestabilan Fitur Lama</b> (Mencegah kerusakan fungsi lama)<br/>
+        -- <b>Detektor Kode Duplikat & Draf Sampah</b><br/>
+        -- <b>Peta Alur Arsitektur Otomatis</b> di LOG_AKTIVITAS.md tanpa emoji
       </div>
     </div>
   </div>
 
-  <!-- Quick Action Chips (2 Baris, Ikon SVG Vektor) -->
+  <!-- Quick Action Chips (2 Baris Native IDE Style) -->
   <div class="chips-area">
-    <!-- Baris 1: Pengawal Vibe Coding & Operasi Inti -->
+    <!-- Baris 1: Audit Vibe Coding & Operasi Inti -->
     <div class="chips-row">
       <div class="chip highlight" onclick="quickAction('Audit kualitas hasil Vibe Coding')">
         <svg class="icon" viewBox="0 0 16 16"><path d="M8 0L1 3v5c0 4.4 3 8.5 7 9.5 4-1 7-5.1 7-9.5V3L8 0zm0 2.2l4.5 1.9V7c0 3.1-1.9 6-4.5 6.9-2.6-.9-4.5-3.8-4.5-6.9V4.1L8 2.2zm-1 3.8v4h2V6H7z"/></svg>
@@ -140,7 +320,7 @@
         Ajukan PR
       </div>
     </div>
-    <!-- Baris 2: Analisis & Alat Pembantu -->
+    <!-- Baris 2: Analisis & Pemetaan -->
     <div class="chips-row">
       <div class="chip" onclick="quickAction('Analisis risiko dan dampak biaya proyek')">
         <svg class="icon" viewBox="0 0 16 16"><path d="M1.5 14V1H0v13.5A1.5 1.5 0 001.5 16H16v-1.5H1.5zM3 11.5v-8h1.5v8H3zm3-6v6h1.5v-6H6zm3 3v3h1.5v-3H9zm3-1.5v4.5h1.5V7H12z"/></svg>
@@ -161,7 +341,7 @@
     </div>
   </div>
 
-  <!-- Input Field -->
+  <!-- Input Field Native IDE Style -->
   <div class="input-container">
     <textarea id="promptInput" placeholder="Ketik instruksi bisnis atau perintah ke Asisten Joe..."></textarea>
     <button class="send-btn" onclick="sendMessage()">Kirim</button>
