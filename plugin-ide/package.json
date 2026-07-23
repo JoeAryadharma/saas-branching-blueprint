@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - Personal SaaS Companion",
-  "description": "Asisten Joe: Personal IDE Companion Tata Kelola Proyek SaaS, Audit Kelaikan, Rekap CRUD & Visual Diagram",
-  "version": "2.0.0",
+  "displayName": "Asisten Joe - Dynamic Cognitive Bridge",
+  "description": "Asisten Joe: Dynamic Cognitive Bridge Penyerapan Kompetensi Model AI Aktif & Otomasi Tata Kelola SaaS",
+  "version": "2.1.0",
   "publisher": "joecompanyagent-lab",
   "engines": {
     "vscode": "^1.80.0"

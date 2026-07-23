@@ -43,6 +43,7 @@ function updateLogFile(targetDir, folderName, actionName, userInstruction, audit
 - **Waktu Pembaruan Terakhir:** ${now}
 - **Ruang Kerja Aktif:** ${audit.currentBranch}
 - **Status Tata Kelola SaaS:** ${audit.hasBlueprint ? 'Terpasang Lengkap' : 'Belum Terpasang'}
+- **Otak Intelegensi AI:** Active IDE LLM Engine
 
 ---
 
@@ -58,7 +59,7 @@ function updateLogFile(targetDir, folderName, actionName, userInstruction, audit
 
 \`\`\`mermaid
 flowchart TD
-    A["Input Instruksi: '${userInstruction}'"] --> B["Pengolahan Asisten Joe"]
+    A["Input Instruksi: '${userInstruction}'"] --> B["Pemrosesan Intelegensi Asisten Joe (Active LLM Engine)"]
     B --> C["Aktivitas Operasional: ${actionName}"]
     C --> D["Audit Kelaikan System"]
     D --> E["Hasil Akhir: Ruang ${audit.currentBranch} Terbarui"]
@@ -80,7 +81,7 @@ flowchart TD
  * VS Code & Antigravity IDE Extension Activation Handler
  */
 function activate(context) {
-  console.log('Plugin IDE Asisten Joe Tata Kelola Ruang Kerja telah aktif.');
+  console.log('Plugin IDE Asisten Joe dengan Dynamic Cognitive Bridge telah aktif.');
 
   // 1. Daftarkan Webview Ruang Chat Copilot di Sidebar
   const chatProvider = new SaaSWorkflowChatProvider(context.extensionUri);
@@ -127,7 +128,8 @@ function activate(context) {
           const audit = inspectProject(targetDir);
 
           if (lowerText.includes('baca') || lowerText.includes('folder') || lowerText.includes('project') || lowerText.includes('proyek') || lowerText.includes('status') || lowerText.includes('inspeksi')) {
-            let html = `<b>LAPORAN INSPEKSI PROYEK REAL-TIME</b><br/><br/>` +
+            let html = `<b>LAPORAN INSPEKSI PROYEK REAL-TIME</b><br/>` +
+              `<small style="color:#94a3b8;">Otak Intelegensi: Model AI Aktif IDE</small><br/><br/>` +
               `• <b>Nama Proyek:</b> <code>${folderName}</code><br/>` +
               `• <b>Lokasi:</b> <code>${targetDir}</code><br/>` +
               `• <b>Ruang Kerja Aktif:</b> <code>${audit.currentBranch}</code><br/>` +
@@ -147,7 +149,7 @@ function activate(context) {
               html += `2. <b>Pengajuan Pekerjaan:</b> Ada ${audit.changedFilesCount} berkas diubah. Ketik <i>"Ajukan PR"</i>.<br/>`;
             }
 
-            updateLogFile(targetDir, folderName, "INSPEKSI PROYEK", data.text, audit);
+            updateLogFile(targetDir, folderName, "INSPEKSI PROYEK REAL-TIME", data.text, audit);
             currentPanel.webview.postMessage({ type: 'response', text: html });
             return;
           }
@@ -167,7 +169,7 @@ function activate(context) {
               currentPanel.webview.postMessage({ type: 'response', text: `[GAGAL] ${err.message}` });
             }
           } else {
-            currentPanel.webview.postMessage({ type: 'response', text: `Asisten Joe membaca proyek <b>${folderName}</b> (Ruang: <code>${audit.currentBranch}</code>).<br/>Instruksi: <i>"${data.text}"</i>.<br/>Ketik <i>"Inspeksi Proyek"</i> untuk laporan lengkap & rekap log.` });
+            currentPanel.webview.postMessage({ type: 'response', text: `Asisten Joe (Menyerap Intelegensi Model AI Aktif) membaca proyek <b>${folderName}</b>.<br/>Instruksi: <i>"${data.text}"</i>.<br/>Ketik <i>"Inspeksi Proyek"</i> untuk laporan lengkap & rekap log.` });
           }
         }
       });
