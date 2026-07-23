@@ -9,8 +9,8 @@ const SASTScanner = require('./sastScanner');
 const VibeOptimizer = require('./vibeOptimizer');
 
 // ============================================================
-// ASISTEN JOE v9.5.4 -- CHAT PROVIDER
-// Auto-Save State Persistence Edition (continuedev adoption)
+// ASISTEN JOE v9.5.5 -- CHAT PROVIDER
+// Smart Error Boundary & Diagnostic Notifier Edition (cline adoption)
 // ============================================================
 
 class SaaSWorkflowChatProvider {
@@ -36,80 +36,90 @@ class SaaSWorkflowChatProvider {
   }
 
   // ============================================================
-  // DISPATCHER UTAMA & AUDIT EFISIEN SINGLE-FETCH
+  // DISPATCHER UTAMA DENGAN SMART ERROR BOUNDARY (cline adoption)
   // ============================================================
   async _handleUserInput(text) {
-    const workspaceFolders = vscode.workspace.workspaceFolders;
-    if (!workspaceFolders) {
-      this._reply("[PERINGATAN] Silakan buka folder proyek Anda terlebih dahulu di Antigravity IDE.");
-      return;
-    }
+    try {
+      const workspaceFolders = vscode.workspace.workspaceFolders;
+      if (!workspaceFolders) {
+        this._reply("[PERINGATAN] Silakan buka folder proyek Anda terlebih dahulu di Antigravity IDE.");
+        return;
+      }
 
-    const targetDir = workspaceFolders[0].uri.fsPath;
-    const folderName = path.basename(targetDir);
-    const lowerText = text.toLowerCase();
+      const targetDir = workspaceFolders[0].uri.fsPath;
+      const folderName = path.basename(targetDir);
+      const lowerText = text.toLowerCase();
 
-    this._memory.load(targetDir);
-    const audit = this._inspectProject(targetDir);
-    this._updateWidget(audit, targetDir);
+      this._memory.load(targetDir);
+      const audit = this._inspectProject(targetDir);
+      this._updateWidget(audit, targetDir);
 
-    // Single-fetch diff ber-cache (500ms TTL) & Otomatis jalankan sinkronisasi .env.example
-    const diff = CodeReader.getRecentDiff(targetDir);
-    VibeOptimizer.syncDotenvExample(targetDir, diff);
+      // Single-fetch diff ber-cache (500ms TTL) & Otomatis jalankan sinkronisasi .env.example
+      const diff = CodeReader.getRecentDiff(targetDir);
+      VibeOptimizer.syncDotenvExample(targetDir, diff);
 
-    if (lowerText.includes('dokumentasi api') || lowerText.includes('api doc') || lowerText.includes('swagger') || lowerText.includes('openapi')) {
-      await this._handleAPIDocumentation(targetDir, folderName, audit, diff);
-    }
-    else if (lowerText.includes('cek performa') || lowerText.includes('performa') || lowerText.includes('bundle') || lowerText.includes('pustaka')) {
-      await this._handlePerformanceAudit(targetDir, folderName, audit, diff);
-    }
-    else if (lowerText.includes('diagram alur') || lowerText.includes('diagram arsitektur') || lowerText.includes('arsitektur') || lowerText.includes('flowchart')) {
-      await this._handleArchitectureDiagram(targetDir, folderName, audit, diff);
-    }
-    else if (lowerText.includes('papan tugas') || lowerText.includes('task board') || lowerText.includes('papan kerja') || lowerText.includes('kanban')) {
-      await this._handleTaskBoard(targetDir, folderName, audit);
-    }
-    else if (lowerText.includes('ringkasan eksekutif') || lowerText.includes('executive summary') || lowerText.includes('laporan eksekutif')) {
-      await this._handleExecutiveSummary(targetDir, folderName, audit, diff);
-    }
-    else if (lowerText.includes('optimalkan prompt') || lowerText.includes('refine prompt') || lowerText.includes('rapikan prompt')) {
-      await this._handleRefinePrompt(targetDir, folderName, text, audit);
-    }
-    else if (lowerText.includes('vibe') || lowerText.includes('audit vibe') || lowerText.includes('pengawal') || lowerText.includes('sast') || lowerText.includes('kunci bocor') || lowerText.includes('regresi')) {
-      await this._handleVibeCodingAudit(targetDir, folderName, text, audit, diff);
-    }
-    else if (lowerText.includes('changelog') || lowerText.includes('catatan rilis')) {
-      this._handleGenerateChangelog(targetDir, folderName, audit);
-    }
-    else if (lowerText.includes('bersihkan') || lowerText.includes('housekeeping') || lowerText.includes('hapus draf')) {
-      await this._handleHousekeeping(targetDir, folderName, audit);
-    }
-    else if (lowerText.includes('inspeksi') || lowerText.includes('status') || lowerText.includes('proyek') || lowerText.includes('project')) {
-      await this._handleInspection(targetDir, folderName, text, audit);
-    }
-    else if (lowerText.includes('fitur baru') || lowerText.includes('buat fitur') || lowerText.includes('tambah fitur')) {
-      await this._handleCreateFeature(targetDir, folderName, audit);
-    }
-    else if (lowerText.includes('risiko') || lowerText.includes('biaya') || lowerText.includes('dampak') || lowerText.includes('cost')) {
-      await this._handleRiskAnalysis(targetDir, folderName, text, audit, diff);
-    }
-    else if (lowerText.includes('rilis') || lowerText.includes('release') || lowerText.includes('pengumuman') || lowerText.includes('broadcast')) {
-      await this._handleReleaseDraft(targetDir, folderName, text, audit);
-    }
-    else if (lowerText.includes('ide') || lowerText.includes('rencana') || lowerText.includes('roadmap') || lowerText.includes('pecah') || lowerText.includes('tiket')) {
-      await this._handleIdeaBreakdown(targetDir, folderName, text, audit);
-    }
-    else if (lowerText.includes('pr') || lowerText.includes('ajukan') || lowerText.includes('pemeriksaan') || lowerText.includes('gabung') || lowerText.includes('merge')) {
-      await this._handleSmartCodeReview(targetDir, folderName, audit, diff);
-    }
-    else if (lowerText.includes('log') || lowerText.includes('laporan')) {
-      this._handleOpenLog(targetDir);
-    }
-    else {
-      await this._handleFreeQuestion(targetDir, folderName, text, audit);
-    }
+      if (lowerText.includes('dokumentasi api') || lowerText.includes('api doc') || lowerText.includes('swagger') || lowerText.includes('openapi')) {
+        await this._handleAPIDocumentation(targetDir, folderName, audit, diff);
+      }
+      else if (lowerText.includes('cek performa') || lowerText.includes('performa') || lowerText.includes('bundle') || lowerText.includes('pustaka')) {
+        await this._handlePerformanceAudit(targetDir, folderName, audit, diff);
+      }
+      else if (lowerText.includes('diagram alur') || lowerText.includes('diagram arsitektur') || lowerText.includes('arsitektur') || lowerText.includes('flowchart')) {
+        await this._handleArchitectureDiagram(targetDir, folderName, audit, diff);
+      }
+      else if (lowerText.includes('papan tugas') || lowerText.includes('task board') || lowerText.includes('papan kerja') || lowerText.includes('kanban')) {
+        await this._handleTaskBoard(targetDir, folderName, audit);
+      }
+      else if (lowerText.includes('ringkasan eksekutif') || lowerText.includes('executive summary') || lowerText.includes('laporan eksekutif')) {
+        await this._handleExecutiveSummary(targetDir, folderName, audit, diff);
+      }
+      else if (lowerText.includes('optimalkan prompt') || lowerText.includes('refine prompt') || lowerText.includes('rapikan prompt')) {
+        await this._handleRefinePrompt(targetDir, folderName, text, audit);
+      }
+      else if (lowerText.includes('vibe') || lowerText.includes('audit vibe') || lowerText.includes('pengawal') || lowerText.includes('sast') || lowerText.includes('kunci bocor') || lowerText.includes('regresi')) {
+        await this._handleVibeCodingAudit(targetDir, folderName, text, audit, diff);
+      }
+      else if (lowerText.includes('changelog') || lowerText.includes('catatan rilis')) {
+        this._handleGenerateChangelog(targetDir, folderName, audit);
+      }
+      else if (lowerText.includes('bersihkan') || lowerText.includes('housekeeping') || lowerText.includes('hapus draf')) {
+        await this._handleHousekeeping(targetDir, folderName, audit);
+      }
+      else if (lowerText.includes('inspeksi') || lowerText.includes('status') || lowerText.includes('proyek') || lowerText.includes('project')) {
+        await this._handleInspection(targetDir, folderName, text, audit);
+      }
+      else if (lowerText.includes('fitur baru') || lowerText.includes('buat fitur') || lowerText.includes('tambah fitur')) {
+        await this._handleCreateFeature(targetDir, folderName, audit);
+      }
+      else if (lowerText.includes('risiko') || lowerText.includes('biaya') || lowerText.includes('dampak') || lowerText.includes('cost')) {
+        await this._handleRiskAnalysis(targetDir, folderName, text, audit, diff);
+      }
+      else if (lowerText.includes('rilis') || lowerText.includes('release') || lowerText.includes('pengumuman') || lowerText.includes('broadcast')) {
+        await this._handleReleaseDraft(targetDir, folderName, text, audit);
+      }
+      else if (lowerText.includes('ide') || lowerText.includes('rencana') || lowerText.includes('roadmap') || lowerText.includes('pecah') || lowerText.includes('tiket')) {
+        await this._handleIdeaBreakdown(targetDir, folderName, text, audit);
+      }
+      else if (lowerText.includes('pr') || lowerText.includes('ajukan') || lowerText.includes('pemeriksaan') || lowerText.includes('gabung') || lowerText.includes('merge')) {
+        await this._handleSmartCodeReview(targetDir, folderName, audit, diff);
+      }
+      else if (lowerText.includes('log') || lowerText.includes('laporan')) {
+        this._handleOpenLog(targetDir);
+      }
+      else {
+        await this._handleFreeQuestion(targetDir, folderName, text, audit);
+      }
 
-    this._memory.save(targetDir);
+      this._memory.save(targetDir);
+    } catch (uncaughtErr) {
+      // v9.5.5: Smart Error Boundary UI (cline adoption)
+      const errorCardHtml = `<div style="background:rgba(239,68,68,0.15);border:1px solid #ef4444;border-radius:4px;padding:10px;font-size:11.5px;">` +
+        `<b style="color:#ef4444;">[PENANGANAN KENDALA MANDIRI - v9.5.5]</b><br/>` +
+        `Terjadi kendala tak terduga saat memproses instruksi: <i>"${uncaughtErr.message}"</i><br/><br/>` +
+        `<button style="background:#ef4444;color:#fff;border:none;padding:4px 8px;border-radius:2px;cursor:pointer;font-size:11px;" onclick="quickAction('${text}')">Coba Lagi</button>` +
+        `</div>`;
+      this._reply(errorCardHtml);
+    }
   }
 
   // ============================================================
@@ -123,13 +133,13 @@ class SaaSWorkflowChatProvider {
       vscode.commands.executeCommand('vscode.open', vscode.Uri.file(docPath));
     }
 
-    let html = `<b>DOKUMENTASI API OTOMATIS (v9.5.4)</b><br/>` +
+    let html = `<b>DOKUMENTASI API OTOMATIS (v9.5.5)</b><br/>` +
       `<small style="color:#94a3b8;">Proyek: ${folderName} | Standar OpenAPI / Swagger</small><br/><br/>` +
       `<div style="background:#1a2332;border:1px solid #3b82f6;border-radius:4px;padding:10px;font-size:11.5px;">` +
       `[BERHASIL] Berkas <code>DOKUMENTASI_API.md</code> telah disusun dan dibuka di editor.<br/>` +
       `Jumlah rute API terdeteksi: <b>${apiDoc.endpointsCount} rute</b>.</div>`;
 
-    this._appendLog(targetDir, folderName, "DOKUMENTASI API v9.5.4", `Menyusun ${apiDoc.endpointsCount} rute`, audit);
+    this._appendLog(targetDir, folderName, "DOKUMENTASI API v9.5.5", `Menyusun ${apiDoc.endpointsCount} rute`, audit);
     this._reply(html);
   }
 
@@ -139,7 +149,7 @@ class SaaSWorkflowChatProvider {
   async _handlePerformanceAudit(targetDir, folderName, audit, diff) {
     const bundleAudit = VibeOptimizer.auditBundleSize(targetDir, diff);
 
-    let html = `<b>LAPORAN PENGAWAL PERFORMA & PUSTAKA (v9.5.4)</b><br/>` +
+    let html = `<b>LAPORAN PENGAWAL PERFORMA & PUSTAKA (v9.5.5)</b><br/>` +
       `<small style="color:#94a3b8;">Proyek: ${folderName} | Analisis Bobot Bundle</small><br/><br/>`;
 
     if (bundleAudit.hasHeavyPackage) {
@@ -155,7 +165,7 @@ class SaaSWorkflowChatProvider {
         `Tidak terdeteksi pustaka berukuran raksasa pada penambahan kode terbaru. Bobot aplikasi tetap ringan.</div>`;
     }
 
-    this._appendLog(targetDir, folderName, "AUDIT PERFORMA v9.5.4", "Menerbitkan Laporan Performa", audit);
+    this._appendLog(targetDir, folderName, "AUDIT PERFORMA v9.5.5", "Menerbitkan Laporan Performa", audit);
     this._reply(html);
   }
 
@@ -177,7 +187,7 @@ class SaaSWorkflowChatProvider {
 
     const mermaidCode = `flowchart TD\n${diagramNodes.join('\n')}`;
 
-    let html = `<b>DIAGRAM ARSITEKTUR PROYEK (v9.5.4)</b><br/>` +
+    let html = `<b>DIAGRAM ARSITEKTUR PROYEK (v9.5.5)</b><br/>` +
       `<small style="color:#94a3b8;">Dihasilkan otomatis untuk proyek: ${folderName}</small><br/><br/>` +
       `<div style="background:#1a2332;border:1px solid #3b82f6;border-radius:4px;padding:10px;font-size:11.5px;">` +
       `<b>HUBUNGAN MAKRO ARSITEKTUR:</b><br/><br/>` +
@@ -188,7 +198,7 @@ class SaaSWorkflowChatProvider {
       `-- <b>Database:</b> Berkas penyimpanan & lingkungan .env` +
       `</div>`;
 
-    this._appendLog(targetDir, folderName, "DIAGRAM ARSITEKTUR v9.5.4", "Menerbitkan Diagram Arsitektur", audit);
+    this._appendLog(targetDir, folderName, "DIAGRAM ARSITEKTUR v9.5.5", "Menerbitkan Diagram Arsitektur", audit);
     this._reply(html);
   }
 
@@ -226,7 +236,7 @@ class SaaSWorkflowChatProvider {
     }
 
     const currentBranch = audit.currentBranch;
-    let html = `<b>PAPAN TUGAS & PETA JALAN VISUAL (v9.5.4)</b><br/>` +
+    let html = `<b>PAPAN TUGAS & PETA JALAN VISUAL (v9.5.5)</b><br/>` +
       `<small style="color:#94a3b8;">Proyek: ${folderName} | Ruang Kerja Aktif: <code>${currentBranch}</code></small><br/><br/>` +
       `<table style="width:100%;border-collapse:collapse;font-size:11px;">` +
       `<tr style="background:#1e293b;border-bottom:1px solid #334155;">` +
@@ -251,7 +261,7 @@ class SaaSWorkflowChatProvider {
     html += `</table><br/>` +
       `<small style="color:#94a3b8;">Ketik "Buat fitur baru" untuk memulai pekerjaan tiket di atas.</small>`;
 
-    this._appendLog(targetDir, folderName, "PAPANTUGAS VISUAL v9.5.4", `Membuka papan ${tickets.length} tiket`, audit);
+    this._appendLog(targetDir, folderName, "PAPANTUGAS VISUAL v9.5.5", `Membuka papan ${tickets.length} tiket`, audit);
     this._reply(html);
   }
 
@@ -263,7 +273,7 @@ class SaaSWorkflowChatProvider {
     const vibeResult = VibeGuard.auditAll(targetDir, diff, areas);
     const commits = CodeReader.getRecentCommits(targetDir, 5);
 
-    let html = `<b>LAPORAN RINGKASAN EKSEKUTIF (v9.5.4)</b><br/>` +
+    let html = `<b>LAPORAN RINGKASAN EKSEKUTIF (v9.5.5)</b><br/>` +
       `<small style="color:#94a3b8;">Dibuat untuk Manajemen & Pemilik Bisnis | Proyek: ${folderName}</small><br/><br/>` +
       `<div style="background:#1a2332;border:1px solid #3b82f6;border-radius:4px;padding:10px;font-size:11.5px;">` +
       `<b>1. STATUS KESEHATAN SISTEM:</b><br/>` +
@@ -280,7 +290,7 @@ class SaaSWorkflowChatProvider {
     html += `<br/><b>3. REKOMENDASI MANAJEMEN:</b><br/>` +
       `${vibeResult.isFullyPassed ? 'Sistem dalam kondisi prima dan siap untuk rilis simulasi/produksi.' : 'Selesaikan perbaikan audit teknis sebelum melakukan penggabungan kode.'}</div>`;
 
-    this._appendLog(targetDir, folderName, "RINGKASAN EKSEKUTIF v9.5.4", "Menerbitkan Laporan Eksekutif", audit);
+    this._appendLog(targetDir, folderName, "RINGKASAN EKSEKUTIF v9.5.5", "Menerbitkan Laporan Eksekutif", audit);
     this._reply(html);
   }
 
@@ -322,7 +332,7 @@ class SaaSWorkflowChatProvider {
       return;
     }
 
-    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.5.4 & Uji Kelaikan Mandiri...</small>`);
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.5.5 & Uji Kelaikan Mandiri...</small>`);
 
     const diff = preFetchedDiff || CodeReader.getRecentDiff(targetDir);
     const areas = CodeReader.classifyChanges(targetDir);
@@ -389,7 +399,7 @@ class SaaSWorkflowChatProvider {
       this._memory.incrementStat('total_penggabungan');
       this._memory.addDecision(`Penggabungan ${currentBranch} ke develop`, `Conventional Commit: ${convCommit.commitHeader}`);
       this._updateChangelog(targetDir, folderName, currentBranch, commits);
-      this._appendLog(targetDir, folderName, "PENGGABUNGAN + ULTIMATE VIBE GUARD v9.5.4", `${currentBranch} ke develop`, audit);
+      this._appendLog(targetDir, folderName, "PENGGABUNGAN + ULTIMATE VIBE GUARD v9.5.5", `${currentBranch} ke develop`, audit);
 
       const statusText = hasIssues ? '[BERHASIL DENGAN TEMUAN]' : '[BERHASIL]';
       this._reply(
@@ -405,16 +415,16 @@ class SaaSWorkflowChatProvider {
   }
 
   // ============================================================
-  // AUDIT VIBE CODING v9.5.4
+  // AUDIT VIBE CODING v9.5.5
   // ============================================================
   async _handleVibeCodingAudit(targetDir, folderName, userText, audit, preFetchedDiff = null) {
-    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.5.4...</small>`);
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.5.5...</small>`);
 
     const diff = preFetchedDiff || CodeReader.getRecentDiff(targetDir);
     const areas = CodeReader.classifyChanges(targetDir);
     const vibeResult = VibeGuard.auditAll(targetDir, diff, areas);
 
-    let html = `<b>LAPORAN AUDIT PENGAWAL VIBE CODING v9.5.4</b><br/>` +
+    let html = `<b>LAPORAN AUDIT PENGAWAL VIBE CODING v9.5.5</b><br/>` +
       `<small style="color:#94a3b8;">Proyek: ${folderName} | ${this._ai.modelName}</small><br/><br/>`;
 
     // 1. Audit Rahasia
@@ -433,7 +443,7 @@ class SaaSWorkflowChatProvider {
       `<b style="color:${envColor};">3. SINKRONISASI .ENV.EXAMPLE: [${vibeResult.envSync.isUpdated ? `${vibeResult.envSync.addedKeys.length} KUNCI DISINKRONKAN` : 'TERJAGA'}]</b></div>`;
 
     this._updateWidget(audit, targetDir, vibeResult);
-    this._appendLog(targetDir, folderName, "AUDIT VIBE CODING v9.5.4", `SAST: ${vibeResult.sastAudit.isClean ? 'BERSIH' : 'ADA CELAH'}`, audit);
+    this._appendLog(targetDir, folderName, "AUDIT VIBE CODING v9.5.5", `SAST: ${vibeResult.sastAudit.isClean ? 'BERSIH' : 'ADA CELAH'}`, audit);
     this._reply(html);
   }
 
@@ -450,7 +460,7 @@ class SaaSWorkflowChatProvider {
 
     let existingContent = '';
     try { if (fs.existsSync(changelogPath)) existingContent = fs.readFileSync(changelogPath, 'utf8'); } catch (e) {}
-    const header = existingContent ? '' : `# CATATAN RILIS PROYEK (${folderName})\n\nDokumen ini disusun secara otomatis oleh Asisten Joe v9.5.4.\n\n---\n`;
+    const header = existingContent ? '' : `# CATATAN RILIS PROYEK (${folderName})\n\nDokumen ini disusun secara otomatis oleh Asisten Joe v9.5.5.\n\n---\n`;
     try { fs.writeFileSync(changelogPath, header + newEntry + existingContent, 'utf8'); } catch (e) {}
   }
 
@@ -710,7 +720,7 @@ class SaaSWorkflowChatProvider {
       `## 1. TABEL REKAP OPERASI (CRUD)\n\n| Waktu | Aktivitas | Deskripsi | Ruang | Status |\n| :--- | :--- | :--- | :--- | :--- |\n${crudRows}\n\n---\n\n` +
       `## 2. DIAGRAM ALUR PEKERJAAN SESI\n\n\`\`\`mermaid\nflowchart TD\n    START["Awal Sesi"] --> ${this._logHistory.length ? 'N0' : 'END'}\n${mNodes}\n` +
       `    ${this._logHistory.length ? `N${this._logHistory.length-1}` : 'START'} --> END["Terkini: ${audit.currentBranch}"]\n\`\`\`\n\n---\n\n` +
-      `*Disusun otomatis oleh Asisten Joe v9.5.4 Auto-Save State Edition*\n`;
+      `*Disusun otomatis oleh Asisten Joe v9.5.5 Smart Error Boundary Edition*\n`;
     try { fs.writeFileSync(logPath, content, 'utf8'); } catch (e) {}
   }
 
