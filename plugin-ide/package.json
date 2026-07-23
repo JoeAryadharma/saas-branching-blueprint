@@ -4,7 +4,7 @@
   "description": "Asisten Joe v9.5.6: Prompt Generator Syntax Auto-Fixer Edition (Smart Error Boundary, Auto-Save State Persistence, Git TTL Cache, AI Code Sanitizer, Automated OpenAPI API Spec Drafter, Performance Guard, Architecture Flowchart, Visual Task Board, .env.example Synchronizer, Prompt Refiner, SAST & Conventional Commits).",
   "version": "9.5.6",
   "publisher": "joecompanyagent-lab",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "engines": {
     "vscode": "^1.90.0"
   },
