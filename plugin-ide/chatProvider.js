@@ -10,7 +10,7 @@ const VibeOptimizer = require('./vibeOptimizer');
 
 // ============================================================
 // ASISTEN JOE v9.0 -- CHAT PROVIDER
-// Ultimate Vibe Coder Suite
+// Ultimate Vibe Coder Suite + Robust Conflict Auto-Recovery
 // ============================================================
 
 class SaaSWorkflowChatProvider {
@@ -36,7 +36,7 @@ class SaaSWorkflowChatProvider {
   }
 
   // ============================================================
-  // DISPATCHER UTAMA
+  // DISPATCHER UTAMA & AUDIT EFISIEN SINGLE-FETCH
   // ============================================================
   async _handleUserInput(text) {
     const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -53,7 +53,7 @@ class SaaSWorkflowChatProvider {
     const audit = this._inspectProject(targetDir);
     this._updateWidget(audit, targetDir);
 
-    // Otomatis jalankan sinkronisasi .env.example (dotenv-safe adoption)
+    // Single-fetch diff & Otomatis jalankan sinkronisasi .env.example
     const diff = CodeReader.getRecentDiff(targetDir);
     VibeOptimizer.syncDotenvExample(targetDir, diff);
 
@@ -61,7 +61,7 @@ class SaaSWorkflowChatProvider {
       await this._handleRefinePrompt(targetDir, folderName, text, audit);
     }
     else if (lowerText.includes('vibe') || lowerText.includes('audit vibe') || lowerText.includes('pengawal') || lowerText.includes('sast') || lowerText.includes('kunci bocor') || lowerText.includes('regresi')) {
-      await this._handleVibeCodingAudit(targetDir, folderName, text, audit);
+      await this._handleVibeCodingAudit(targetDir, folderName, text, audit, diff);
     }
     else if (lowerText.includes('changelog') || lowerText.includes('catatan rilis')) {
       this._handleGenerateChangelog(targetDir, folderName, audit);
@@ -76,7 +76,7 @@ class SaaSWorkflowChatProvider {
       await this._handleCreateFeature(targetDir, folderName, audit);
     }
     else if (lowerText.includes('risiko') || lowerText.includes('biaya') || lowerText.includes('dampak') || lowerText.includes('cost')) {
-      await this._handleRiskAnalysis(targetDir, folderName, text, audit);
+      await this._handleRiskAnalysis(targetDir, folderName, text, audit, diff);
     }
     else if (lowerText.includes('rilis') || lowerText.includes('release') || lowerText.includes('pengumuman') || lowerText.includes('broadcast')) {
       await this._handleReleaseDraft(targetDir, folderName, text, audit);
@@ -85,7 +85,7 @@ class SaaSWorkflowChatProvider {
       await this._handleIdeaBreakdown(targetDir, folderName, text, audit);
     }
     else if (lowerText.includes('pr') || lowerText.includes('ajukan') || lowerText.includes('pemeriksaan') || lowerText.includes('gabung') || lowerText.includes('merge')) {
-      await this._handleSmartCodeReview(targetDir, folderName, audit);
+      await this._handleSmartCodeReview(targetDir, folderName, audit, diff);
     }
     else if (lowerText.includes('log') || lowerText.includes('laporan')) {
       this._handleOpenLog(targetDir);
@@ -125,9 +125,9 @@ class SaaSWorkflowChatProvider {
   }
 
   // ============================================================
-  // ADOPSI SEMGREP SAST + OPENCOMMIT CONVENTIONAL COMMITS DI PR
+  // ADOPSI SEMGREP SAST + OPENCOMMIT + CONFLICT RECOVERY
   // ============================================================
-  async _handleSmartCodeReview(targetDir, folderName, audit) {
+  async _handleSmartCodeReview(targetDir, folderName, audit, preFetchedDiff = null) {
     const currentBranch = audit.currentBranch;
 
     if (currentBranch === 'main' || currentBranch === 'develop') {
@@ -137,7 +137,7 @@ class SaaSWorkflowChatProvider {
 
     this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.0 & Uji Kelaikan Mandiri...</small>`);
 
-    const diff = CodeReader.getRecentDiff(targetDir);
+    const diff = preFetchedDiff || CodeReader.getRecentDiff(targetDir);
     const areas = CodeReader.classifyChanges(targetDir);
 
     // Run VibeGuard Audit
@@ -185,11 +185,19 @@ class SaaSWorkflowChatProvider {
       }
     }
 
-    // Merge dengan Conventional Commit
+    // Merge dengan Conflict Auto-Recovery Protection
     try {
       const commits = CodeReader.getRecentCommits(targetDir, 5);
       execSync(`git add . && git commit -m "${convCommit.commitHeader}" || true`, { cwd: targetDir });
-      execSync(`git checkout develop && git merge ${currentBranch}`, { cwd: targetDir });
+      
+      try {
+        execSync(`git checkout develop && git merge ${currentBranch}`, { cwd: targetDir });
+      } catch (mergeErr) {
+        // PERBAIKAN PENTING: Batalkan merge otomatis jika terjadi konflik agar git tidak tersangkut!
+        try { execSync('git merge --abort', { cwd: targetDir }); } catch(e) {}
+        try { execSync(`git checkout ${currentBranch}`, { cwd: targetDir }); } catch(e) {}
+        throw new Error(`Terjadi konflik penggabungan kode (Merge Conflict). Status git dibatalkan secara aman. Silakan ratakan cabang (git rebase/merge develop) terlebih dahulu.`);
+      }
 
       this._memory.incrementStat('total_penggabungan');
       this._memory.addDecision(`Penggabungan ${currentBranch} ke develop`, `Conventional Commit: ${convCommit.commitHeader}`);
@@ -212,10 +220,10 @@ class SaaSWorkflowChatProvider {
   // ============================================================
   // AUDIT VIBE CODING v9.0
   // ============================================================
-  async _handleVibeCodingAudit(targetDir, folderName, userText, audit) {
+  async _handleVibeCodingAudit(targetDir, folderName, userText, audit, preFetchedDiff = null) {
     this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.0...</small>`);
 
-    const diff = CodeReader.getRecentDiff(targetDir);
+    const diff = preFetchedDiff || CodeReader.getRecentDiff(targetDir);
     const areas = CodeReader.classifyChanges(targetDir);
     const vibeResult = VibeGuard.auditAll(targetDir, diff, areas);
 
@@ -337,11 +345,11 @@ class SaaSWorkflowChatProvider {
     }
   }
 
-  async _handleRiskAnalysis(targetDir, folderName, userText, audit) {
+  async _handleRiskAnalysis(targetDir, folderName, userText, audit, preFetchedDiff = null) {
     this._reply(`<small style="color:#94a3b8;">[PROSES] Menganalisis risiko dengan ${this._ai.modelName}...</small>`);
     const stats = CodeReader.getDiffStats(targetDir);
     const areas = CodeReader.classifyChanges(targetDir);
-    const diff = CodeReader.getRecentDiff(targetDir);
+    const diff = preFetchedDiff || CodeReader.getRecentDiff(targetDir);
 
     const hasHighRisk = areas.database.length > 0 || areas.api.length > 0;
     const total = stats.totalLines;

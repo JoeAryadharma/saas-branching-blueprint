@@ -1,8 +1,9 @@
 const path = require('path');
 
 // ============================================================
-// SAST SCANNER v8.0 -- Pemindai Kerentanan Kode & Conventional Commits
+// SAST SCANNER v9.0 -- Pemindai Kerentanan Kode & Conventional Commits
 // Adopsi dari Semgrep, PR-Agent/OpenCommit, Code2Flow, Flagsmith
+// Dilengkapi Proteksi ReDoS & Pemotongan Ukuran Diff Aman
 // ============================================================
 
 class SASTScanner {
@@ -18,7 +19,10 @@ class SASTScanner {
       return { isClean: true, vulnerabilities };
     }
 
-    const addedLines = diffContent.split('\n')
+    // Proteksi Ukuran Diff Raksasa (Maksimal 50.000 karakter untuk mencegah perlambatan)
+    const safeDiff = diffContent.length > 50000 ? diffContent.substring(0, 50000) : diffContent;
+
+    const addedLines = safeDiff.split('\n')
       .filter(line => line.startsWith('+') && !line.startsWith('+++'))
       .map(line => line.substring(1));
 
@@ -94,7 +98,8 @@ class SASTScanner {
     let hasFeatureToggle = false;
 
     if (diffContent && diffContent !== '[Tidak ada perubahan terdeteksi]') {
-      hasFeatureToggle = /(FEATURE_|ENABLE_|FLAG_|FEATURE_TOGGLE|process\.env\.ENABLE_)/i.test(diffContent);
+      const safeDiff = diffContent.length > 50000 ? diffContent.substring(0, 50000) : diffContent;
+      hasFeatureToggle = /(FEATURE_|ENABLE_|FLAG_|FEATURE_TOGGLE|process\.env\.ENABLE_)/i.test(safeDiff);
     }
 
     const needsToggle = isLargeChange && !hasFeatureToggle;
@@ -119,7 +124,9 @@ class SASTScanner {
     let summary = userInstruction || 'pembaruan terverifikasi';
 
     if (diffContent && diffContent !== '[Tidak ada perubahan terdeteksi]') {
-      const lowerDiff = diffContent.toLowerCase();
+      const safeDiff = diffContent.length > 50000 ? diffContent.substring(0, 50000) : diffContent;
+      const lowerDiff = safeDiff.toLowerCase();
+
       if (lowerDiff.includes('fix') || lowerDiff.includes('bug') || lowerDiff.includes('error') || lowerDiff.includes('perbaikan')) {
         type = 'perbaikan';
       } else if (lowerDiff.includes('docs') || lowerDiff.includes('.md') || lowerDiff.includes('readme')) {
@@ -150,7 +157,7 @@ class SASTScanner {
       `## Deskripsi Operasional Bisnis`,
       `${summary}`,
       ``,
-      `## Verifikasi Audit Asisten Joe v8.0`,
+      `## Verifikasi Audit Asisten Joe v9.0`,
       `- [x] Pemindaian Celah Keamanan SAST (Semgrep) Lulus`,
       `- [x] Sensor Kunci Rahasia 25+ Database Lulus`,
       `- [x] Penjaga Kestabilan Fitur Lama (Regression Guard) Lulus`,
