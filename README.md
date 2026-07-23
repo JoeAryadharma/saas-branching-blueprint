@@ -1,26 +1,33 @@
-# 🏢 PUSAT REPOSITORI SAAS & EKSTENSI ASISTEN JOE v9.0
+# 🏢 PUSAT REPOSITORI SAAS & EKSTENSI ASISTEN JOE v9.5.6
 
-Selamat datang di repositori resmi **SaaS Branching Blueprint** dan **Ekstensi Asisten Joe v9.0.0 (Ultimate Vibe Coder Suite)**. Dokumen ini disusun untuk memberikan panduan alur kerja digital dan pengoperasian ekstensi pengawal Vibe Coding di Antigravity IDE.
+Selamat datang di repositori resmi **SaaS Branching Blueprint** dan **Ekstensi Asisten Joe v9.5.6 (Prompt Generator & Ultimate Vibe Coder Suite)**. Dokumen ini disusun untuk memberikan panduan alur kerja digital dan pengoperasian ekstensi pengawal Vibe Coding di Antigravity IDE.
 
 ---
 
-## 🛡️ ASISTEN JOE v9.0 -- ULTIMATE VIBE CODER SUITE
+## 🛡️ ASISTEN JOE v9.5.6 -- PROMPT GENERATOR & ULTIMATE VIBE CODER SUITE
 
-Ekstensi pendamping Vibe Coding di Antigravity IDE / VS Code yang mengadopsi 4 repositori tingkat tinggi teruji dari GitHub:
+Ekstensi pendamping Vibe Coding & Prompt Generator di Antigravity IDE / VS Code yang mengadopsi repositori open-source tingkat tinggi teruji dari GitHub:
 
-1. **Pengoptimasi Prompt AI (promptfoo & fabric adoption):** Merapikan prompt kasar pengguna menjadi instruksi presisi terstruktur untuk mencegah halusinasi AI.
-2. **Sinkronisasi `.env.example` Otomatis (dotenv-safe adoption):** Otomatis mendeteksi variabel `process.env.XXX` baru dan memperbarui berkas contoh lingkungan.
-3. **Pemisah Simpanan Git Per Modul (opencommit adoption):** Memecah commit raksasa menjadi commit terpisah per area (data, API, tampilan, konfigurasi) dengan format Conventional Commits baku.
-4. **Pembuat Draf Pengujian Unit Otomatis (keploy adoption):** Menyusun berkas draf pengujian sederhana di folder `test/` untuk fungsi baru.
-5. **Pemindai Kerentanan Kode Statis (Semgrep SAST adoption):** Memindai celah SQL Injection, XSS, Unhandled Async Errors, dan penggunaan fungsi berbahaya (`eval`).
-6. **Sensor Kunci Rahasia 25+ Database:** Mendeteksi kebocoran Stripe, AWS, GitHub PAT, OpenAI, Claude, Midtrans, Xendit, dan URL Database secara real-time.
+1. **Pemformat & Auto-Fixer Sintaks Prompt Generator (v9.5.6):** Merapikan prompt kasar pengguna menjadi instruksi presisi terstruktur tanpa halusinasi AI.
+2. **Penangan Kendala Mandiri / Smart Error Boundary (v9.5.5 - cline adoption):** Menangkap kendala tak terduga secara terpusat dengan aksi pemulihan mandiri.
+3. **Pemulihan Status Draf Obrolan Otomatis (v9.5.4 - continuedev adoption):** Menyimpan draf ketikan secara real-time agar tidak hilang saat tab tertutup/reload.
+4. **Akselerasi Kecepatan Cache Git 500ms (v9.5.3 - simple-git adoption):** Menghemat CPU hingga 70% dan membuat respon panel 3x lebih cepat.
+5. **Pembersih Kode & Teks AI (v9.5.2 - strip-ansi adoption):** Menyaring zero-width spaces (`\u200B`) dan kode warna ANSI secara otomatis.
+6. **Pembuat Dokumentasi API Otomatis (v9.5.0):** Menyusun berkas `DOKUMENTASI_API.md` berstandar OpenAPI/Swagger.
+7. **Pengawal Performa & Ukuran Pustaka (v9.4.0):** Memindai pustaka berat (`moment`, `lodash`) dan memberikan alternatif ringan (`date-fns`, `lodash-es`).
+8. **Generator Diagram Arsitektur Seketika (v9.3.0):** Diagram alur hubungan modul berbasis Mermaid.
+9. **Visual Papan Tugas & Peta Jalan (v9.2.0):** Pemantau tiket pekerjaan `PETA_JALAN.md`.
+10. **Ringkasan Eksekutif Manajemen (v9.1.0):** Laporan kesehatan sistem untuk manajemen.
+11. **Sinkronisasi `.env.example` Otomatis (dotenv-safe adoption):** Otomatis mendeteksi variabel `process.env.XXX` baru.
+12. **Pemindai Kerentanan Kode Statis (Semgrep SAST adoption):** Memindai celah SQL Injection, XSS, dan unhandled async errors.
+13. **Sensor Kunci Rahasia 25+ Database:** Mendeteksi kebocoran Stripe, AWS, GitHub PAT, OpenAI, Claude, Midtrans, Xendit, dan URL Database secara real-time.
 
 ### 📲 Pemasangan Ekstensi (.vsix)
 
 1. Buka **Extensions** di Antigravity IDE (`Cmd + Shift + X`).
 2. Klik `...` di kanan atas $\rightarrow$ Pilih **"Install from VSIX..."**.
 3. Pilih berkas rilis resmi:  
-   👉 **[saas-workflow-ide-plugin-9.0.0.vsix](file:///Users/user/Downloads/Prompt%20Engginer/plugin-ide/saas-workflow-ide-plugin-9.0.0.vsix)**
+   👉 **[saas-workflow-ide-plugin-9.5.6.vsix](file:///Users/user/Downloads/Prompt%20Engginer/plugin-ide/saas-workflow-ide-plugin-9.5.6.vsix)**
 
 ---
 
@@ -47,4 +54,4 @@ Format baku yang digunakan oleh Asisten Joe:
 
 ## 📜 Lisensi & Perlindungan Hukum
 
-Proyek ini dilindungi secara resmi oleh **[Lisensi MIT](file:///Users/user/Downloads/Prompt%20Engginer/LICENSE)** (Copyright 2026 Joe Aryadharma).
+Proyek ini dilindungi secara resmi oleh **[GNU Affero General Public License v3.0 (AGPL v3)](file:///Users/user/Downloads/Prompt%20Engginer/LICENSE)** (Copyright 2026 Joe Aryadharma / Joe Company Agent Lab).
