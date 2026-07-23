@@ -2,20 +2,39 @@ const path = require('path');
 const fs = require('fs');
 
 // ============================================================
-// VIBE OPTIMIZER v9.5.2 -- Ultimate Vibe Coder Suite
+// VIBE OPTIMIZER v9.5.6 -- Ultimate Vibe Coder & Prompt Generator Suite
 // 1. .env.example Synchronizer (dotenv-safe adoption)
-// 2. Prompt Refiner & Anti-Hallucination (promptfoo & fabric adoption)
-// 3. Atomic Commit Slicer (opencommit & cz-cli adoption)
-// 4. Auto Test Spec Drafter (keploy adoption)
-// 5. Performance & Bundle Size Guard (v9.4.0)
-// 6. OpenAPI / Swagger API Spec Drafter (v9.5.0)
-// 7. AI Code & Text Sanitizer (v9.5.2 - strip-ansi adoption)
+// 2. Prompt Refiner & Anti-Hallucination Engine (promptfoo & fabric adoption)
+// 3. Prompt Generator Syntax & Format Auto-Fixer (v9.5.6)
+// 4. Atomic Commit Slicer (opencommit & cz-cli adoption)
+// 5. Auto Test Spec Drafter (keploy adoption)
+// 6. Performance & Bundle Size Guard (v9.4.0)
+// 7. OpenAPI / Swagger API Spec Drafter (v9.5.0)
+// 8. AI Code & Text Sanitizer (v9.5.2 - strip-ansi adoption)
 // ============================================================
 
 class VibeOptimizer {
 
   // ============================================================
-  // 7. PEMBERSIH KODE & ARTEFAK TEKS AI (v9.5.2 - strip-ansi adoption)
+  // 3. PEMBERSIPIH & PEMFORMAT PROMPT AI OTOMATIS (v9.5.6)
+  // Menjaga agar prompt generator 100% presisi tanpa halusinasi
+  // ============================================================
+  static sanitizePromptSyntax(promptText) {
+    if (!promptText || typeof promptText !== 'string') return '';
+
+    return promptText
+      // Merapikan tanda kutip yang tidak ter-escape di JSON draf prompt
+      .replace(/(["'])\s*:\s*["']([^"']*?)["']\s*([,}])/g, '$1: "$2"$3')
+      // Menghapus trailing comma tak valid di akhir struktur objek prompt
+      .replace(/,\s*([\}\]])/g, '$1')
+      // Merapikan penomoran & poin instruksi agar AI penerima membaca dengan presisi
+      .replace(/\n\s*-\s*/g, '\n-- ')
+      .replace(/\n\s*(\d+)\.\s*/g, '\n$1. ')
+      .trim();
+  }
+
+  // ============================================================
+  // 8. PEMBERSIH KODE & ARTEFAK TEKS AI (v9.5.2 - strip-ansi adoption)
   // Menyaring zero-width spaces, kode ANSI, & control characters
   // ============================================================
   static cleanAIText(text) {
@@ -87,7 +106,7 @@ class VibeOptimizer {
   }
 
   // ============================================================
-  // 2. PENGOPTIMASI PROMPT AI (promptfoo & fabric Adoption)
+  // 2. PENGOPTIMASI PROMPT AI / PROMPT GENERATOR (v9.5.6)
   // ============================================================
   static refineVibePrompt(rawPrompt, projectContext = '') {
     if (!rawPrompt || rawPrompt.trim().length === 0) {
@@ -95,27 +114,27 @@ class VibeOptimizer {
     }
 
     const structuredPrompt = [
-      `[INSTRUKSI PRESISI AI - ASISTEN JOE v9.5]`,
+      `[INSTRUKSI PRESISI AI PROMPT GENERATOR - ASISTEN JOE v9.5.6]`,
       ``,
-      `PERAN: Senior Software Architect & QA Auditor`,
+      `PERAN: Senior Software Architect & Prompt Engineer`,
       `KONTEKS PROYEK:`,
       projectContext ? projectContext.substring(0, 500) : 'Proyek SaaS Modern',
       ``,
       `TUGAS UTAMA VIBE CODING:`,
       `"${rawPrompt.trim()}"`,
       ``,
-      `BATASAN KERAS:`,
+      `BATASAN KERAS KODING:`,
       `1. Jangan ubah atau hapus fungsi lama yang sudah berjalan normal di proyek ini.`,
       `2. Jangan menuliskan API Key, Token, atau Password langsung di dalam berkas kode. Gunakan process.env.`,
       `3. Jangan gunakan emoji dalam respons atau komentar kode.`,
       `4. Berikan kodingan yang bersih, terstruktur, dan mudah dipahami.`
     ].join('\n');
 
-    return structuredPrompt;
+    return this.sanitizePromptSyntax(structuredPrompt);
   }
 
   // ============================================================
-  // 3. PEMISAH SIMPANAN GIT PER MODUL (Atomic Commit Adoption)
+  // 4. PEMISAH SIMPANAN GIT PER MODUL (Atomic Commit Adoption)
   // ============================================================
   static sliceAtomicCommits(areas) {
     const commitGroups = [];
@@ -153,7 +172,7 @@ class VibeOptimizer {
   }
 
   // ============================================================
-  // 4. PEMBUAT DRAF BERKAS PENGUJIAN (Keploy Adoption)
+  // 5. PEMBUAT DRAF BERKAS PENGUJIAN (Keploy Adoption)
   // ============================================================
   static draftTestSpec(targetDir, diffContent, areas) {
     if (!diffContent || diffContent === '[Tidak ada perubahan terdeteksi]') {
@@ -173,7 +192,7 @@ class VibeOptimizer {
     const now = new Date().toLocaleString('id-ID');
 
     const testContent = [
-      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.5`,
+      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.5.6`,
       `// Waktu Dibuat: ${now}`,
       ``,
       `describe('Uji Kelaikan Modul Baru (Vibe Autotest)', () => {`,
@@ -200,7 +219,7 @@ class VibeOptimizer {
   }
 
   // ============================================================
-  // 5. PENGAWAL PERFORMA & UKURAN PUSTAKA (v9.4.0)
+  // 6. PENGAWAL PERFORMA & UKURAN PUSTAKA (v9.4.0)
   // Memeriksa pustaka berukuran berat & memberikan alternatif ringan
   // ============================================================
   static auditBundleSize(targetDir, diffContent) {
@@ -234,7 +253,7 @@ class VibeOptimizer {
   }
 
   // ============================================================
-  // 6. PEMBUAT DOKUMENTASI API OTOMATIS (v9.5.0)
+  // 7. PEMBUAT DOKUMENTASI API OTOMATIS (v9.5.0)
   // Memindai rute API & membuat berkas DOKUMENTASI_API.md
   // ============================================================
   static draftAPIDocumentation(targetDir, diffContent) {
@@ -253,7 +272,7 @@ class VibeOptimizer {
     }
 
     const now = new Date().toLocaleString('id-ID');
-    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.5 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
+    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.5.6 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
 
     if (detectedEndpoints.length > 0) {
       content += `## RINGKASAN ENDPOINT TERDETEKSI\n\n| METODE | JALUR RUTE (PATH) | DESKRIPSI |\n| :--- | :--- | :--- |\n`;

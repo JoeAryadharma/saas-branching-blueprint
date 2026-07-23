@@ -9,8 +9,8 @@ const SASTScanner = require('./sastScanner');
 const VibeOptimizer = require('./vibeOptimizer');
 
 // ============================================================
-// ASISTEN JOE v9.5.5 -- CHAT PROVIDER
-// Smart Error Boundary & Diagnostic Notifier Edition (cline adoption)
+// ASISTEN JOE v9.5.6 -- CHAT PROVIDER
+// Prompt Generator Syntax Auto-Fixer Edition
 // ============================================================
 
 class SaaSWorkflowChatProvider {
@@ -114,7 +114,7 @@ class SaaSWorkflowChatProvider {
     } catch (uncaughtErr) {
       // v9.5.5: Smart Error Boundary UI (cline adoption)
       const errorCardHtml = `<div style="background:rgba(239,68,68,0.15);border:1px solid #ef4444;border-radius:4px;padding:10px;font-size:11.5px;">` +
-        `<b style="color:#ef4444;">[PENANGANAN KENDALA MANDIRI - v9.5.5]</b><br/>` +
+        `<b style="color:#ef4444;">[PENANGANAN KENDALA MANDIRI - v9.5.6]</b><br/>` +
         `Terjadi kendala tak terduga saat memproses instruksi: <i>"${uncaughtErr.message}"</i><br/><br/>` +
         `<button style="background:#ef4444;color:#fff;border:none;padding:4px 8px;border-radius:2px;cursor:pointer;font-size:11px;" onclick="quickAction('${text}')">Coba Lagi</button>` +
         `</div>`;
@@ -133,13 +133,13 @@ class SaaSWorkflowChatProvider {
       vscode.commands.executeCommand('vscode.open', vscode.Uri.file(docPath));
     }
 
-    let html = `<b>DOKUMENTASI API OTOMATIS (v9.5.5)</b><br/>` +
+    let html = `<b>DOKUMENTASI API OTOMATIS (v9.5.6)</b><br/>` +
       `<small style="color:#94a3b8;">Proyek: ${folderName} | Standar OpenAPI / Swagger</small><br/><br/>` +
       `<div style="background:#1a2332;border:1px solid #3b82f6;border-radius:4px;padding:10px;font-size:11.5px;">` +
       `[BERHASIL] Berkas <code>DOKUMENTASI_API.md</code> telah disusun dan dibuka di editor.<br/>` +
       `Jumlah rute API terdeteksi: <b>${apiDoc.endpointsCount} rute</b>.</div>`;
 
-    this._appendLog(targetDir, folderName, "DOKUMENTASI API v9.5.5", `Menyusun ${apiDoc.endpointsCount} rute`, audit);
+    this._appendLog(targetDir, folderName, "DOKUMENTASI API v9.5.6", `Menyusun ${apiDoc.endpointsCount} rute`, audit);
     this._reply(html);
   }
 
@@ -149,7 +149,7 @@ class SaaSWorkflowChatProvider {
   async _handlePerformanceAudit(targetDir, folderName, audit, diff) {
     const bundleAudit = VibeOptimizer.auditBundleSize(targetDir, diff);
 
-    let html = `<b>LAPORAN PENGAWAL PERFORMA & PUSTAKA (v9.5.5)</b><br/>` +
+    let html = `<b>LAPORAN PENGAWAL PERFORMA & PUSTAKA (v9.5.6)</b><br/>` +
       `<small style="color:#94a3b8;">Proyek: ${folderName} | Analisis Bobot Bundle</small><br/><br/>`;
 
     if (bundleAudit.hasHeavyPackage) {
@@ -165,7 +165,7 @@ class SaaSWorkflowChatProvider {
         `Tidak terdeteksi pustaka berukuran raksasa pada penambahan kode terbaru. Bobot aplikasi tetap ringan.</div>`;
     }
 
-    this._appendLog(targetDir, folderName, "AUDIT PERFORMA v9.5.5", "Menerbitkan Laporan Performa", audit);
+    this._appendLog(targetDir, folderName, "AUDIT PERFORMA v9.5.6", "Menerbitkan Laporan Performa", audit);
     this._reply(html);
   }
 
@@ -187,7 +187,7 @@ class SaaSWorkflowChatProvider {
 
     const mermaidCode = `flowchart TD\n${diagramNodes.join('\n')}`;
 
-    let html = `<b>DIAGRAM ARSITEKTUR PROYEK (v9.5.5)</b><br/>` +
+    let html = `<b>DIAGRAM ARSITEKTUR PROYEK (v9.5.6)</b><br/>` +
       `<small style="color:#94a3b8;">Dihasilkan otomatis untuk proyek: ${folderName}</small><br/><br/>` +
       `<div style="background:#1a2332;border:1px solid #3b82f6;border-radius:4px;padding:10px;font-size:11.5px;">` +
       `<b>HUBUNGAN MAKRO ARSITEKTUR:</b><br/><br/>` +
@@ -198,7 +198,7 @@ class SaaSWorkflowChatProvider {
       `-- <b>Database:</b> Berkas penyimpanan & lingkungan .env` +
       `</div>`;
 
-    this._appendLog(targetDir, folderName, "DIAGRAM ARSITEKTUR v9.5.5", "Menerbitkan Diagram Arsitektur", audit);
+    this._appendLog(targetDir, folderName, "DIAGRAM ARSITEKTUR v9.5.6", "Menerbitkan Diagram Arsitektur", audit);
     this._reply(html);
   }
 
@@ -236,7 +236,7 @@ class SaaSWorkflowChatProvider {
     }
 
     const currentBranch = audit.currentBranch;
-    let html = `<b>PAPAN TUGAS & PETA JALAN VISUAL (v9.5.5)</b><br/>` +
+    let html = `<b>PAPAN TUGAS & PETA JALAN VISUAL (v9.5.6)</b><br/>` +
       `<small style="color:#94a3b8;">Proyek: ${folderName} | Ruang Kerja Aktif: <code>${currentBranch}</code></small><br/><br/>` +
       `<table style="width:100%;border-collapse:collapse;font-size:11px;">` +
       `<tr style="background:#1e293b;border-bottom:1px solid #334155;">` +
@@ -261,7 +261,7 @@ class SaaSWorkflowChatProvider {
     html += `</table><br/>` +
       `<small style="color:#94a3b8;">Ketik "Buat fitur baru" untuk memulai pekerjaan tiket di atas.</small>`;
 
-    this._appendLog(targetDir, folderName, "PAPANTUGAS VISUAL v9.5.5", `Membuka papan ${tickets.length} tiket`, audit);
+    this._appendLog(targetDir, folderName, "PAPANTUGAS VISUAL v9.5.6", `Membuka papan ${tickets.length} tiket`, audit);
     this._reply(html);
   }
 
@@ -273,7 +273,7 @@ class SaaSWorkflowChatProvider {
     const vibeResult = VibeGuard.auditAll(targetDir, diff, areas);
     const commits = CodeReader.getRecentCommits(targetDir, 5);
 
-    let html = `<b>LAPORAN RINGKASAN EKSEKUTIF (v9.5.5)</b><br/>` +
+    let html = `<b>LAPORAN RINGKASAN EKSEKUTIF (v9.5.6)</b><br/>` +
       `<small style="color:#94a3b8;">Dibuat untuk Manajemen & Pemilik Bisnis | Proyek: ${folderName}</small><br/><br/>` +
       `<div style="background:#1a2332;border:1px solid #3b82f6;border-radius:4px;padding:10px;font-size:11.5px;">` +
       `<b>1. STATUS KESEHATAN SISTEM:</b><br/>` +
@@ -290,18 +290,18 @@ class SaaSWorkflowChatProvider {
     html += `<br/><b>3. REKOMENDASI MANAJEMEN:</b><br/>` +
       `${vibeResult.isFullyPassed ? 'Sistem dalam kondisi prima dan siap untuk rilis simulasi/produksi.' : 'Selesaikan perbaikan audit teknis sebelum melakukan penggabungan kode.'}</div>`;
 
-    this._appendLog(targetDir, folderName, "RINGKASAN EKSEKUTIF v9.5.5", "Menerbitkan Laporan Eksekutif", audit);
+    this._appendLog(targetDir, folderName, "RINGKASAN EKSEKUTIF v9.5.6", "Menerbitkan Laporan Eksekutif", audit);
     this._reply(html);
   }
 
   // ============================================================
-  // PENGOPTIMASI PROMPT VIBE CODING (promptfoo & fabric adoption)
+  // PENGOPTIMASI PROMPT VIBE CODING / PROMPT GENERATOR (v9.5.6)
   // ============================================================
   async _handleRefinePrompt(targetDir, folderName, userText, audit) {
     let rawInput = userText.replace(/optimalkan prompt/gi, '').replace(/refine prompt/gi, '').trim();
     if (rawInput.length < 5) {
       const inp = await vscode.window.showInputBox({
-        prompt: 'Ketik instruksi prompt kasar Anda yang ingin dioptimalkan:',
+        prompt: 'Ketik instruksi prompt kasar Anda yang ingin dioptimalkan (Prompt Generator):',
         placeHolder: 'Contoh: buatkan modul login dengan OTP WhatsApp'
       });
       if (!inp) return;
@@ -311,13 +311,13 @@ class SaaSWorkflowChatProvider {
     const projectContext = CodeReader.buildFullContext(targetDir);
     const refinedPrompt = VibeOptimizer.refineVibePrompt(rawInput, projectContext);
 
-    const html = `<b>INSTRUKSI PROMPT PRESISI TERSTRUKTUR</b><br/>` +
-      `<small style="color:#94a3b8;">Disaring untuk mencegah halusinasi AI</small><br/><br/>` +
+    const html = `<b>INSTRUKSI PROMPT PRESISI TERSTRUKTUR (PROMPT GENERATOR v9.5.6)</b><br/>` +
+      `<small style="color:#94a3b8;">Disaring & diformat otomatis untuk mencegah halusinasi AI</small><br/><br/>` +
       `<div style="background:#1a2332;border:1px solid #3b82f6;border-radius:4px;padding:10px;font-size:11.5px;white-space:pre-wrap;">` +
       `${refinedPrompt}</div><br/>` +
       `<small style="color:#94a3b8;">Salin teks di atas dan gunakan sebagai prompt ke model AI Anda.</small>`;
 
-    this._appendLog(targetDir, folderName, "OPTIMASI PROMPT", rawInput, audit);
+    this._appendLog(targetDir, folderName, "OPTIMASI PROMPT GENERATOR v9.5.6", rawInput, audit);
     this._reply(html);
   }
 
@@ -332,7 +332,7 @@ class SaaSWorkflowChatProvider {
       return;
     }
 
-    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.5.5 & Uji Kelaikan Mandiri...</small>`);
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.5.6 & Uji Kelaikan Mandiri...</small>`);
 
     const diff = preFetchedDiff || CodeReader.getRecentDiff(targetDir);
     const areas = CodeReader.classifyChanges(targetDir);
@@ -399,7 +399,7 @@ class SaaSWorkflowChatProvider {
       this._memory.incrementStat('total_penggabungan');
       this._memory.addDecision(`Penggabungan ${currentBranch} ke develop`, `Conventional Commit: ${convCommit.commitHeader}`);
       this._updateChangelog(targetDir, folderName, currentBranch, commits);
-      this._appendLog(targetDir, folderName, "PENGGABUNGAN + ULTIMATE VIBE GUARD v9.5.5", `${currentBranch} ke develop`, audit);
+      this._appendLog(targetDir, folderName, "PENGGABUNGAN + ULTIMATE VIBE GUARD v9.5.6", `${currentBranch} ke develop`, audit);
 
       const statusText = hasIssues ? '[BERHASIL DENGAN TEMUAN]' : '[BERHASIL]';
       this._reply(
@@ -415,16 +415,16 @@ class SaaSWorkflowChatProvider {
   }
 
   // ============================================================
-  // AUDIT VIBE CODING v9.5.5
+  // AUDIT VIBE CODING v9.5.6
   // ============================================================
   async _handleVibeCodingAudit(targetDir, folderName, userText, audit, preFetchedDiff = null) {
-    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.5.5...</small>`);
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v9.5.6...</small>`);
 
     const diff = preFetchedDiff || CodeReader.getRecentDiff(targetDir);
     const areas = CodeReader.classifyChanges(targetDir);
     const vibeResult = VibeGuard.auditAll(targetDir, diff, areas);
 
-    let html = `<b>LAPORAN AUDIT PENGAWAL VIBE CODING v9.5.5</b><br/>` +
+    let html = `<b>LAPORAN AUDIT PENGAWAL VIBE CODING v9.5.6</b><br/>` +
       `<small style="color:#94a3b8;">Proyek: ${folderName} | ${this._ai.modelName}</small><br/><br/>`;
 
     // 1. Audit Rahasia
@@ -443,7 +443,7 @@ class SaaSWorkflowChatProvider {
       `<b style="color:${envColor};">3. SINKRONISASI .ENV.EXAMPLE: [${vibeResult.envSync.isUpdated ? `${vibeResult.envSync.addedKeys.length} KUNCI DISINKRONKAN` : 'TERJAGA'}]</b></div>`;
 
     this._updateWidget(audit, targetDir, vibeResult);
-    this._appendLog(targetDir, folderName, "AUDIT VIBE CODING v9.5.5", `SAST: ${vibeResult.sastAudit.isClean ? 'BERSIH' : 'ADA CELAH'}`, audit);
+    this._appendLog(targetDir, folderName, "AUDIT VIBE CODING v9.5.6", `SAST: ${vibeResult.sastAudit.isClean ? 'BERSIH' : 'ADA CELAH'}`, audit);
     this._reply(html);
   }
 
@@ -460,7 +460,7 @@ class SaaSWorkflowChatProvider {
 
     let existingContent = '';
     try { if (fs.existsSync(changelogPath)) existingContent = fs.readFileSync(changelogPath, 'utf8'); } catch (e) {}
-    const header = existingContent ? '' : `# CATATAN RILIS PROYEK (${folderName})\n\nDokumen ini disusun secara otomatis oleh Asisten Joe v9.5.5.\n\n---\n`;
+    const header = existingContent ? '' : `# CATATAN RILIS PROYEK (${folderName})\n\nDokumen ini disusun secara otomatis oleh Asisten Joe v9.5.6.\n\n---\n`;
     try { fs.writeFileSync(changelogPath, header + newEntry + existingContent, 'utf8'); } catch (e) {}
   }
 
@@ -720,7 +720,7 @@ class SaaSWorkflowChatProvider {
       `## 1. TABEL REKAP OPERASI (CRUD)\n\n| Waktu | Aktivitas | Deskripsi | Ruang | Status |\n| :--- | :--- | :--- | :--- | :--- |\n${crudRows}\n\n---\n\n` +
       `## 2. DIAGRAM ALUR PEKERJAAN SESI\n\n\`\`\`mermaid\nflowchart TD\n    START["Awal Sesi"] --> ${this._logHistory.length ? 'N0' : 'END'}\n${mNodes}\n` +
       `    ${this._logHistory.length ? `N${this._logHistory.length-1}` : 'START'} --> END["Terkini: ${audit.currentBranch}"]\n\`\`\`\n\n---\n\n` +
-      `*Disusun otomatis oleh Asisten Joe v9.5.5 Smart Error Boundary Edition*\n`;
+      `*Disusun otomatis oleh Asisten Joe v9.5.6 Prompt Generator Syntax Auto-Fixer Edition*\n`;
     try { fs.writeFileSync(logPath, content, 'utf8'); } catch (e) {}
   }
 
