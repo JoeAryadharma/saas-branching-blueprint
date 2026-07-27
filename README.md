@@ -139,21 +139,21 @@ sequenceDiagram
     Joe-->>User: 8. Laporan: Fitur Berhasil Diluncurkan!
 ```
 
-### 6. DIAGRAM STRUKTUR RELASI DATA USAHA
+### 6. DIAGRAM STRUKTUR RELASI DATA PROMPT ENGINEERING
 
 ```mermaid
 flowchart TD
     classDef default text-align:center;
-    subgraph DATA["STRUKTUR HUBUNGAN DATA USAHA"]
-        PENGGUNA["Data Pengguna Utama\nMenyimpan Identitas dan Nama Pembeli\nMencatat Alamat Email dan Hak Akses"]
+    subgraph DATA["STRUKTUR HUBUNGAN DATA PROMPT ENGINEERING"]
+        PENGGUNA["Data Prompt Engineer\nMenyimpan Identitas Pengguna Usaha\nMencatat Status Ruang Kerja Aktif"]
         
-        PRODUK["Data Produk dan Layanan\nMenyimpan Identitas dan Nama Barang\nMencatat Harga Satuan dan Stok Tersedia"]
+        PROMPT["Data Draf Super Prompt\nMenyimpan Instruksi Komponen Target\nMengunci Aturan 4 Rem Darurat Mutlak"]
         
-        PESANAN["Data Pesanan Dibuat\nMenyimpan Nomor Pesanan Pembeli\nMencatat Total Pembayaran dan Status"]
+        AUDIT["Data Riwayat Audit Keamanan\nMenyimpan Catatan Hasil Uji SAST\nMemastikan Bebas Kebocoran Data"]
     end
 
-    PENGGUNA --> PESANAN
-    PRODUK --> PESANAN
+    PENGGUNA --> PROMPT
+    PROMPT --> AUDIT
 ```
 
 ### 7. DIAGRAM PETA ALUR RUANG KERJA DAN RILIS SISTEM
