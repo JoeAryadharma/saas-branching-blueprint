@@ -2,20 +2,45 @@ const path = require('path');
 const fs = require('fs');
 
 // ============================================================
-// VIBE OPTIMIZER v9.9.0 -- Anti-Layout Mutation & Asset Guard Engine
-// 1. Asset & Image Replacement Guard (v9.9.0 - Single-Attribute Surgical Mutation)
-// 2. Micro-Scoped Prompt Slicer (v9.8.0 - Single-File & Single-Component Isolation)
-// 3. Grafity Design Super-Prompt Generator (5-Wall Contract & SSOT Design System)
-// 4. Multi-Agent Sub-Task Swarm Orchestrator (Arsitek -> Koder -> Auditor SAST)
-// 5. Inline CodeLens & Hover Diagnostic Guard
-// 6. Terminal Error Sensor & Auto-Fix Repair Prompt
-// 7. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
-// 8. Smart Context Compressor (Memangkas Diff/Konteks Hingga 70%)
-// 9. DSPy & TextGrad Chain-of-Thought (CoT) Prompt Compiler
-// 10. .env.example Synchronizer & OpenAPI API Spec Drafter
+// VIBE OPTIMIZER v10.0.0 -- Semantic Versioning & Ultimate Suite Engine
+// 1. Semantic Versioning Automator (v10.0.0 - SemVer Auto-Increment Engine x.x.0)
+// 2. Asset & Image Replacement Guard (v9.9.0 - Single-Attribute Surgical Mutation)
+// 3. Micro-Scoped Prompt Slicer (v9.8.0 - Single-File & Single-Component Isolation)
+// 4. Grafity Design Super-Prompt Generator (5-Wall Contract & SSOT Design System)
+// 5. Multi-Agent Sub-Task Swarm Orchestrator (Arsitek -> Koder -> Auditor SAST)
+// 6. Inline CodeLens & Hover Diagnostic Guard
+// 7. Terminal Error Sensor & Auto-Fix Repair Prompt
+// 8. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
+// 9. Smart Context Compressor (Memangkas Diff/Konteks Hingga 70%)
+// 10. DSPy & TextGrad Chain-of-Thought (CoT) Prompt Compiler
+// 11. .env.example Synchronizer & OpenAPI API Spec Drafter
 // ============================================================
 
 class VibeOptimizer {
+
+  // ============================================================
+  // SEMANTIC VERSIONING AUTOMATOR ENGINE (v10.0.0 - x.x.0)
+  // Menghitung & mengoptimalkan penomoran versi SemVer otomatis
+  // ============================================================
+  static calculateNextVersion(currentVersionStr = '9.9.0', changeType = 'minor') {
+    const parts = currentVersionStr.replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
+    let major = parts[0] || 0;
+    let minor = parts[1] || 0;
+    let patch = parts[2] || 0;
+
+    if (changeType === 'major') {
+      major += 1;
+      minor = 0;
+      patch = 0;
+    } else if (changeType === 'minor') {
+      minor += 1;
+      patch = 0;
+    } else {
+      patch += 1;
+    }
+
+    return `${major}.${minor}.${patch}`;
+  }
 
   // ============================================================
   // ASSET & IMAGE REPLACEMENT GUARD (v9.9.0)
@@ -33,7 +58,7 @@ class VibeOptimizer {
 
     const assetPrompt = [
       `# ============================================================`,
-      `# PROMPT BEDAH ASSET & GAMBAR (Anti-Layout Mutation Guard v9.9.0)`,
+      `# PROMPT BEDAH ASSET & GAMBAR (Anti-Layout Mutation Guard v10.0.0)`,
       `# Dihasilkan oleh Asisten Joe | Standar Surgical Single-Attribute Mutation`,
       `# Lisensi: GNU AGPL v3.0 | Output 100% Pure Prompt`,
       `# ============================================================`,
@@ -98,8 +123,8 @@ class VibeOptimizer {
 
     const microPrompt = [
       `# ============================================================`,
-      `# PROMPT MIKRO TERISOLASI (Micro-Scoped Prompt Engine v9.9.0)`,
-      `# Dihasilkan oleh Asisten Joe | Standar Single-File & Single-Component Lock`,
+      `# PROMPT MIKRO TERISOLASI (Micro-Scoped Prompt Engine v10.0.0)`,
+      `# Dihasikan oleh Asisten Joe | Standar Single-File & Single-Component Lock`,
       `# Lisensi: GNU AGPL v3.0 | Output 100% Pure Prompt`,
       `# ============================================================`,
       ``,
@@ -162,7 +187,7 @@ class VibeOptimizer {
 
     const fixPrompt = [
       `# ============================================================`,
-      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v9.9.0)`,
+      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v10.0.0)`,
       `# Standar Lisensi: GNU AGPL v3.0 | Output Pure Prompt Generator`,
       `# ============================================================`,
       ``,
@@ -224,7 +249,7 @@ class VibeOptimizer {
       `SIMBOL & RUTE INTI TERDETEKSI:`,
       keySymbols.join('\n') || 'Fungsi Utama Aplikasi',
       ``,
-      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v9.9.0)`
+      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v10.0.0)`
     ].join('\n');
 
     return compressed;
@@ -310,7 +335,7 @@ class VibeOptimizer {
     });
 
     if (newlyAppended.length > 0) {
-      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v9.9.0)\n' +
+      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v10.0.0)\n' +
         newlyAppended.map(k => `${k}=`).join('\n') + '\n';
 
       try {
@@ -365,7 +390,7 @@ class VibeOptimizer {
     const now = new Date().toLocaleString('id-ID');
 
     const testContent = [
-      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.9.0 (DSPy Engine)`,
+      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v10.0.0 (DSPy Engine)`,
       `// Waktu Dibuat: ${now}`,
       ``,
       `describe('Uji Kelaikan Modul Baru (Vibe Autotest)', () => {`,
@@ -429,7 +454,7 @@ class VibeOptimizer {
     }
 
     const now = new Date().toLocaleString('id-ID');
-    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.9.0 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
+    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v10.0.0 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
 
     if (detectedEndpoints.length > 0) {
       content += `## RINGKASAN ENDPOINT TERDETEKSI\n\n| METODE | JALUR RUTE (PATH) | DESKRIPSI |\n| :--- | :--- | :--- |\n`;
