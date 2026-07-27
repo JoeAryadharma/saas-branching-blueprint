@@ -9,8 +9,8 @@ const SASTScanner = require('./sastScanner');
 const VibeOptimizer = require('./vibeOptimizer');
 
 // ============================================================
-// ASISTEN JOE v10.3.0 -- CHAT PROVIDER
-// AS-IS vs. TO-BE Architectural Transformation Engine Suite
+// ASISTEN JOE v10.4.0 -- CHAT PROVIDER
+// RDBMS Architecture & Migration Guard Engine Suite
 // ============================================================
 
 class SaaSWorkflowChatProvider {
@@ -54,7 +54,10 @@ class SaaSWorkflowChatProvider {
       const diff = CodeReader.getRecentDiff(targetDir);
       VibeOptimizer.syncDotenvExample(targetDir, diff);
 
-      if (lowerText.includes('as is') || lowerText.includes('to be') || lowerText.includes('transformasi') || lowerText.includes('sebelum sesudah')) {
+      if (lowerText.includes('rdbms') || lowerText.includes('sql') || lowerText.includes('skema db') || lowerText.includes('normalisasi') || lowerText.includes('postgres') || lowerText.includes('prisma') || lowerText.includes('migrasi')) {
+        await this._handleRDBMSAudit(targetDir, folderName, text, audit);
+      }
+      else if (lowerText.includes('as is') || lowerText.includes('to be') || lowerText.includes('transformasi') || lowerText.includes('sebelum sesudah')) {
         await this._handleAsIsToBePrompt(targetDir, folderName, text, audit);
       }
       else if (lowerText.includes('gambar') || lowerText.includes('foto') || lowerText.includes('hero') || lowerText.includes('image') || lowerText.includes('logo') || lowerText.includes('asset')) {
@@ -121,7 +124,7 @@ class SaaSWorkflowChatProvider {
       this._memory.save(targetDir);
     } catch (uncaughtErr) {
       const errorCardHtml = `<div style="background:rgba(239,68,68,0.15);border:1px solid #ef4444;border-radius:4px;padding:10px;font-size:11.5px;">` +
-        `<b style="color:#ef4444;">[PENANGANAN KENDALA MANDIRI - v10.3.0]</b><br/>` +
+        `<b style="color:#ef4444;">[PENANGANAN KENDALA MANDIRI - v10.4.0]</b><br/>` +
         `Terjadi kendala tak terduga saat memproses instruksi: <i>"${uncaughtErr.message}"</i><br/><br/>` +
         `<button style="background:#ef4444;color:#fff;border:none;padding:4px 8px;border-radius:2px;cursor:pointer;font-size:11px;" onclick="quickAction('${text}')">Coba Lagi</button>` +
         `</div>`;
@@ -129,7 +132,40 @@ class SaaSWorkflowChatProvider {
     }
   }
 
-  // AS-IS vs TO-BE DIAGRAM GENERATOR HANDLER (v10.3.0)
+  // RDBMS ARCHITECTURE & MIGRATION GUARD HANDLER (v10.4.0)
+  async _handleRDBMSAudit(targetDir, folderName, userText, audit) {
+    const editor = vscode.window.activeTextEditor;
+    let snippet = '';
+    if (editor) {
+      snippet = editor.document.getText();
+    }
+
+    const rdbmsResult = VibeOptimizer.compileRDBMSAudit(targetDir, snippet);
+
+    let html = `<b>AUDIT ARSITEKTUR & SKEMA RDBMS (v10.4.0)</b><br/>` +
+      `<small style="color:#22c55e;">Proyek: ${folderName} | Standar Normalisasi 3NF & SAST SQL</small><br/><br/>`;
+
+    if (rdbmsResult.issues.length > 0) {
+      html += `<div style="background:rgba(239,68,68,0.15);border:1px solid #ef4444;border-radius:4px;padding:10px;margin-bottom:8px;font-size:11.5px;">` +
+        `<b style="color:#ef4444;">TEMUAN AUDIT SKEMA/SQL KRITIS:</b><br/>`;
+      rdbmsResult.issues.forEach(i => {
+        html += `-- ${i}<br/>`;
+      });
+      html += `</div>`;
+    } else {
+      html += `<div style="background:rgba(34,197,94,0.15);border:1px solid #22c55e;border-radius:4px;padding:10px;margin-bottom:8px;font-size:11.5px;">` +
+        `<b style="color:#22c55e;">STATUS ARSITEKTUR RDBMS AMAN</b><br/>` +
+        `Tidak terdeteksi celah SQL Injection atau kunci penguncian tabel bernilai tinggi.</div>`;
+    }
+
+    html += `<div style="background:#1a2332;border:1px solid #3b82f6;border-radius:4px;padding:10px;font-size:11.5px;white-space:pre-wrap;">` +
+      `${rdbmsResult.rdbmsPlaybook}</div>`;
+
+    this._appendLog(targetDir, folderName, "RDBMS AUDIT v10.4.0", "Audit Skema & SQL RDBMS", audit);
+    this._reply(html);
+  }
+
+  // AS-IS vs TO-BE DIAGRAM GENERATOR HANDLER (v10.4.0)
   async _handleAsIsToBePrompt(targetDir, folderName, userText, audit) {
     let rawInput = userText.replace(/as is/gi, '').replace(/to be/gi, '').replace(/transformasi/gi, '').replace(/sebelum sesudah/gi, '').trim();
     if (rawInput.length < 3) {
@@ -144,7 +180,7 @@ class SaaSWorkflowChatProvider {
     const techs = CodeReader.detectTechnologies(targetDir);
     const result = VibeOptimizer.compileAsIsToBeDiagrams(rawInput, targetDir, techs);
 
-    const html = `<b>DIAGRAM ARSITEKTUR AS-IS vs. TO-BE (v10.3.0)</b><br/>` +
+    const html = `<b>DIAGRAM ARSITEKTUR AS-IS vs. TO-BE (v10.4.0)</b><br/>` +
       `<small style="color:#38bdf8;">Visualisasi Perubahan: "${rawInput}"</small><br/><br/>` +
       
       // DIAGRAM AS-IS
@@ -161,7 +197,7 @@ class SaaSWorkflowChatProvider {
       `<div style="background:#1a2332;border:1px solid #3b82f6;border-radius:4px;padding:10px;font-size:11.5px;white-space:pre-wrap;">` +
       `${result.deltaSummary}</div>`;
 
-    this._appendLog(targetDir, folderName, "DIAGRAM AS-IS TO-BE v10.3.0", rawInput, audit);
+    this._appendLog(targetDir, folderName, "DIAGRAM AS-IS TO-BE v10.4.0", rawInput, audit);
     this._reply(html);
   }
 
@@ -170,7 +206,7 @@ class SaaSWorkflowChatProvider {
     const techs = CodeReader.detectTechnologies(targetDir);
     const diagrams = VibeOptimizer.compileProjectMultiDiagrams(folderName, audit, techs);
 
-    let html = `<b>VISUALISASI MULTI-DIAGRAM PROYEK (v10.3.0)</b><br/>` +
+    let html = `<b>VISUALISASI MULTI-DIAGRAM PROYEK (v10.4.0)</b><br/>` +
       `<small style="color:#94a3b8;">Dihasilkan untuk Proyek: ${folderName} | Standar Mermaid.js</small><br/><br/>` +
       
       // 1. ARSITEKTUR
@@ -198,11 +234,11 @@ class SaaSWorkflowChatProvider {
       `<b style="color:#f472b6;">5. DIAGRAM PETA JALAN & JADWAL TUGAS (GANTT CHART):</b><br/><br/>` +
       `<pre style="background:#0f172a;padding:8px;border-radius:3px;color:#f472b6;font-size:10.5px;overflow-x:auto;">${diagrams.ganttMermaid}</pre></div>`;
 
-    this._appendLog(targetDir, folderName, "MULTI-DIAGRAM VISUALIZER v10.3.0", "Menerbitkan 5 Diagram Visual Proyek", audit);
+    this._appendLog(targetDir, folderName, "MULTI-DIAGRAM VISUALIZER v10.4.0", "Menerbitkan 5 Diagram Visual Proyek", audit);
     this._reply(html);
   }
 
-  // ASSET & IMAGE REPLACEMENT GUARD HANDLER (v10.3.0)
+  // ASSET & IMAGE REPLACEMENT GUARD HANDLER (v10.4.0)
   async _handleAssetReplacementPrompt(targetDir, folderName, userText, audit) {
     let rawInput = userText.replace(/ganti gambar/gi, '').replace(/ubah foto/gi, '').replace(/hero image/gi, '').replace(/gambar/gi, '').replace(/foto/gi, '').replace(/asset/gi, '').trim();
     if (rawInput.length < 3) {
@@ -230,17 +266,17 @@ class SaaSWorkflowChatProvider {
     const assetPrompt = VibeOptimizer.compileAssetReplacementPrompt(rawInput, activeFilePath, activeCodeSnippet, targetDir);
     const fileLabel = activeFilePath ? path.basename(activeFilePath) : 'Berkas Editor Aktif';
 
-    const html = `<b>PROMPT BEDAH PERGANTIAN GAMBAR (v10.3.0)</b><br/>` +
+    const html = `<b>PROMPT BEDAH PERGANTIAN GAMBAR (v10.4.0)</b><br/>` +
       `<small style="color:#22c55e;">[DILINDUNGI] Anti-Layout Mutation Guard | Target: <code>${fileLabel}</code></small><br/><br/>` +
       `<div style="background:#1a2332;border:1px solid #22c55e;border-radius:4px;padding:10px;font-size:11.5px;white-space:pre-wrap;">` +
       `${assetPrompt}</div><br/>` +
       `<small style="color:#94a3b8;">Salin prompt di atas dan masukkan ke Grafity. Grafity DILARANG KERAS merubah navbar, layout, atau halaman lain!</small>`;
 
-    this._appendLog(targetDir, folderName, "ANTI-LAYOUT ASSET GUARD v10.3.0", rawInput, audit);
+    this._appendLog(targetDir, folderName, "ANTI-LAYOUT ASSET GUARD v10.4.0", rawInput, audit);
     this._reply(html);
   }
 
-  // MICRO-SCOPED DESIGN PROMPT ENGINE (v10.3.0)
+  // MICRO-SCOPED DESIGN PROMPT ENGINE (v10.4.0)
   async _handleMicroScopedDesignPrompt(targetDir, folderName, userText, audit) {
     let rawInput = userText.replace(/micro/gi, '').replace(/mikro/gi, '').replace(/mode design/gi, '').replace(/grafity prompt/gi, '').replace(/super prompt/gi, '').trim();
     if (rawInput.length < 5) {
@@ -268,13 +304,13 @@ class SaaSWorkflowChatProvider {
     const microPrompt = VibeOptimizer.compileMicroScopedPrompt(rawInput, activeFilePath, activeCodeSnippet, targetDir);
     const fileLabel = activeFilePath ? path.basename(activeFilePath) : 'Berkas Active Editor';
 
-    const html = `<b>PROMPT MIKRO TERISOLASI (v10.3.0)</b><br/>` +
+    const html = `<b>PROMPT MIKRO TERISOLASI (v10.4.0)</b><br/>` +
       `<small style="color:#94a3b8;">Target Berkas: <code>${fileLabel}</code> | Single-File Scope Lock</small><br/><br/>` +
       `<div style="background:#1a2332;border:1px solid #3b82f6;border-radius:4px;padding:10px;font-size:11.5px;white-space:pre-wrap;">` +
       `${microPrompt}</div><br/>` +
       `<small style="color:#94a3b8;">Salin teks di atas dan masukkan ke Grafity. Grafity HANYA diizinkan mengubah 1 berkas ini!</small>`;
 
-    this._appendLog(targetDir, folderName, "MICRO-SCOPED PROMPT SLICER v10.3.0", rawInput, audit);
+    this._appendLog(targetDir, folderName, "MICRO-SCOPED PROMPT SLICER v10.4.0", rawInput, audit);
     this._reply(html);
   }
 
@@ -292,19 +328,19 @@ class SaaSWorkflowChatProvider {
     const projectContext = CodeReader.buildFullContext(targetDir);
     const fixPrompt = VibeOptimizer.compileErrorFixPrompt(errLog, projectContext);
 
-    const html = `<b>DRAF PROMPT PERBAIKAN ERROR TERMINAL (v10.3.0)</b><br/>` +
+    const html = `<b>DRAF PROMPT PERBAIKAN ERROR TERMINAL (v10.4.0)</b><br/>` +
       `<small style="color:#94a3b8;">Disusun otomatis oleh Terminal Error Sensor (Stanford DSPy Format)</small><br/><br/>` +
       `<div style="background:#1a2332;border:1px solid #ef4444;border-radius:4px;padding:10px;font-size:11.5px;white-space:pre-wrap;">` +
       `${fixPrompt}</div><br/>` +
       `<small style="color:#94a3b8;">Salin teks di atas dan gunakan sebagai prompt perbaikan ke AI Anda.</small>`;
 
-    this._appendLog(targetDir, folderName, "FIX TERMINAL ERROR PROMPT v10.3.0", errLog, audit);
+    this._appendLog(targetDir, folderName, "FIX TERMINAL ERROR PROMPT v10.4.0", errLog, audit);
     this._reply(html);
   }
 
   async _handleFreeQuestion(targetDir, folderName, text, audit) {
     const msgId = 'msg_' + Date.now();
-    const headerHtml = `<b>Asisten Joe (AS-IS TO-BE Engine v10.3.0)</b> <small style="color:#94a3b8;">(${this._ai.modelName})</small><br/><br/>`;
+    const headerHtml = `<b>Asisten Joe (RDBMS Architecture Engine v10.4.0)</b> <small style="color:#94a3b8;">(${this._ai.modelName})</small><br/><br/>`;
     
     this._replyStreamStart(msgId, headerHtml);
 
@@ -334,20 +370,20 @@ class SaaSWorkflowChatProvider {
       vscode.commands.executeCommand('vscode.open', vscode.Uri.file(docPath));
     }
 
-    let html = `<b>DOKUMENTASI API OTOMATIS (v10.3.0)</b><br/>` +
+    let html = `<b>DOKUMENTASI API OTOMATIS (v10.4.0)</b><br/>` +
       `<small style="color:#94a3b8;">Proyek: ${folderName} | Standar OpenAPI / Swagger</small><br/><br/>` +
       `<div style="background:#1a2332;border:1px solid #3b82f6;border-radius:4px;padding:10px;font-size:11.5px;">` +
       `[BERHASIL] Berkas <code>DOKUMENTASI_API.md</code> telah disusun dan dibuka di editor.<br/>` +
       `Jumlah rute API terdeteksi: <b>${apiDoc.endpointsCount} rute</b>.</div>`;
 
-    this._appendLog(targetDir, folderName, "DOKUMENTASI API v10.3.0", `Menyusun ${apiDoc.endpointsCount} rute`, audit);
+    this._appendLog(targetDir, folderName, "DOKUMENTASI API v10.4.0", `Menyusun ${apiDoc.endpointsCount} rute`, audit);
     this._reply(html);
   }
 
   async _handlePerformanceAudit(targetDir, folderName, audit, diff) {
     const bundleAudit = VibeOptimizer.auditBundleSize(targetDir, diff);
 
-    let html = `<b>LAPORAN PENGAWAL PERFORMA & PUSTAKA (v10.3.0)</b><br/>` +
+    let html = `<b>LAPORAN PENGAWAL PERFORMA & PUSTAKA (v10.4.0)</b><br/>` +
       `<small style="color:#94a3b8;">Proyek: ${folderName} | Analisis Bobot Bundle</small><br/><br/>`;
 
     if (bundleAudit.hasHeavyPackage) {
@@ -363,7 +399,7 @@ class SaaSWorkflowChatProvider {
         `Tidak terdeteksi pustaka berukuran raksasa pada penambahan kode terbaru. Bobot aplikasi tetap ringan.</div>`;
     }
 
-    this._appendLog(targetDir, folderName, "AUDIT PERFORMA v10.3.0", "Menerbitkan Laporan Performa", audit);
+    this._appendLog(targetDir, folderName, "AUDIT PERFORMA v10.4.0", "Menerbitkan Laporan Performa", audit);
     this._reply(html);
   }
 
@@ -398,7 +434,7 @@ class SaaSWorkflowChatProvider {
     }
 
     const currentBranch = audit.currentBranch;
-    let html = `<b>PAPAN TUGAS & PETA JALAN VISUAL (v10.3.0)</b><br/>` +
+    let html = `<b>PAPAN TUGAS & PETA JALAN VISUAL (v10.4.0)</b><br/>` +
       `<small style="color:#94a3b8;">Proyek: ${folderName} | Ruang Kerja Aktif: <code>${currentBranch}</code></small><br/><br/>` +
       `<table style="width:100%;border-collapse:collapse;font-size:11px;">` +
       `<tr style="background:#1e293b;border-bottom:1px solid #334155;">` +
@@ -423,7 +459,7 @@ class SaaSWorkflowChatProvider {
     html += `</table><br/>` +
       `<small style="color:#94a3b8;">Ketik "Buat fitur baru" untuk memulai pekerjaan tiket di atas.</small>`;
 
-    this._appendLog(targetDir, folderName, "PAPANTUGAS VISUAL v10.3.0", `Membuka papan ${tickets.length} tiket`, audit);
+    this._appendLog(targetDir, folderName, "PAPANTUGAS VISUAL v10.4.0", `Membuka papan ${tickets.length} tiket`, audit);
     this._reply(html);
   }
 
@@ -432,7 +468,7 @@ class SaaSWorkflowChatProvider {
     const vibeResult = VibeGuard.auditAll(targetDir, diff, areas);
     const commits = CodeReader.getRecentCommits(targetDir, 5);
 
-    let html = `<b>LAPORAN RINGKASAN EKSEKUTIF (v10.3.0)</b><br/>` +
+    let html = `<b>LAPORAN RINGKASAN EKSEKUTIF (v10.4.0)</b><br/>` +
       `<small style="color:#94a3b8;">Dibuat untuk Manajemen & Pemilik Bisnis | Proyek: ${folderName}</small><br/><br/>` +
       `<div style="background:#1a2332;border:1px solid #3b82f6;border-radius:4px;padding:10px;font-size:11.5px;">` +
       `<b>1. STATUS KESEHATAN SISTEM:</b><br/>` +
@@ -449,7 +485,7 @@ class SaaSWorkflowChatProvider {
     html += `<br/><b>3. REKOMENDASI MANAJEMEN:</b><br/>` +
       `${vibeResult.isFullyPassed ? 'Sistem dalam kondisi prima dan siap untuk rilis simulasi/produksi.' : 'Selesaikan perbaikan audit teknis sebelum melakukan penggabungan kode.'}</div>`;
 
-    this._appendLog(targetDir, folderName, "RINGKASAN EKSEKUTIF v10.3.0", "Menerbitkan Laporan Eksekutif", audit);
+    this._appendLog(targetDir, folderName, "RINGKASAN EKSEKUTIF v10.4.0", "Menerbitkan Laporan Eksekutif", audit);
     this._reply(html);
   }
 
@@ -457,7 +493,7 @@ class SaaSWorkflowChatProvider {
     let rawInput = userText.replace(/optimalkan prompt/gi, '').replace(/refine prompt/gi, '').replace(/dspy/gi, '').replace(/swarm/gi, '').trim();
     if (rawInput.length < 5) {
       const inp = await vscode.window.showInputBox({
-        prompt: 'Ketik instruksi prompt kasar Anda (AS-IS TO-BE Engine v10.3.0):',
+        prompt: 'Ketik instruksi prompt kasar Anda (RDBMS Engine v10.4.0):',
         placeHolder: 'Contoh: ganti gambar hero di berkas LandingPage.jsx'
       });
       if (!inp) return;
@@ -466,13 +502,13 @@ class SaaSWorkflowChatProvider {
 
     const microPrompt = VibeOptimizer.compileMicroScopedPrompt(rawInput, '', '', targetDir);
 
-    const html = `<b>PROMPT PERBAIKAN / MIKRO (v10.3.0)</b><br/>` +
+    const html = `<b>PROMPT PERBAIKAN / MIKRO (v10.4.0)</b><br/>` +
       `<small style="color:#94a3b8;">5 Dinding Kontrak Kepatuhan & Micro-Scope Lock</small><br/><br/>` +
       `<div style="background:#1a2332;border:1px solid #3b82f6;border-radius:4px;padding:10px;font-size:11.5px;white-space:pre-wrap;">` +
       `${microPrompt}</div><br/>` +
       `<small style="color:#94a3b8;">Salin teks di atas dan masukkan sebagai prompt ke Grafity di IDE Anda!</small>`;
 
-    this._appendLog(targetDir, folderName, "OPTIMASI PROMPT MIKRO v10.3.0", rawInput, audit);
+    this._appendLog(targetDir, folderName, "OPTIMASI PROMPT MIKRO v10.4.0", rawInput, audit);
     this._reply(html);
   }
 
@@ -484,7 +520,7 @@ class SaaSWorkflowChatProvider {
       return;
     }
 
-    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v10.3.0 & Uji Kelaikan Mandiri...</small>`);
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v10.4.0 & Uji Kelaikan Mandiri...</small>`);
 
     const diff = preFetchedDiff || CodeReader.getRecentDiff(targetDir);
     const areas = CodeReader.classifyChanges(targetDir);
@@ -544,7 +580,7 @@ class SaaSWorkflowChatProvider {
       this._memory.incrementStat('total_penggabungan');
       this._memory.addDecision(`Penggabungan ${currentBranch} ke develop`, `Conventional Commit: ${convCommit.commitHeader}`);
       this._updateChangelog(targetDir, folderName, currentBranch, commits);
-      this._appendLog(targetDir, folderName, "PENGGABUNGAN + ULTIMATE VIBE GUARD v10.3.0", `${currentBranch} ke develop`, audit);
+      this._appendLog(targetDir, folderName, "PENGGABUNGAN + ULTIMATE VIBE GUARD v10.4.0", `${currentBranch} ke develop`, audit);
 
       const statusText = hasIssues ? '[BERHASIL DENGAN TEMUAN]' : '[BERHASIL]';
       this._reply(
@@ -560,13 +596,13 @@ class SaaSWorkflowChatProvider {
   }
 
   async _handleVibeCodingAudit(targetDir, folderName, userText, audit, preFetchedDiff = null) {
-    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v10.3.0...</small>`);
+    this._reply(`<small style="color:#94a3b8;">[PROSES] Menjalankan Audit Vibe Guard v10.4.0...</small>`);
 
     const diff = preFetchedDiff || CodeReader.getRecentDiff(targetDir);
     const areas = CodeReader.classifyChanges(targetDir);
     const vibeResult = VibeGuard.auditAll(targetDir, diff, areas);
 
-    let html = `<b>LAPORAN AUDIT PENGAWAL VIBE CODING v10.3.0</b><br/>` +
+    let html = `<b>LAPORAN AUDIT PENGAWAL VIBE CODING v10.4.0</b><br/>` +
       `<small style="color:#94a3b8;">Proyek: ${folderName} | ${this._ai.modelName}</small><br/><br/>`;
 
     const secretColor = vibeResult.secretAudit.isSafe ? '#22c55e' : '#ef4444';
@@ -582,7 +618,7 @@ class SaaSWorkflowChatProvider {
       `<b style="color:${envColor};">3. SINKRONISASI .ENV.EXAMPLE: [${vibeResult.envSync.isUpdated ? `${vibeResult.envSync.addedKeys.length} KUNCI DISINKRONKAN` : 'TERJAGA'}]</b></div>`;
 
     this._updateWidget(audit, targetDir, vibeResult);
-    this._appendLog(targetDir, folderName, "AUDIT VIBE CODING v10.3.0", `SAST: ${vibeResult.sastAudit.isClean ? 'BERSIH' : 'ADA CELAH'}`, audit);
+    this._appendLog(targetDir, folderName, "AUDIT VIBE CODING v10.4.0", `SAST: ${vibeResult.sastAudit.isClean ? 'BERSIH' : 'ADA CELAH'}`, audit);
     this._reply(html);
   }
 
@@ -590,13 +626,13 @@ class SaaSWorkflowChatProvider {
     const changelogPath = path.join(targetDir, 'CHANGELOG.md');
     const now = new Date();
     const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-    const versionStr = `10.3.0`;
+    const versionStr = `10.4.0`;
     const commitListStr = commits.slice(0, 5).map(c => `- ${c.message}`).join('\n');
     const newEntry = `\n## [${versionStr}] - ${dateStr}\n\n### Pembaruan Fitur & Perubahan (${branchName})\n${commitListStr}\n`;
 
     let existingContent = '';
     try { if (fs.existsSync(changelogPath)) existingContent = fs.readFileSync(changelogPath, 'utf8'); } catch (e) {}
-    const header = existingContent ? '' : `# CATATAN RILIS PROYEK (${folderName})\n\nDokumen ini disusun secara otomatis oleh Asisten Joe v10.3.0.\n\n---\n`;
+    const header = existingContent ? '' : `# CATATAN RILIS PROYEK (${folderName})\n\nDokumen ini disusun secara otomatis oleh Asisten Joe v10.4.0.\n\n---\n`;
     try { fs.writeFileSync(changelogPath, header + newEntry + existingContent, 'utf8'); } catch (e) {}
   }
 
@@ -841,7 +877,7 @@ class SaaSWorkflowChatProvider {
       `## 1. TABEL REKAP OPERASI (CRUD)\n\n| Waktu | Aktivitas | Deskripsi | Ruang | Status |\n| :--- | :--- | :--- | :--- | :--- |\n${crudRows}\n\n---\n\n` +
       `## 2. DIAGRAM ALUR PEKERJAAN SESI\n\n\`\`\`mermaid\nflowchart TD\n    START["Awal Sesi"] --> ${this._logHistory.length ? 'N0' : 'END'}\n${mNodes}\n` +
       `    ${this._logHistory.length ? `N${this._logHistory.length-1}` : 'START'} --> END["Terkini: ${audit.currentBranch}"]\n\`\`\`\n\n---\n\n` +
-      `*Disusun otomatis oleh Asisten Joe v10.3.0 AS-IS TO-BE Edition*\n`;
+      `*Disusun otomatis oleh Asisten Joe v10.4.0 RDBMS Architecture Edition*\n`;
     try { fs.writeFileSync(logPath, content, 'utf8'); } catch (e) {}
   }
 
