@@ -6,9 +6,12 @@ Format Berdasarkan Versi Sistem: `v[Mayor].[Minor].[Patch]`
 
 ---
 
-## [v9.7.0] - 2026-07-27 (Rilis Mode Design & Grafity Super-Prompt Engine - Rilis Utama)
+## [v9.8.0] - 2026-07-27 (Rilis Micro-Scoped Prompt Slicer Engine)
 
 ### 🌟 Fitur Baru & Pembaruan
+- **Micro-Scoped Prompt Slicer Engine (`v9.8.0`):** Mengisolasi instruksi prompt hanya untuk **1 berkas atau 1 komponen target spesifik** dalam satu waktu, mencegah Grafity dari kebingungan atau mengacak-acak berkas di luar target.
+- **Kontrak Embargo Berkas (`v9.8.0`):** Secara eksplisit melarang Grafity menyentuh berkas atau fungsi di luar potongan kode target.
+- **Injeksi Potongan Kode Target (`v9.8.0`):** Otomatis menyertakan potongan kode asli editor aktif ke dalam prompt presisi.
 - **Mode Design & Grafity Super-Prompt Engine (`v9.7.0`):** Mengimplementasikan generator Super-Prompt perintah untuk Grafity yang dipagari oleh 5 Dinding Kontrak Kepatuhan (Anti-False Completion, SSOT Design System `BRAND.md`, Scope Lock, CoT Steps, & Mandatory 12-Checklist Verification).
 - **Adopsi Standar `skills.sh` & Promptfoo Assertions (`v9.7.0`):** Mengunci perilaku Grafity di IDE agar tidak lagi melakukan klaim selesai palsu (*false completion*), mengabaikan Design System, atau mengubah berkas di luar ruang lingkup.
 - **Multi-Agent Sub-Task Swarm Orchestrator (`v9.6.4`):** Sinergi 3 Sub-Agent Maya (Software Architect -> Lead Coder -> SAST Security Auditor).
@@ -30,4 +33,4 @@ Format Berdasarkan Versi Sistem: `v[Mayor].[Minor].[Patch]`
 
 ---
 
-*Catatan: Dokumen ini diperbarui secara otomatis oleh Asisten Joe v9.7.0.*
+*Catatan: Dokumen ini diperbarui secara otomatis oleh Asisten Joe v9.8.0.*

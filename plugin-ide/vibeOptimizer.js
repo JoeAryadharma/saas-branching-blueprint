@@ -2,101 +2,100 @@ const path = require('path');
 const fs = require('fs');
 
 // ============================================================
-// VIBE OPTIMIZER v9.7.0 -- Dedicated Design Mode & Grafity Super-Prompt Engine
-// 1. Grafity Design Super-Prompt Generator (v9.7.0 - Mode Design: 5-Wall Contract, Anti-False Completion & SSOT Design System)
-// 2. Multi-Agent Sub-Task Swarm Orchestrator (Arsitek -> Koder -> Auditor SAST)
-// 3. Inline CodeLens & Hover Diagnostic Guard
-// 4. Terminal Error Sensor & Auto-Fix Repair Prompt
-// 5. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
-// 6. Smart Context Compressor (Memangkas Diff/Konteks Hingga 70%)
-// 7. DSPy & TextGrad Chain-of-Thought (CoT) Prompt Compiler (Stanford adoption)
-// 8. .env.example Synchronizer (dotenv-safe adoption)
-// 9. Atomic Commit Slicer (opencommit & cz-cli adoption)
-// 10. OpenAPI / Swagger API Spec Drafter & AI Text Sanitizer
+// VIBE OPTIMIZER v9.8.0 -- Micro-Scoped Prompt Slicer Engine
+// 1. Micro-Scoped Prompt Slicer (v9.8.0 - Single-File & Single-Component Isolation)
+// 2. Grafity Design Super-Prompt Generator (5-Wall Contract & SSOT Design System)
+// 3. Multi-Agent Sub-Task Swarm Orchestrator (Arsitek -> Koder -> Auditor SAST)
+// 4. Inline CodeLens & Hover Diagnostic Guard
+// 5. Terminal Error Sensor & Auto-Fix Repair Prompt
+// 6. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
+// 7. Smart Context Compressor (Memangkas Diff/Konteks Hingga 70%)
+// 8. DSPy & TextGrad Chain-of-Thought (CoT) Prompt Compiler
+// 9. .env.example Synchronizer & OpenAPI API Spec Drafter
 // ============================================================
 
 class VibeOptimizer {
 
   // ============================================================
-  // MODE DESIGN (v9.7.0): GRAFITY SUPER-PROMPT ENGINE
-  // Menyusun Prompt Perintah Khusus untuk Grafity di IDE
-  // Mengadopsi Standar Kepatuhan skills.sh, OpenClaw, & Promptfoo Assertions
+  // MICRO-SCOPED PROMPT SLICER (v9.8.0): SINGLE FILE & COMPONENT LOCK
+  // Memotong instruksi luas menjadi prompt mikro terisolasi 1-berkas
   // ============================================================
-  static compileGrafityDesignPrompt(rawPrompt, projectContext = '', targetDir = '') {
+  static compileMicroScopedPrompt(rawPrompt, activeFilePath = '', activeCodeSnippet = '', targetDir = '') {
     if (!rawPrompt || typeof rawPrompt !== 'string') return '';
 
     const cleanedInput = this.cleanAIText(rawPrompt.trim());
-    const compressedCtx = this.compressContext(projectContext);
+    const fileBasename = activeFilePath ? path.basename(activeFilePath) : 'BerkasTargetUtama.js';
 
     let brandTokens = `
--- Palette Warna: HSL Tailored (Ivory/Cream HSL(40,20%,96%), Pure White HSL(40,15%,100%), Gold HSL(45,65%,52%), Near Black HSL(220,15%,12%)).
+-- Palette Warna: HSL Tailored (Ivory HSL(40,20%,96%), Gold HSL(45,65%,52%), Near Black HSL(220,15%,12%)).
 -- Typography: Font Heading (Cormorant Garamond / Serif Editorial), Font Body (Inter).
--- Radius: 4px (refined). Spacing Scale: 8pt Grid. Shadow: Subtle Glassmorphism.
+-- Radius: 4px (refined). Spacing Scale: 8pt Grid.
     `.trim();
 
     if (targetDir) {
       const brandPath = path.join(targetDir, 'BRAND.md');
       try {
         if (fs.existsSync(brandPath)) {
-          const content = fs.readFileSync(brandPath, 'utf8');
-          brandTokens = content.substring(0, 800);
+          brandTokens = fs.readFileSync(brandPath, 'utf8').substring(0, 500);
         }
       } catch (e) {}
     }
 
-    const superPrompt = [
+    const snippetBlock = activeCodeSnippet ? 
+      `[POTONGAN KODE TARGET BERKAS: ${fileBasename}]\n\`\`\`\n${activeCodeSnippet.substring(0, 1000)}\n\`\`\`` :
+      `[BERKAS TARGET UTAMA]: \`${fileBasename}\``;
+
+    const microPrompt = [
       `# ============================================================`,
-      `# SUPER-PROMPT PERINTAH GRAFITY (Standar Kepatuhan Mode Design v9.7.0)`,
-      `# Dihasilkan oleh Asisten Joe | Standar skills.sh & Promptfoo Assertions`,
-      `# Lisensi: GNU AGPL v3.0 | Output 100% Dedicated Pure Prompt`,
+      `# PROMPT MIKRO TERISOLASI (Micro-Scoped Prompt Engine v9.8.0)`,
+      `# Dihasikan oleh Asisten Joe | Standar Single-File & Single-Component Lock`,
+      `# Lisensi: GNU AGPL v3.0 | Output 100% Pure Prompt`,
       `# ============================================================`,
       ``,
-      `[PAGAR 1: KONTRAK ANTIMALAS & ANTI-FALSE COMPLETION]`,
-      `DILARANG KERAS menyatakan status "Selesai / Done" hanya berdasarkan asumsi atau perubahan kode parsial.`,
-      `Kamu WAJIB memverifikasi bahwa:`,
-      `1. Berkas benar-benar tersimpan dan tidak ada sisa kode lama.`,
-      `2. Perubahan visual (foto, warna, layout) telah diterapkan sepenuhnya pada hasil render.`,
-      `3. Tidak ada kesalahan kompilasi, build error, atau unhandled exceptions.`,
+      `[TARGET RUANG LINGKUP MIKRO ABSOLUT]`,
+      `-- BERKAS TARGET TERKUNCI: \`${fileBasename}\``,
+      `-- HANYA UBAH BARIS KODE YANG TERKAIT DENGAN INSTRUKSI DI BAWAH.`,
       ``,
-      `[PAGAR 2: DESIGN SYSTEM SINGLE SOURCE OF TRUTH (BRAND.MD)]`,
-      `Seluruh perubahan wajib mengacu pada token berikut sebagai Sumber Kebenaran Mutlak:`,
+      `${snippetBlock}`,
+      ``,
+      `[KONTRAK EMBARGO (AREA DILARANG SENTUH)]`,
+      `1. DILARANG KERAS mengubah berkas lain di luar \`${fileBasename}\`.`,
+      `2. DILARANG KERAS mengubah fungsi, variabel, atau baris kode lain di luar target pekerjaan.`,
+      `3. DILARANG KERAS mengganti warna, font, atau radius di luar Design System BRAND.md.`,
+      ``,
+      `[TOKENDESIGN SYSTEM SINGLE SOURCE OF TRUTH]`,
       `${brandTokens}`,
-      `DILARANG KERAS membuat warna, padding, margin, shadow, atau font baru di luar Design System!`,
       ``,
-      `[PAGAR 3: PENGUNCI RUANG LINGKUP & DEPENDENSI (SCOPE LOCK)]`,
-      `-- Ruang Lingkup Perubahan: HANYA BENTUK LOKAL PADA INSTRUKSI UTAMA.`,
-      `-- DILARANG MENGUBAH: Layout lain, warna lain, atau komponen di luar ruang lingkup ini.`,
-      `-- PERIKSA DEPENDENSI: Wajib mengecek seluruh berkas terkait (shared components, theme tokens, wrappers) agar konsisten 100%.`,
-      ``,
-      `[RINGKASAN KONTEKS PROYEK]`,
-      `${compressedCtx}`,
-      ``,
-      `[INSTRUKSI UTAMA PEKERJAAN DESAIN]`,
+      `[INSTRUKSI EKSEKUSI MIKRO PRESISI]`,
       `"${cleanedInput}"`,
       ``,
-      `[PAGAR 4: ALUR EKSEKUSI BERTAHAP (Chain-of-Thought / CoT)]`,
-      `1. PERANCANGAN: Identifikasi komponen dan Design System yang berlaku dari BRAND.md.`,
-      `2. EKSEKUSI: Tuliskan kode utuh yang presisi tanpa memotong fungsi lama.`,
-      `3. AUDIT DEPENDENSI: Pastikan komponen terkait ikut diperbarui secara konsisten.`,
-      `4. VERIFIKASI VIBE GUARD: Audit kebocoran rahasia & kepatuhan WCAG AAA.`,
+      `[ALUR EKSEKUSI BERTAHAP MIKRO]`,
+      `1. PERIKSA BARIS TARGET: Tentukan baris spesifik pada \`${fileBasename}\` yang perlu diubah.`,
+      `2. TERAPKAN PERUBAHAN: Ubah hanya bagian target sesuai token BRAND.md di atas.`,
+      `3. VERIFIKASI MIKRO: Pastikan tidak ada berkas lain yang tersentuh dan sintaks 100% valid.`,
       ``,
-      `[PAGAR 5: MANDATORY VERIFICATION CHECKLIST GRAFITY SEBELUM SAY "DONE"]`,
-      `Balas dan centang seluruh poin berikut SEBELUM menyatakan pekerjaan selesai:`,
-      `- [ ] Memastikan tidak ada False Completion (Foto/Warna/Layout terbukti berubah).`,
-      `- [ ] Memastikan seluruh aturan Design System (Warna, Font, Radius) dipatuhi 100%.`,
-      `- [ ] Memastikan tidak ada perubahan liar pada komponen/file di luar ruang lingkup.`,
-      `- [ ] Memastikan seluruh dependensi (shared components/theme) telah diperbarui secara konsisten.`,
-      `- [ ] Memastikan state interaksi (hover, focus, active) dan responsivitas berjalan sempurna.`
+      `[CHECKLIST VERIFIKASI MIKRO GRAFITY SEBELUM SAY "DONE"]`,
+      `- [ ] Memastikan HANYA \`${fileBasename}\` yang diubah (tidak ada Scope Creep).`,
+      `- [ ] Memastikan perubahan visual/sintaks terbukti berhasil pada berkas target.`,
+      `- [ ] Memastikan Design System dipatuhi tanpa membuat warna/font siluman.`,
+      `- [ ] Memastikan tidak ada error kompilasi setelah perubahan.`
     ].join('\n');
 
-    return this.sanitizePromptSyntax(superPrompt);
+    return this.sanitizePromptSyntax(microPrompt);
+  }
+
+  // ============================================================
+  // MODE DESIGN: GRAFITY SUPER-PROMPT ENGINE
+  // ============================================================
+  static compileGrafityDesignPrompt(rawPrompt, projectContext = '', targetDir = '') {
+    return this.compileMicroScopedPrompt(rawPrompt, '', projectContext, targetDir);
   }
 
   // ============================================================
   // TAHAP 5 OPTIMASI: MULTI-AGENT SUB-TASK SWARM
   // ============================================================
   static runSwarmPromptEngine(rawPrompt, projectContext = '') {
-    return this.compileGrafityDesignPrompt(rawPrompt, projectContext);
+    return this.compileMicroScopedPrompt(rawPrompt, '', projectContext);
   }
 
   // ============================================================
@@ -112,7 +111,7 @@ class VibeOptimizer {
 
     const fixPrompt = [
       `# ============================================================`,
-      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v9.7.0)`,
+      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v9.8.0)`,
       `# Standar Lisensi: GNU AGPL v3.0 | Output Pure Prompt Generator`,
       `# ============================================================`,
       ``,
@@ -174,7 +173,7 @@ class VibeOptimizer {
       `SIMBOL & RUTE INTI TERDETEKSI:`,
       keySymbols.join('\n') || 'Fungsi Utama Aplikasi',
       ``,
-      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v9.7.0)`
+      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v9.8.0)`
     ].join('\n');
 
     return compressed;
@@ -184,7 +183,7 @@ class VibeOptimizer {
   // ADOPSI DSPy & TEXTGRAD (Stanford NLP Adoption)
   // ============================================================
   static compileDSPyPrompt(rawPrompt, projectContext = '') {
-    return this.compileGrafityDesignPrompt(rawPrompt, projectContext);
+    return this.compileMicroScopedPrompt(rawPrompt, '', projectContext);
   }
 
   static applyTextGradFeedback(originalPrompt, feedbackError) {
@@ -260,7 +259,7 @@ class VibeOptimizer {
     });
 
     if (newlyAppended.length > 0) {
-      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v9.7.0)\n' +
+      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v9.8.0)\n' +
         newlyAppended.map(k => `${k}=`).join('\n') + '\n';
 
       try {
@@ -275,7 +274,7 @@ class VibeOptimizer {
   }
 
   static refineVibePrompt(rawPrompt, projectContext = '') {
-    return this.compileGrafityDesignPrompt(rawPrompt, projectContext);
+    return this.compileMicroScopedPrompt(rawPrompt, '', projectContext);
   }
 
   static sliceAtomicCommits(areas) {
@@ -315,7 +314,7 @@ class VibeOptimizer {
     const now = new Date().toLocaleString('id-ID');
 
     const testContent = [
-      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.7.0 (DSPy Engine)`,
+      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.8.0 (DSPy Engine)`,
       `// Waktu Dibuat: ${now}`,
       ``,
       `describe('Uji Kelaikan Modul Baru (Vibe Autotest)', () => {`,
@@ -379,7 +378,7 @@ class VibeOptimizer {
     }
 
     const now = new Date().toLocaleString('id-ID');
-    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.7.0 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
+    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.8.0 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
 
     if (detectedEndpoints.length > 0) {
       content += `## RINGKASAN ENDPOINT TERDETEKSI\n\n| METODE | JALUR RUTE (PATH) | DESKRIPSI |\n| :--- | :--- | :--- |\n`;

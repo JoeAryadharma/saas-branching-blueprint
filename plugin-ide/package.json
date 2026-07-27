@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - Mode Design & Grafity Super-Prompt Engine",
-  "description": "Asisten Joe v9.7.0: Mode Design & Grafity Super-Prompt Engine (5 Dinding Kontrak Kepatuhan Grafity, SSOT Design System BRAND.md, Anti-False Completion Guard, Promptfoo Assertions & skills.sh Adoption, Multi-Agent Swarm, Inline CodeLens & Hover Guard, Terminal Error Sensor, Real-Time Token Streaming, Native Antigravity AI Engine).",
-  "version": "9.7.0",
+  "displayName": "Asisten Joe - Micro-Scoped Prompt Slicer Engine",
+  "description": "Asisten Joe v9.8.0: Micro-Scoped Prompt Slicer Engine (Pemotong Prompt Presisi Mikro 1-Berkas & Single-Component Lock, Kontrak Embargo Area Dilarang Sentuh, Mode Design & Grafity Super-Prompt, Multi-Agent Swarm, Inline CodeLens & Hover Guard, Terminal Error Sensor, Real-Time Token Streaming, Native Antigravity AI Engine).",
+  "version": "9.8.0",
   "publisher": "joecompanyagent-lab",
   "license": "AGPL-3.0-only",
   "engines": {
@@ -63,7 +63,7 @@
       },
       {
         "command": "saasWorkflow.auditVibeCoding",
-        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.7.0)"
+        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.8.0)"
       },
       {
         "command": "saasWorkflow.initProject",
