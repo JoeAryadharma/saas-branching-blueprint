@@ -2,27 +2,142 @@ const path = require('path');
 const fs = require('fs');
 
 // ============================================================
-// VIBE OPTIMIZER v10.0.0 -- Semantic Versioning & Ultimate Suite Engine
-// 1. Semantic Versioning Automator (v10.0.0 - SemVer Auto-Increment Engine x.x.0)
-// 2. Asset & Image Replacement Guard (v9.9.0 - Single-Attribute Surgical Mutation)
-// 3. Micro-Scoped Prompt Slicer (v9.8.0 - Single-File & Single-Component Isolation)
-// 4. Grafity Design Super-Prompt Generator (5-Wall Contract & SSOT Design System)
-// 5. Multi-Agent Sub-Task Swarm Orchestrator (Arsitek -> Koder -> Auditor SAST)
-// 6. Inline CodeLens & Hover Diagnostic Guard
-// 7. Terminal Error Sensor & Auto-Fix Repair Prompt
-// 8. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
-// 9. Smart Context Compressor (Memangkas Diff/Konteks Hingga 70%)
-// 10. DSPy & TextGrad Chain-of-Thought (CoT) Prompt Compiler
-// 11. .env.example Synchronizer & OpenAPI API Spec Drafter
+// VIBE OPTIMIZER v10.2.0 -- Multi-Diagram Project Engine
+// 1. Multi-Diagram Project Engine (v10.2.0 - Arsitektur, ERD, Sequence, GitGraph, Gantt)
+// 2. Human-Friendly Layperson Commit Engine (v10.1.0 - Kode Commit Bahasa Awam)
+// 3. Semantic Versioning Automator (v10.0.0 - SemVer Auto-Increment Engine x.x.0)
+// 4. Asset & Image Replacement Guard (v9.9.0 - Single-Attribute Surgical Mutation)
+// 5. Micro-Scoped Prompt Slicer (v9.8.0 - Single-File & Single-Component Isolation)
+// 6. Grafity Design Super-Prompt Generator (5-Wall Contract & SSOT Design System)
+// 7. Multi-Agent Sub-Task Swarm Orchestrator (Arsitek -> Koder -> Auditor SAST)
+// 8. Inline CodeLens & Hover Diagnostic Guard
+// 9. Terminal Error Sensor & Auto-Fix Repair Prompt
+// 10. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
+// 11. Smart Context Compressor (Memangkas Diff/Konteks Hingga 70%)
+// 12. .env.example Synchronizer & OpenAPI API Spec Drafter
 // ============================================================
 
 class VibeOptimizer {
 
   // ============================================================
-  // SEMANTIC VERSIONING AUTOMATOR ENGINE (v10.0.0 - x.x.0)
-  // Menghitung & mengoptimalkan penomoran versi SemVer otomatis
+  // MULTI-DIAGRAM PROJECT ENGINE (v10.2.0)
+  // Menghasilkan 5 diagram visual utuh untuk proyek (Mermaid.js Standard)
   // ============================================================
-  static calculateNextVersion(currentVersionStr = '9.9.0', changeType = 'minor') {
+  static compileProjectMultiDiagrams(folderName = 'Proyek', audit = {}, techs = []) {
+    const techStr = techs.length > 0 ? techs.join(', ') : 'Node.js, Express, React';
+    const currentBranch = audit.currentBranch || 'main';
+
+    // 1. Diagram Arsitektur Makro (C4 Container & Component Flowchart)
+    const architectureMermaid = [
+      `flowchart TD`,
+      `    subgraph CLIENT["🎨 Tampilan Depan / Client Layer"]`,
+      `        UI["Tampilan UI & Komponen Web<br/><small>${techStr}</small>"]`,
+      `        STATE["Manajemen Status & State"]`,
+      `    end`,
+      `    subgraph BACKEND["🔌 Server Layanan & API Layer"]`,
+      `        ROUTER["Modul Rute API & Controller"]`,
+      `        MIDDLEWARE["Pengawal Keamanan SAST & Auth Guard"]`,
+      `        SERVICE["Logika Bisnis & Layanan Inti"]`,
+      `    end`,
+      `    subgraph DATA["🗄️ Lapisan Data & Penyimpanan"]`,
+      `        DB[("Database Utama")]`,
+      `        ENV["Berkas Lingkungan (.env)"]`,
+      `    end`,
+      `    UI --> ROUTER`,
+      `    STATE --> UI`,
+      `    ROUTER --> MIDDLEWARE`,
+      `    MIDDLEWARE --> SERVICE`,
+      `    SERVICE --> DB`,
+      `    SERVICE --> ENV`
+    ].join('\n');
+
+    // 2. Diagram Skema Relasi Database & Entitas (ERD Diagram)
+    const erdMermaid = [
+      `erDiagram`,
+      `    PENGGUNA ||--o{ TRANSAKSI : membuat`,
+      `    PENGGUNA {`,
+      `        string id PK`,
+      `        string nama`,
+      `        string email`,
+      `        string peran`,
+      `    }`,
+      `    TRANSAKSI ||--|{ DETAIL_PESANAN : berisi`,
+      `    TRANSAKSI {`,
+      `        string id PK`,
+      `        string pengguna_id FK`,
+      `        number total_harga`,
+      `        string status_pembayaran`,
+      `    }`,
+      `    PRODUK ||--o{ DETAIL_PESANAN : dipesan`,
+      `    PRODUK {`,
+      `        string id PK`,
+      `        string nama_produk`,
+      `        number harga`,
+      `        number stok`,
+      `    }`
+    ].join('\n');
+
+    // 3. Diagram Siklus Hidup Rute API & Alur Data (Sequence Diagram)
+    const sequenceMermaid = [
+      `sequenceDiagram`,
+      `    autonumber`,
+      `    actor User as Pengguna (Client)`,
+      `    participant UI as Tampilan Antarmuka`,
+      `    participant API as Server Rute API`,
+      `    participant Guard as Vibe Guard (SAST)`,
+      `    participant DB as Database`,
+      `    User->>UI: Tekan Tombol Kirim / Aksi Fitur`,
+      `    UI->>API: Perintah Request HTTP (POST/GET)`,
+      `    API->>Guard: Verifikasi Token & Sanitasi Input`,
+      `    Guard-->>API: Status Validasi AMAN`,
+      `    API->>DB: Eksekusi Query / Transaksi Data`,
+      `    DB-->>API: Hasil Data Terperbarui`,
+      `    API-->>UI: Respon JSON HTTP 200 OK`,
+      `    UI-->>User: Tampilkan Notifikasi Berhasil`
+    ].join('\n');
+
+    // 4. Diagram Alur Kerja Git Branching Blueprint (GitGraph Diagram)
+    const gitGraphMermaid = [
+      `gitGraph`,
+      `    commit id: "Inisialisasi Proyek"`,
+      `    branch develop`,
+      `    checkout develop`,
+      `    commit id: "Integrasi Fitur Inti"`,
+      `    branch feature/fitur-baru`,
+      `    checkout feature/fitur-baru`,
+      `    commit id: "Koding Fitur Mikro"`,
+      `    checkout develop`,
+      `    merge feature/fitur-baru id: "Merge PR Vibe Guard"`,
+      `    checkout main`,
+      `    merge develop id: "Rilis v10.2.0 Live"`
+    ].join('\n');
+
+    // 5. Diagram Peta Jalan & Jadwal Tugas (Gantt Chart Roadmap)
+    const ganttMermaid = [
+      `gantt`,
+      `    title Peta Jalan & Jadwal Pengadaan Fitur (${folderName})`,
+      `    dateFormat  YYYY-MM-DD`,
+      `    section Perancangan`,
+      `    Perancangan Arsitektur & Setup Blueprint :done, des1, 2026-07-22, 2d`,
+      `    section Pengembangan`,
+      `    Pengembangan Modul & AI Prompt Engine :active, dev1, 2026-07-24, 4d`,
+      `    section Pengujian & Rilis`,
+      `    Audit Keamanan SAST & Rilis v10.2.0 :rel1, 2026-07-27, 2d`
+    ].join('\n');
+
+    return {
+      architectureMermaid,
+      erdMermaid,
+      sequenceMermaid,
+      gitGraphMermaid,
+      ganttMermaid
+    };
+  }
+
+  // ============================================================
+  // SEMANTIC VERSIONING AUTOMATOR ENGINE (v10.0.0 - x.x.0)
+  // ============================================================
+  static calculateNextVersion(currentVersionStr = '10.1.0', changeType = 'minor') {
     const parts = currentVersionStr.replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
     let major = parts[0] || 0;
     let minor = parts[1] || 0;
@@ -44,7 +159,6 @@ class VibeOptimizer {
 
   // ============================================================
   // ASSET & IMAGE REPLACEMENT GUARD (v9.9.0)
-  // Mencegah Grafity mengubah layout, navbar, atau halaman lain saat ganti gambar
   // ============================================================
   static compileAssetReplacementPrompt(rawPrompt, activeFilePath = '', activeCodeSnippet = '', targetDir = '') {
     if (!rawPrompt || typeof rawPrompt !== 'string') return '';
@@ -58,7 +172,7 @@ class VibeOptimizer {
 
     const assetPrompt = [
       `# ============================================================`,
-      `# PROMPT BEDAH ASSET & GAMBAR (Anti-Layout Mutation Guard v10.0.0)`,
+      `# PROMPT BEDAH ASSET & GAMBAR (Anti-Layout Mutation Guard v10.2.0)`,
       `# Dihasilkan oleh Asisten Joe | Standar Surgical Single-Attribute Mutation`,
       `# Lisensi: GNU AGPL v3.0 | Output 100% Pure Prompt`,
       `# ============================================================`,
@@ -123,8 +237,8 @@ class VibeOptimizer {
 
     const microPrompt = [
       `# ============================================================`,
-      `# PROMPT MIKRO TERISOLASI (Micro-Scoped Prompt Engine v10.0.0)`,
-      `# Dihasikan oleh Asisten Joe | Standar Single-File & Single-Component Lock`,
+      `# PROMPT MIKRO TERISOLASI (Micro-Scoped Prompt Engine v10.2.0)`,
+      `# Dihasilkan oleh Asisten Joe | Standar Single-File & Single-Component Lock`,
       `# Lisensi: GNU AGPL v3.0 | Output 100% Pure Prompt`,
       `# ============================================================`,
       ``,
@@ -187,7 +301,7 @@ class VibeOptimizer {
 
     const fixPrompt = [
       `# ============================================================`,
-      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v10.0.0)`,
+      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v10.2.0)`,
       `# Standar Lisensi: GNU AGPL v3.0 | Output Pure Prompt Generator`,
       `# ============================================================`,
       ``,
@@ -249,7 +363,7 @@ class VibeOptimizer {
       `SIMBOL & RUTE INTI TERDETEKSI:`,
       keySymbols.join('\n') || 'Fungsi Utama Aplikasi',
       ``,
-      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v10.0.0)`
+      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v10.2.0)`
     ].join('\n');
 
     return compressed;
@@ -335,7 +449,7 @@ class VibeOptimizer {
     });
 
     if (newlyAppended.length > 0) {
-      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v10.0.0)\n' +
+      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v10.2.0)\n' +
         newlyAppended.map(k => `${k}=`).join('\n') + '\n';
 
       try {
@@ -390,7 +504,7 @@ class VibeOptimizer {
     const now = new Date().toLocaleString('id-ID');
 
     const testContent = [
-      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v10.0.0 (DSPy Engine)`,
+      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v10.2.0 (DSPy Engine)`,
       `// Waktu Dibuat: ${now}`,
       ``,
       `describe('Uji Kelaikan Modul Baru (Vibe Autotest)', () => {`,
@@ -454,7 +568,7 @@ class VibeOptimizer {
     }
 
     const now = new Date().toLocaleString('id-ID');
-    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v10.0.0 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
+    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v10.2.0 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
 
     if (detectedEndpoints.length > 0) {
       content += `## RINGKASAN ENDPOINT TERDETEKSI\n\n| METODE | JALUR RUTE (PATH) | DESKRIPSI |\n| :--- | :--- | :--- |\n`;
