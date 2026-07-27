@@ -4,6 +4,7 @@
   "description": "Asisten Joe v10.7.0: Object-Agnostic Emergency Brakes & Dynamic Scope Engine (Sistem Rem Darurat Mutlak Generik Universal yang Berkelakuan Abstrak Tanpa Hardcode Objek Spesifik -- Berlaku Universal untuk Frontend UI, Backend API, Database Migration, CLI Script, CSS, & Config), Visual Page Inspector, Interactive Pop-up Design Preview SEBELUM vs SESUDAH, Audit RDBMS Normalisasi 3NF, AS-IS vs TO-BE Architectural Transformation Engine, Multi-Diagram Visualizer 5-Diagram, Human-Friendly Layperson Commit Engine, Semantic Versioning Automator Engine x.x.0, Anti-Layout Mutation Asset Guard, Micro-Scoped Prompt Slicer, Mode Design Grafity Super-Prompt Engine, Multi-Agent Swarm, Inline CodeLens & Hover Guard, Terminal Error Sensor, Real-Time Token Streaming, Native Antigravity AI Engine).",
   "version": "10.7.0",
   "publisher": "joecompanyagent-lab",
+  "icon": "media/icon.png",
   "license": "MIT",
   "engines": {
     "vscode": "^1.90.0"
@@ -42,7 +43,7 @@
         {
           "id": "saasWorkflowExplorer",
           "title": "Asisten Joe",
-          "icon": "$(shield)"
+          "icon": "media/icon.svg"
         }
       ]
     },
