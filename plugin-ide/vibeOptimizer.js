@@ -103,7 +103,7 @@ class VibeOptimizer {
 
     const toBeProjectedSnippet = activeCodeSnippet ? 
       `/* PROYEKSI PERUBAHAN SESUDAH (TO-BE) */\n` + activeCodeSnippet.substring(0, 500) :
-      `/* KODE HRESULT TO-BE (${cleanedInput}) */\nfunction modulBaru() {\n  return "Kondisi Ter-Update Presisi";\n}`;
+      `/* KODE HASIL TO-BE (${cleanedInput}) */\nfunction modulBaru() {\n  return "Kondisi Ter-Update Presisi";\n}`;
 
     return {
       fileLabel,
@@ -332,7 +332,7 @@ class VibeOptimizer {
   // ============================================================
   // SEMANTIC VERSIONING AUTOMATOR ENGINE (v10.0.0 - x.x.0)
   // ============================================================
-  static calculateNextVersion(currentVersionStr = '10.6.0', changeType = 'minor') {
+  static calculateNextVersion(currentVersionStr = '10.7.0', changeType = 'minor') {
     const parts = currentVersionStr.replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
     let major = parts[0] || 0;
     let minor = parts[1] || 0;
@@ -385,9 +385,9 @@ class VibeOptimizer {
       `"${cleanedInput}"`,
       ``,
       `[ALUR VERIFIKASI SEBELUM GRAFITY MENGATAKAN "DONE"]`,
-      `- [ ] Memastikan berkas lain 100% TIDAK TERSENTUH/TERUBAH.`,
-      `- [ ] Memastikan struktur dasar kode tidak mengalami perubahan yang tidak relevan.`,
-      `- [ ] Memastikan \`git diff\` hanya mencatat minimal baris perubahan yang presisi.`
+      `-- Memastikan berkas lain 100% TIDAK TERSENTUH/TERUBAH.`,
+      `-- Memastikan struktur dasar kode tidak mengalami perubahan yang tidak relevan.`,
+      `-- Memastikan \`git diff\` hanya mencatat minimal baris perubahan yang presisi.`
     ].join('\n');
 
     return this.sanitizePromptSyntax(assetPrompt);
@@ -449,10 +449,10 @@ class VibeOptimizer {
       `3. VERIFIKASI MIKRO: Pastikan tidak ada berkas lain yang tersentuh dan sintaks 100% valid.`,
       ``,
       `[CHECKLIST VERIFIKASI MIKRO GRAFITY SEBELUM SAY "DONE"]`,
-      `- [ ] Memastikan HANYA \`${fileBasename}\` yang diubah (tidak ada Scope Creep).`,
-      `- [ ] Memastikan perubahan sintaks terbukti berhasil pada berkas target.`,
-      `- [ ] Memastikan Standar Proyek dipatuhi tanpa menyuntikkan kode siluman.`,
-      `- [ ] Memastikan tidak ada error kompilasi setelah perubahan.`
+      `-- Memastikan HANYA \`${fileBasename}\` yang diubah (tidak ada Scope Creep).`,
+      `-- Memastikan perubahan sintaks terbukti berhasil pada berkas target.`,
+      `-- Memastikan Standar Proyek dipatuhi tanpa menyuntikkan kode siluman.`,
+      `-- Memastikan tidak ada error kompilasi setelah perubahan.`
     ].join('\n');
 
     return this.sanitizePromptSyntax(microPrompt);
@@ -581,7 +581,6 @@ class VibeOptimizer {
     return promptText
       .replace(/(["'])\s*:\s*["']([^"']*?)["']\s*([,}])/g, '$1: "$2"$3')
       .replace(/,\s*([\}\]])/g, '$1')
-      .replace(/\n\s*-\s*/g, '\n-- ')
       .replace(/\n\s*(\d+)\.\s*/g, '\n$1. ')
       .trim();
   }
