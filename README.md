@@ -33,9 +33,11 @@ Ekstensi pendamping Vibe Coding & Dedicated Prompt Generator di Antigravity IDE 
 
 ## VISUALISASI ARSITEKTUR SISTEM (7 DIAGRAM SISTEM)
 
-Berikut adalah 7 Diagram Visual yang disajikan murni tanpa kode HTML, tanpa tag div, dan tanpa emoji:
+Berikut adalah 7 Diagram Visual yang menjelaskan fungsi arsitektur, alur kerja, dan pertahanan keamanan sistem:
 
-### 1. DIAGRAM PETA 6 LAPISAN UTAMA SISTEM (DIAGRAM TD)
+### 1. DIAGRAM PETA 6 LAPISAN UTAMA SISTEM
+
+Diagram ini menjelaskan 6 lapisan pertahanan arsitektur utama yang dikendalikan oleh Asisten Joe untuk menjaga kestabilan seluruh layanan aplikasi.
 
 ```mermaid
 flowchart TD
@@ -50,7 +52,9 @@ flowchart TD
     SYSTEM --> L6["6. LAPISAN PERFORMA DAN BENGKEL\nMembersihkan Pustaka Penyebab Lambat\nMemperbaiki Otomatis Saat Terjadi Kendala"]
 ```
 
-### 2. DIAGRAM ALUR KERJA UTAMA (DIAGRAM TD)
+### 2. DIAGRAM ALUR KERJA UTAMA
+
+Diagram ini menjelaskan alur pemrosesan instruksi bisnis mulai dari input perintah pengguna hingga penerapan kode aman yang terkunci oleh 4 Rem Darurat.
 
 ```mermaid
 flowchart TD
@@ -77,7 +81,9 @@ flowchart TD
     E --> F
 ```
 
-### 3. DIAGRAM PETA 4 PILAR PELINDUNG SISTEM (DIAGRAM TD)
+### 3. DIAGRAM PETA 4 PILAR PELINDUNG SISTEM
+
+Diagram ini menjelaskan 4 pilar benteng pertahanan utama yang secara aktif melindungi aplikasi dari kerusakan tata letak dan celah keamanan data.
 
 ```mermaid
 flowchart TD
@@ -90,7 +96,9 @@ flowchart TD
     SYSTEM --> PILAR4["4. Audit Keamanan Utama\nMemeriksa Kebocoran Kunci Rahasia\nMenutup Celah Peretasan Hacker"]
 ```
 
-### 4. DIAGRAM TRANSFORMASI ARSITEKTUR (DIAGRAM TD)
+### 4. DIAGRAM TRANSFORMASI ARSITEKTUR
+
+Diagram ini menjelaskan garansi perbandingan kondisi sistem Sebelum (AS-IS) lawan Sesudah (TO-BE) agar setiap pembaruan berjalan presisi tanpa merusak bagian lain.
 
 ```mermaid
 flowchart TD
@@ -115,6 +123,8 @@ flowchart TD
 
 ### 5. DIAGRAM SIKLUS PERJALANAN FITUR BARU
 
+Diagram ini menjelaskan urutan langkah perjalanan pembuatan fitur baru dari ide awal hingga tersimpan secara aman di penyimpanan rilis.
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -133,7 +143,9 @@ sequenceDiagram
     Joe-->>User: 8. Laporan: Fitur Berhasil Diluncurkan!
 ```
 
-### 6. DIAGRAM STRUKTUR RELASI DATA PROMPT ENGINEERING (DIAGRAM TD)
+### 6. DIAGRAM STRUKTUR RELASI DATA PROMPT ENGINEERING
+
+Diagram ini menjelaskan struktur hubungan data terintegrasi antara akun Prompt Engineer, Draf Super Prompt, dan Riwayat Audit Keamanan.
 
 ```mermaid
 flowchart TD
@@ -150,7 +162,9 @@ flowchart TD
     PROMPT --> AUDIT
 ```
 
-### 7. DIAGRAM PETA ALUR RUANG KERJA DAN RILIS SISTEM (DIAGRAM TD)
+### 7. DIAGRAM PETA ALUR RUANG KERJA DAN RILIS SISTEM
+
+Diagram ini menjelaskan alur pemisahan ruang kerja terisolasi untuk memastikan pengerjaan fitur baru diuji secara aman sebelum dirilis ke aplikasi utama.
 
 ```mermaid
 flowchart TD
