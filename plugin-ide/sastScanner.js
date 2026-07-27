@@ -1,9 +1,9 @@
 const path = require('path');
 
 // ============================================================
-// SAST SCANNER v9.0 -- Pemindai Kerentanan Kode & Conventional Commits
+// SAST SCANNER v10.1.0 -- Human-Friendly Layperson Commit Engine
 // Adopsi dari Semgrep, PR-Agent/OpenCommit, Code2Flow, Flagsmith
-// Dilengkapi Proteksi ReDoS & Pemotongan Ukuran Diff Aman
+// Dilengkapi Generator Kode Commit Bahasa Awam & Bahasa Bisnis
 // ============================================================
 
 class SASTScanner {
@@ -19,14 +19,12 @@ class SASTScanner {
       return { isClean: true, vulnerabilities };
     }
 
-    // Proteksi Ukuran Diff Raksasa (Maksimal 50.000 karakter untuk mencegah perlambatan)
     const safeDiff = diffContent.length > 50000 ? diffContent.substring(0, 50000) : diffContent;
 
     const addedLines = safeDiff.split('\n')
       .filter(line => line.startsWith('+') && !line.startsWith('+++'))
       .map(line => line.substring(1));
 
-    // Pola-pola kerentanan SAST
     const sastRules = [
       {
         id: 'SQL_INJECTION',
@@ -91,7 +89,6 @@ class SASTScanner {
 
   // ============================================================
   // 2. AUDIT SAKELAR RILIS AMAN / FEATURE FLAGS (Flagsmith Adoption)
-  // Memeriksa jika fitur berskala sedang-besar dilengkapi Feature Flag
   // ============================================================
   static auditFeatureFlags(diffContent, totalLines) {
     const isLargeChange = totalLines >= 100;
@@ -115,49 +112,54 @@ class SASTScanner {
   }
 
   // ============================================================
-  // 3. GENERATOR CONVENTIONAL COMMITS (OpenCommit Adoption)
-  // Menghasilkan pesan commit & deskripsi PR berstandar baku
+  // 3. GENERATOR KODE COMMIT BAHASA AWAM & BISNIS (v10.1.0)
+  // Menghasilkan pesan commit yang mudah dibaca oleh siapapun
   // ============================================================
   static generateConventionalCommit(diffContent, folderName, userInstruction = '') {
-    let type = 'fitur'; // default
+    let tagAwam = '[TAMBAH FITUR]';
+    let typeTech = 'fitur';
     let scope = 'modul';
-    let summary = userInstruction || 'pembaruan terverifikasi';
+    let summary = userInstruction || 'pembaruan sistem terverifikasi';
 
     if (diffContent && diffContent !== '[Tidak ada perubahan terdeteksi]') {
       const safeDiff = diffContent.length > 50000 ? diffContent.substring(0, 50000) : diffContent;
       const lowerDiff = safeDiff.toLowerCase();
 
       if (lowerDiff.includes('fix') || lowerDiff.includes('bug') || lowerDiff.includes('error') || lowerDiff.includes('perbaikan')) {
-        type = 'perbaikan';
+        tagAwam = '[PERBAIKAN KODE]';
+        typeTech = 'perbaikan';
       } else if (lowerDiff.includes('docs') || lowerDiff.includes('.md') || lowerDiff.includes('readme')) {
-        type = 'dokumentasi';
-      } else if (lowerDiff.includes('style') || lowerDiff.includes('.css') || lowerDiff.includes('layout')) {
-        type = 'tampilan';
+        tagAwam = '[PEMBARUAN DOKUMEN]';
+        typeTech = 'dokumentasi';
+      } else if (lowerDiff.includes('style') || lowerDiff.includes('.css') || lowerDiff.includes('layout') || lowerDiff.includes('gambar') || lowerDiff.includes('image')) {
+        tagAwam = '[PERBAIKI TAMPILAN]';
+        typeTech = 'tampilan';
       } else if (lowerDiff.includes('config') || lowerDiff.includes('package.json') || lowerDiff.includes('.env')) {
-        type = 'konfigurasi';
+        tagAwam = '[PENATAAN SISTEM]';
+        typeTech = 'konfigurasi';
       }
 
-      // Tentukan scope dari folder/berkas utama yang berubah
       if (lowerDiff.includes('auth') || lowerDiff.includes('login')) scope = 'keamanan';
-      else if (lowerDiff.includes('api') || lowerDiff.includes('route')) scope = 'api';
-      else if (lowerDiff.includes('db') || lowerDiff.includes('schema') || lowerDiff.includes('model')) scope = 'data';
-      else if (lowerDiff.includes('ui') || lowerDiff.includes('view') || lowerDiff.includes('page')) scope = 'tampilan';
-      else scope = 'inti';
+      else if (lowerDiff.includes('api') || lowerDiff.includes('route')) scope = 'layanan-data';
+      else if (lowerDiff.includes('db') || lowerDiff.includes('schema') || lowerDiff.includes('model')) scope = 'penyimpanan-data';
+      else if (lowerDiff.includes('ui') || lowerDiff.includes('view') || lowerDiff.includes('page')) scope = 'antarmuka';
+      else scope = 'sistem';
     }
 
-    const commitHeader = `${type}(${scope}): ${summary.substring(0, 50).toLowerCase()}`;
-    const prTitle = `[PR] ${type.toUpperCase()} (${scope}): ${summary}`;
+    // Pesan Commit Bahasa Awam (Mudah dibaca Klien / Non-Teknis)
+    const commitHeader = `${tagAwam} ${summary.substring(0, 60)}`;
+    const prTitle = `${tagAwam} (${scope}): ${summary}`;
 
     const prDescription = [
       `## Ringkasan Pengajuan Pekerjaan (PR)`,
-      `- **Jenis Pembaruan:** ${type.toUpperCase()}`,
+      `- **Jenis Pembaruan:** ${tagAwam}`,
       `- **Area Terpengaruh:** ${scope.toUpperCase()}`,
       `- **Proyek:** ${folderName}`,
       ``,
-      `## Deskripsi Operasional Bisnis`,
+      `## Deskripsi Operasional Bisnis (Bahasa Awam)`,
       `${summary}`,
       ``,
-      `## Verifikasi Audit Asisten Joe v9.0`,
+      `## Verifikasi Audit Asisten Joe v10.1.0`,
       `- [x] Pemindaian Celah Keamanan SAST (Semgrep) Lulus`,
       `- [x] Sensor Kunci Rahasia 25+ Database Lulus`,
       `- [x] Penjaga Kestabilan Fitur Lama (Regression Guard) Lulus`,

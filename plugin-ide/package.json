@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - Ultimate Semantic Prompt Engineer Suite",
-  "description": "Asisten Joe v10.0.0: Ultimate Semantic Prompt Engineer Suite (Major Milestone: Semantic Versioning Automator Engine x.x.0, Anti-Layout Mutation Asset Guard, Micro-Scoped Prompt Slicer, Mode Design Grafity Super-Prompt Engine, Multi-Agent Swarm, Inline CodeLens & Hover Guard, Terminal Error Sensor, Real-Time Token Streaming, Native Antigravity AI Engine).",
-  "version": "10.0.0",
+  "displayName": "Asisten Joe - Human-Friendly Layperson Commit Engine Suite",
+  "description": "Asisten Joe v10.1.0: Human-Friendly Layperson Commit Engine Suite (Generator Kode Commit Bahasa Awam & Bahasa Bisnis yang Mudah Dibaca Siapapun, Semantic Versioning Automator Engine x.x.0, Anti-Layout Mutation Asset Guard, Micro-Scoped Prompt Slicer, Mode Design Grafity Super-Prompt Engine, Multi-Agent Swarm, Inline CodeLens & Hover Guard, Terminal Error Sensor, Real-Time Token Streaming, Native Antigravity AI Engine).",
+  "version": "10.1.0",
   "publisher": "joecompanyagent-lab",
   "license": "AGPL-3.0-only",
   "engines": {
@@ -63,7 +63,7 @@
       },
       {
         "command": "saasWorkflow.auditVibeCoding",
-        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v10.0.0)"
+        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v10.1.0)"
       },
       {
         "command": "saasWorkflow.initProject",
