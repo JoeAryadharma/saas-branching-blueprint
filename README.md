@@ -35,7 +35,7 @@ Ekstensi pendamping Vibe Coding & Dedicated Prompt Generator di Antigravity IDE 
 
 Berikut adalah 7 Diagram Visual yang disajikan murni tanpa kode HTML, tanpa tag div, dan tanpa emoji:
 
-### 1. DIAGRAM PETA 6 LAPISAN UTAMA SISTEM
+### 1. DIAGRAM PETA 6 LAPISAN UTAMA SISTEM (DIAGRAM TD)
 
 ```mermaid
 flowchart TD
@@ -50,7 +50,7 @@ flowchart TD
     SYSTEM --> L6["6. LAPISAN PERFORMA DAN BENGKEL\nMembersihkan Pustaka Penyebab Lambat\nMemperbaiki Otomatis Saat Terjadi Kendala"]
 ```
 
-### 2. DIAGRAM ALUR KERJA UTAMA
+### 2. DIAGRAM ALUR KERJA UTAMA (DIAGRAM TD)
 
 ```mermaid
 flowchart TD
@@ -77,26 +77,20 @@ flowchart TD
     E --> F
 ```
 
-### 3. DIAGRAM PETA 4 PILAR PELINDUNG SISTEM (DIAGRAM LR - RATA KIRI)
+### 3. DIAGRAM PETA 4 PILAR PELINDUNG SISTEM (DIAGRAM TD)
 
 ```mermaid
-flowchart LR
-    classDef default text-align:left;
+flowchart TD
+    classDef default text-align:center;
     SYSTEM["ASISTEN JOE v10.7.0\nPengawal Utama Vibe Coding\nPelindung Keamanan Aplikasi"]
 
     SYSTEM --> PILAR1["1. Inspektur Visual Halaman\nMemilih Bagian Komponen Target\nUntuk Dianalisis Sebelum Diubah"]
     SYSTEM --> PILAR2["2. Pratinjau Visual Interaktif\nMenampilkan Proyeksi Tampilan\nSebelum Data Asli Diubah"]
     SYSTEM --> PILAR3["3. 4 Rem Darurat Mutlak\nMengunci Area Kerja Pengerja\nMencegah Kerusakan Bagian Tetangga"]
     SYSTEM --> PILAR4["4. Audit Keamanan Utama\nMemeriksa Kebocoran Kunci Rahasia\nMenutup Celah Peretasan Hacker"]
-
-    style SYSTEM text-align:left
-    style PILAR1 text-align:left
-    style PILAR2 text-align:left
-    style PILAR3 text-align:left
-    style PILAR4 text-align:left
 ```
 
-### 4. DIAGRAM TRANSFORMASI ARSITEKTUR
+### 4. DIAGRAM TRANSFORMASI ARSITEKTUR (DIAGRAM TD)
 
 ```mermaid
 flowchart TD
@@ -139,7 +133,7 @@ sequenceDiagram
     Joe-->>User: 8. Laporan: Fitur Berhasil Diluncurkan!
 ```
 
-### 6. DIAGRAM STRUKTUR RELASI DATA PROMPT ENGINEERING
+### 6. DIAGRAM STRUKTUR RELASI DATA PROMPT ENGINEERING (DIAGRAM TD)
 
 ```mermaid
 flowchart TD
@@ -156,7 +150,7 @@ flowchart TD
     PROMPT --> AUDIT
 ```
 
-### 7. DIAGRAM PETA ALUR RUANG KERJA DAN RILIS SISTEM
+### 7. DIAGRAM PETA ALUR RUANG KERJA DAN RILIS SISTEM (DIAGRAM TD)
 
 ```mermaid
 flowchart TD
