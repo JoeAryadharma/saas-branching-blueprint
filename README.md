@@ -197,4 +197,4 @@ Proyek ini menggunakan 6 ruang kerja terisolasi:
 
 ## Lisensi & Perlindungan Hukum
 
-Proyek ini dilindungi secara resmi oleh **[GNU Affero General Public License v3.0 (AGPL v3)](file:///Users/user/Downloads/Prompt%20Engginer/LICENSE)** (Copyright 2026 Joe Aryadharma / Joe Company Agent Lab).
+Proyek ini dilindungi secara resmi oleh **[MIT License](file:///Users/user/Downloads/Prompt%20Engginer/LICENSE)** (Copyright 2026 Joe Aryadharma / Joe Company Agent Lab).
