@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - Terminal Error Repair & Pure Prompt Edition",
-  "description": "Asisten Joe v9.6.2: Terminal Error Sensor & Auto-Fix Repair Prompt (Tangkap Error Terminal & Susun Prompt Perbaikan 1-Klik, Output SELALU Draf Prompt Presisi, 70% Token Saving, Real-Time Token Streaming, Native Antigravity AI Engine, Stanford DSPy & TextGrad Prompt Compiler, Smart Error Boundary, Auto-Save State Persistence, Git TTL Cache, AI Code Sanitizer, Automated OpenAPI API Spec Drafter, Performance Guard, Architecture Flowchart, Visual Task Board, .env.example Synchronizer, SAST & Conventional Commits).",
-  "version": "9.6.2",
+  "displayName": "Asisten Joe - Inline CodeLens & Hover Guard Edition",
+  "description": "Asisten Joe v9.6.3: Inline CodeLens & Hover Diagnostic Guard (Tombol Prompt Melayang di Atas Fungsi/Kelas Editor & Kartu Peringatan Rahasia Saat Hover, Terminal Error Sensor, Output SELALU Draf Prompt Presisi, 70% Token Saving, Real-Time Token Streaming, Native Antigravity AI Engine, Stanford DSPy & TextGrad Prompt Compiler, Smart Error Boundary, Auto-Save State Persistence, Git TTL Cache, AI Code Sanitizer, Automated OpenAPI API Spec Drafter, Performance Guard, Architecture Flowchart, Visual Task Board, .env.example Synchronizer, SAST & Conventional Commits).",
+  "version": "9.6.3",
   "publisher": "joecompanyagent-lab",
   "license": "AGPL-3.0-only",
   "engines": {
@@ -22,7 +22,8 @@
     "onCommand:saasWorkflow.openChatTab",
     "onCommand:saasWorkflow.initProject",
     "onCommand:saasWorkflow.createFeatureBranch",
-    "onCommand:saasWorkflow.auditVibeCoding"
+    "onCommand:saasWorkflow.auditVibeCoding",
+    "onCommand:saasWorkflow.generatePromptForBlock"
   ],
   "contributes": {
     "configuration": {
@@ -62,7 +63,7 @@
       },
       {
         "command": "saasWorkflow.auditVibeCoding",
-        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.6.2)"
+        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.6.3)"
       },
       {
         "command": "saasWorkflow.initProject",
@@ -71,6 +72,10 @@
       {
         "command": "saasWorkflow.createFeatureBranch",
         "title": "Asisten Joe: Buat Ruang Kerja Fitur Baru"
+      },
+      {
+        "command": "saasWorkflow.generatePromptForBlock",
+        "title": "Asisten Joe: Susun Prompt Modul Ini"
       }
     ],
     "menus": {

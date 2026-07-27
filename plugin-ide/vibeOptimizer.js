@@ -2,15 +2,16 @@ const path = require('path');
 const fs = require('fs');
 
 // ============================================================
-// VIBE OPTIMIZER v9.6.2 -- Dedicated Prompt Generator & Terminal Error Repair
-// 1. Terminal Error Sensor & Auto-Fix Repair Prompt (v9.6.2 - Tahap 3 Optimasi)
-// 2. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
-// 3. Smart Context Compressor (Tahap 2 Optimasi: Memangkas Diff/Konteks Hingga 70%)
-// 4. DSPy & TextGrad Chain-of-Thought (CoT) Prompt Compiler (Stanford adoption)
-// 5. .env.example Synchronizer (dotenv-safe adoption)
-// 6. Atomic Commit Slicer (opencommit & cz-cli adoption)
-// 7. OpenAPI / Swagger API Spec Drafter
-// 8. AI Text & Prompt Sanitizer (strip-ansi adoption)
+// VIBE OPTIMIZER v9.6.3 -- Dedicated Prompt Generator & CodeLens Guard
+// 1. Inline CodeLens & Hover Diagnostic Guard (v9.6.3 - Tahap 4 Optimasi)
+// 2. Terminal Error Sensor & Auto-Fix Repair Prompt (Tahap 3 Optimasi)
+// 3. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
+// 4. Smart Context Compressor (Tahap 2 Optimasi: Memangkas Diff/Konteks Hingga 70%)
+// 5. DSPy & TextGrad Chain-of-Thought (CoT) Prompt Compiler (Stanford adoption)
+// 6. .env.example Synchronizer (dotenv-safe adoption)
+// 7. Atomic Commit Slicer (opencommit & cz-cli adoption)
+// 8. OpenAPI / Swagger API Spec Drafter
+// 9. AI Text & Prompt Sanitizer (strip-ansi adoption)
 // ============================================================
 
 class VibeOptimizer {
@@ -29,7 +30,7 @@ class VibeOptimizer {
 
     const fixPrompt = [
       `# ============================================================`,
-      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v9.6.2)`,
+      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v9.6.3)`,
       `# Standar Lisensi: GNU AGPL v3.0 | Output Pure Prompt Generator`,
       `# ============================================================`,
       ``,
@@ -91,7 +92,7 @@ class VibeOptimizer {
       `SIMBOL & RUTE INTI TERDETEKSI:`,
       keySymbols.join('\n') || 'Fungsi Utama Aplikasi',
       ``,
-      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v9.6.2)`
+      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v9.6.3)`
     ].join('\n');
 
     return compressed;
@@ -108,7 +109,7 @@ class VibeOptimizer {
 
     const dspyCompiledPrompt = [
       `# ============================================================`,
-      `# DRAF PROMPT PRESISI TERKOMPILASI (DSPy & TextGrad Engine v9.6.2)`,
+      `# DRAF PROMPT PRESISI TERKOMPILASI (DSPy & TextGrad Engine v9.6.3)`,
       `# Standar Lisensi: GNU AGPL v3.0 | Output Pure Prompt Generator`,
       `# ============================================================`,
       ``,
@@ -210,7 +211,7 @@ class VibeOptimizer {
     });
 
     if (newlyAppended.length > 0) {
-      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v9.6.2)\n' +
+      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v9.6.3)\n' +
         newlyAppended.map(k => `${k}=`).join('\n') + '\n';
 
       try {
@@ -265,7 +266,7 @@ class VibeOptimizer {
     const now = new Date().toLocaleString('id-ID');
 
     const testContent = [
-      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.6.2 (DSPy Engine)`,
+      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.6.3 (DSPy Engine)`,
       `// Waktu Dibuat: ${now}`,
       ``,
       `describe('Uji Kelaikan Modul Baru (Vibe Autotest)', () => {`,
@@ -329,7 +330,7 @@ class VibeOptimizer {
     }
 
     const now = new Date().toLocaleString('id-ID');
-    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.6.2 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
+    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.6.3 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
 
     if (detectedEndpoints.length > 0) {
       content += `## RINGKASAN ENDPOINT TERDETEKSI\n\n| METODE | JALUR RUTE (PATH) | DESKRIPSI |\n| :--- | :--- | :--- |\n`;

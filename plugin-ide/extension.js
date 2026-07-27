@@ -6,14 +6,15 @@ const AIEngine = require('./aiEngine');
 const SaaSWorkflowChatProvider = require('./chatProvider');
 const CodeReader = require('./codeReader');
 const VibeGuard = require('./vibeGuard');
+const VibeOptimizer = require('./vibeOptimizer');
 
 let currentPanel = undefined;
 
 // ============================================================
-// AKTIVASI EKSTENSI -- Asisten Joe v6.0 Vibe Guard
+// AKTIVASI EKSTENSI -- Asisten Joe v9.6.3 (Inline CodeLens & Hover Guard)
 // ============================================================
 async function activate(context) {
-  console.log('Asisten Joe v6.0 -- Pengawal Vibe Coding -- Aktif.');
+  console.log('Asisten Joe v9.6.3 -- Inline CodeLens & Hover Diagnostic Guard -- Aktif.');
 
   // 1. Inisialisasi AI Engine
   const aiEngine = new AIEngine();
@@ -24,6 +25,93 @@ async function activate(context) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider('saasWorkflow.chatView', chatProvider)
   );
+
+  // ============================================================
+  // TAHAP 4 OPTIMASI (v9.6.3): INLINE CODELENS PROVIDER
+  // Menampilkan tombol prompt melayang langsung di atas fungsi/kelas editor
+  // ============================================================
+  const codeLensProvider = {
+    provideCodeLenses(document, token) {
+      const codeLenses = [];
+      const text = document.getText();
+      const lines = text.split('\n');
+
+      lines.forEach((line, index) => {
+        if (/^\s*(async\s+)?function\s+[a-zA-Z0-9_]+|^\s*class\s+[a-zA-Z0-9_]+|^\s*const\s+[a-zA-Z0-9_]+\s*=\s*(async\s*)?\(/i.test(line)) {
+          const range = new vscode.Range(index, 0, index, line.length);
+          const cmd = {
+            title: "🛡️ Asisten Joe: Susun Prompt Modul Ini",
+            command: "saasWorkflow.generatePromptForBlock",
+            arguments: [document.uri, range, line.trim()]
+          };
+          codeLenses.push(new vscode.CodeLens(range, cmd));
+        }
+      });
+
+      return codeLenses;
+    }
+  };
+
+  context.subscriptions.push(
+    vscode.languages.registerCodeLensProvider(
+      [{ scheme: 'file', language: 'javascript' }, { scheme: 'file', language: 'typescript' }, { scheme: 'file', language: 'html' }, { scheme: 'file', language: 'python' }],
+      codeLensProvider
+    )
+  );
+
+  // ============================================================
+  // TAHAP 4 OPTIMASI (v9.6.3): HOVER DIAGNOSTIC GUARD
+  // Menampilkan peringatan kebocoran rahasia saat kursor diarahkan ke kode
+  // ============================================================
+  const hoverProvider = {
+    provideHover(document, position, token) {
+      const lineText = document.lineAt(position.line).text;
+      
+      const secretPatterns = [
+        /sk_live_[0-9a-zA-Z]{24,}/,
+        /AIzaSy[0-9a-zA-Z-_]{35}/,
+        /ghp_[0-9a-zA-Z]{36}/,
+        /postgres:\/\/[^:]+:[^@]+@/
+      ];
+
+      const isSecretFound = secretPatterns.some(p => p.test(lineText));
+
+      if (isSecretFound) {
+        const markdown = new vscode.MarkdownString();
+        markdown.appendMarkdown(`### ⚠️ PENGAWAL KEAMANAN VIBE v9.6.3\n\n`);
+        markdown.appendMarkdown(`**Peringatan Kebocoran Rahasia:** Kunci API / kredensial terdeteksi ditulis langsung di baris ini.\n\n`);
+        markdown.appendMarkdown(`**Rekomendasi:** Pindahkan nilai ini ke berkas \`.env\` dan gunakan \`process.env.NAMA_KUNCI\`.\n`);
+        return new vscode.Hover(markdown);
+      }
+
+      return null;
+    }
+  };
+
+  context.subscriptions.push(
+    vscode.languages.registerHoverProvider(
+      [{ scheme: 'file', language: 'javascript' }, { scheme: 'file', language: 'typescript' }, { scheme: 'file', language: 'python' }],
+      hoverProvider
+    )
+  );
+
+  // Command: Generate Prompt For Block Code (CodeLens Callback)
+  let disposableBlockPrompt = vscode.commands.registerCommand('saasWorkflow.generatePromptForBlock', async function (uri, range, lineText) {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) return;
+
+    const blockCode = editor.document.getText(new vscode.Range(
+      Math.max(0, range.start.line - 1),
+      0,
+      Math.min(editor.document.lineCount - 1, range.end.line + 25),
+      0
+    ));
+
+    const generatedPrompt = VibeOptimizer.compileDSPyPrompt(`Susunkan draf perbaikan/pengembangan untuk modul berikut: ${lineText}`, blockCode);
+    
+    vscode.env.clipboard.writeText(generatedPrompt);
+    vscode.window.showInformationMessage(`[BERHASIL] Draf Prompt untuk '${lineText}' disalin ke Clipboard! Salin ke AI Anda.`);
+  });
 
   // 3. Tab Chat Utama (Ikon Header Bar)
   let disposableOpenTab = vscode.commands.registerCommand('saasWorkflow.openChatTab', function () {
@@ -73,7 +161,6 @@ async function activate(context) {
             duplicates: vibeRes.duplicateAudit.warnings.length
           });
 
-          // Audit Vibe Coding
           if (lowerText.includes('vibe') || lowerText.includes('audit')) {
             let html = `<b>AUDIT PENGAWAL VIBE CODING</b><br/><small style="color:#94a3b8;">${aiEngine.modelName}</small><br/><br/>` +
               `• <b>Kunci Rahasia API:</b> ${vibeRes.secretAudit.isSafe ? '<span style="color:#22c55e;">[AMAN]</span>' : '<span style="color:#ef4444;">[BAHAYA - KUNCI TERDETEKSI]</span>'}<br/>` +
@@ -87,7 +174,7 @@ async function activate(context) {
           } else {
             currentPanel.webview.postMessage({
               type: 'response',
-              text: `Asisten Joe v6.0 (Vibe Guard) membaca proyek <b>${folderName}</b>.<br/>Instruksi: <i>"${data.text}"</i>.<br/>Gunakan tombol pintas di bawah.`
+              text: `Asisten Joe v9.6.3 (Vibe Guard) membaca proyek <b>${folderName}</b>.<br/>Instruksi: <i>"${data.text}"</i>.<br/>Gunakan tombol pintas di bawah.`
             });
           }
         }
@@ -145,7 +232,7 @@ async function activate(context) {
     }
   });
 
-  context.subscriptions.push(disposableOpenTab, disposableInit, disposableFeature, disposableVibeAudit);
+  context.subscriptions.push(disposableOpenTab, disposableInit, disposableFeature, disposableVibeAudit, disposableBlockPrompt);
 }
 
 function deactivate() {}
