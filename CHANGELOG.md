@@ -6,16 +6,14 @@ Format Berdasarkan Versi Sistem: `v[Mayor].[Minor].[Patch]`
 
 ---
 
-## [v9.5.7] - 2026-07-23 (Rilis Stanford DSPy & TextGrad Edition)
+## [v9.5.8] - 2026-07-27 (Rilis Antigravity AI Engine Powered Edition)
 
 ### 🌟 Fitur Baru & Pembaruan
-- **DSPy & TextGrad Prompt Compiler (`v9.5.7` - Stanford Adoption):** Mengadopsi teknik *Teleprompter Signature* dari DSPy dan *Textual Gradient Loop* dari TextGrad untuk menyusun prompt dengan struktur *Chain-of-Thought (CoT)* bertahap yang bebas halusinasi.
-- **Prompt Generator Syntax & Format Auto-Fixer (`v9.5.6`):** Menambahkan modul pemformat dan pembersih otomatis prompt AI agar instruksi yang dihasilkan 100% presisi.
-- **Smart Error Boundary (`v9.5.5` - cline adoption):** Penanganan kendala tak terduga terpusat dengan tombol pemulihan mandiri (*Self-Healing Action*).
-- **Auto-Save State Persistence (`v9.5.4` - continuedev adoption):** Pemulihan draf obrolan otomatis saat tab tertutup/reload.
-- **Git TTL Cache 500ms (`v9.5.3` - simple-git adoption):** Akselerasi kecepatan panel 3x lebih cepat dengan efisiensi CPU 70%.
-- **AI Code & Text Sanitizer (`v9.5.2` - strip-ansi adoption):** Menyaring zero-width spaces (`\u200B`) dan warna ANSI escape secara otomatis.
-- **Migrasi Lisensi GNU AGPL v3.0:** Perlindungan lisensi resmi dari penggunaan ulang sebagai layanan SaaS pihak ketiga tanpa lisensi terbuka.
+- **Integrasi Token Native Antigravity IDE (`v9.5.8`):** Asisten Joe kini terhubung secara langsung dengan mesin AI bawaan Antigravity IDE via `vscode.lm` API. Menggunakan kuota dan token akun Antigravity / Gemini 3.6 Flash aktif secara otomatis tanpa perlu mengisi API Key secara manual.
+- **Fallback API Key Kustom (`v9.5.8`):** Mendukung pengisian API Key kustom (`GEMINI_API_KEY` / `ANTIGRAVITY_API_KEY` di `.env` atau via pengaturan VS Code `saasWorkflow.apiKey`) jika berjalan di luar Antigravity IDE.
+- **DSPy & TextGrad Prompt Compiler (`v9.5.7` - Stanford Adoption):** Mengadopsi teknik *Teleprompter Signature* dari DSPy dan *Textual Gradient Loop* dari TextGrad untuk menyusun prompt dengan struktur *Chain-of-Thought (CoT)*.
+- **Prompt Generator Syntax Auto-Fixer (`v9.5.6`):** Menambahkan modul pemformat dan pembersih otomatis prompt AI.
+- **Smart Error Boundary (`v9.5.5` - cline adoption):** Penanganan kendala tak terduga terpusat dengan tombol pemulihan mandiri.
 
 ---
 
@@ -32,4 +30,4 @@ Format Berdasarkan Versi Sistem: `v[Mayor].[Minor].[Patch]`
 
 ---
 
-*Catatan: Dokumen ini diperbarui secara otomatis oleh Asisten Joe v9.5.7.*
+*Catatan: Dokumen ini diperbarui secara otomatis oleh Asisten Joe v9.5.8.*

@@ -1,9 +1,11 @@
 const vscode = require('vscode');
+const https = require('https');
 
 // ============================================================
-// AI ENGINE -- Jembatan ke Model AI Aktif di IDE
-// Modul ini menghubungkan Asisten Joe dengan otak AI sesungguhnya
-// melalui vscode.lm API (Language Model API).
+// AI ENGINE v9.5.8 -- Jembatan Integrasi Token & Model AI Antigravity
+// Modul ini menghubungkan Asisten Joe dengan otak AI Antigravity IDE / Gemini
+// 1. Otomatis Menggunakan Token Native Antigravity IDE via vscode.lm API
+// 2. Fallback Opsional via Custom Gemini / Antigravity API Key
 // ============================================================
 
 const SYSTEM_PERSONA = [
@@ -21,73 +23,137 @@ class AIEngine {
     this._model = null;
     this._modelName = 'Belum Tersambung';
     this._isAvailable = false;
+    this._customApiKey = null;
   }
 
-  // Cari dan sambungkan ke model AI yang tersedia di IDE
+  // 1. Cari dan sambungkan ke model AI bawaan Antigravity IDE (vscode.lm API)
+  // atau API Key kustom jika dikonfigurasi
   async initialize() {
+    // A. Cek integrasi bawaan Antigravity IDE (vscode.lm)
     try {
       const models = await vscode.lm.selectChatModels();
       if (models && models.length > 0) {
-        this._model = models[0];
-        this._modelName = `${this._model.vendor || 'AI'} ${this._model.family || 'Model'}`;
+        // Prioritaskan model Gemini atau Antigravity jika ada
+        const preferred = models.find(m => 
+          (m.family && m.family.toLowerCase().includes('gemini')) ||
+          (m.vendor && m.vendor.toLowerCase().includes('antigravity'))
+        ) || models[0];
+
+        this._model = preferred;
+        const vendor = preferred.vendor || 'Antigravity';
+        const family = preferred.family || 'AI Engine';
+        this._modelName = `${vendor} ${family} (Token Native Antigravity)`;
         this._isAvailable = true;
-        console.log(`AIEngine: Tersambung ke ${this._modelName}`);
+        console.log(`AIEngine: Tersambung otomatis ke Antigravity IDE -> ${this._modelName}`);
         return true;
       }
     } catch (e) {
-      console.log('AIEngine: Tidak ada model AI tersedia, menggunakan fallback.', e.message);
+      console.log('AIEngine: Mode Native vscode.lm tidak tersedia, memeriksa API Key kustom...', e.message);
     }
+
+    // B. Cek API Key dari Pengaturan VS Code / Environment Variable
+    const configApiKey = vscode.workspace.getConfiguration('saasWorkflow').get('apiKey');
+    const envApiKey = process.env.GEMINI_API_KEY || process.env.ANTIGRAVITY_API_KEY;
+    this._customApiKey = configApiKey || envApiKey || null;
+
+    if (this._customApiKey) {
+      this._isAvailable = true;
+      this._modelName = 'Gemini / Antigravity Direct API (Custom Token)';
+      console.log('AIEngine: Tersambung via Custom API Key.');
+      return true;
+    }
+
     this._isAvailable = false;
-    this._modelName = 'Fallback (Tanpa AI)';
+    this._modelName = 'Fallback (Mode Otomatis Tanpa Token AI)';
     return false;
   }
 
-  // Kirim pertanyaan ke model AI dan terima respons
-  // systemContext: konteks tambahan (kode, memori, dll)
-  // userPrompt: instruksi/pertanyaan pengguna
-  // Returns: string respons lengkap
+  // Kirim pertanyaan ke model AI (Antigravity IDE LM API atau Direct REST API)
   async ask(userPrompt, systemContext = '') {
-    // Jika tidak ada model AI, kembalikan null agar caller gunakan fallback
-    if (!this._isAvailable || !this._model) {
+    if (!this._isAvailable) {
       return null;
     }
 
-    try {
-      const messages = [];
+    // Jalur A: Menggunakan Token Bawaan Antigravity IDE (vscode.lm)
+    if (this._model) {
+      try {
+        const messages = [];
 
-      // Persona sistem + konteks
-      let fullSystem = SYSTEM_PERSONA;
-      if (systemContext) {
-        fullSystem += '\n\nKONTEKS PROYEK:\n' + systemContext;
+        let fullSystem = SYSTEM_PERSONA;
+        if (systemContext) {
+          fullSystem += '\n\nKONTEKS PROYEK:\n' + systemContext;
+        }
+        messages.push(vscode.LanguageModelChatMessage.User(fullSystem));
+        messages.push(vscode.LanguageModelChatMessage.User(userPrompt));
+
+        const tokenSource = new vscode.CancellationTokenSource();
+        const timeout = setTimeout(() => tokenSource.cancel(), 30000);
+
+        const response = await this._model.sendRequest(messages, {}, tokenSource.token);
+
+        let result = '';
+        for await (const fragment of response.text) {
+          result += fragment;
+        }
+
+        clearTimeout(timeout);
+        return result;
+
+      } catch (e) {
+        console.error('AIEngine: Kesalahan pada API Antigravity IDE LM:', e.message);
       }
-      messages.push(vscode.LanguageModelChatMessage.User(fullSystem));
-
-      // Pertanyaan pengguna
-      messages.push(vscode.LanguageModelChatMessage.User(userPrompt));
-
-      const tokenSource = new vscode.CancellationTokenSource();
-      // Timeout 30 detik
-      const timeout = setTimeout(() => tokenSource.cancel(), 30000);
-
-      const response = await this._model.sendRequest(messages, {}, tokenSource.token);
-
-      let result = '';
-      for await (const fragment of response.text) {
-        result += fragment;
-      }
-
-      clearTimeout(timeout);
-      return result;
-
-    } catch (e) {
-      console.error('AIEngine: Kesalahan saat menghubungi model AI:', e.message);
-      // Jika model menolak atau error, kembalikan null agar fallback aktif
-      return null;
     }
+
+    // Jalur B: Direct REST API via API Key (Custom Token)
+    if (this._customApiKey) {
+      return await this._callDirectGeminiApi(userPrompt, systemContext);
+    }
+
+    return null;
   }
 
-  // Kirim pertanyaan dengan format khusus untuk analisis terstruktur
-  // Mengembalikan respons AI dalam format yang diminta
+  // Panggilan HTTP Direct jika menggunakan API Key
+  _callDirectGeminiApi(userPrompt, systemContext = '') {
+    return new Promise((resolve) => {
+      const fullPrompt = `${SYSTEM_PERSONA}\n\nKONTEKS PROYEK:\n${systemContext}\n\nINSTRUKSI PENGGUNA:\n${userPrompt}`;
+      const payload = JSON.stringify({
+        contents: [{ parts: [{ text: fullPrompt }] }]
+      });
+
+      const options = {
+        hostname: 'generativelanguage.googleapis.com',
+        path: `/v1beta/models/gemini-1.5-flash:generateContent?key=${this._customApiKey}`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(payload)
+        }
+      };
+
+      const req = https.request(options, (res) => {
+        let data = '';
+        res.on('data', (chunk) => { data += chunk; });
+        res.on('end', () => {
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.candidates && parsed.candidates[0].content.parts[0].text) {
+              resolve(parsed.candidates[0].content.parts[0].text);
+            } else {
+              resolve(null);
+            }
+          } catch (err) {
+            resolve(null);
+          }
+        });
+      });
+
+      req.on('error', () => resolve(null));
+      req.setTimeout(25000, () => { req.destroy(); resolve(null); });
+      req.write(payload);
+      req.end();
+    });
+  }
+
   async analyzeStructured(taskDescription, dataContext, outputFormat) {
     const prompt = [
       `TUGAS: ${taskDescription}`,
@@ -102,17 +168,14 @@ class AIEngine {
     return await this.ask(prompt);
   }
 
-  // Getter: nama model aktif
   get modelName() {
     return this._modelName;
   }
 
-  // Getter: apakah AI tersedia
   get isAvailable() {
     return this._isAvailable;
   }
 
-  // Re-inisialisasi jika model berubah
   async refresh() {
     await this.initialize();
   }

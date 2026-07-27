@@ -86,7 +86,7 @@
       Asisten Joe
     </div>
     <div class="badge-personal">
-      v9.5.7 DSPY & TEXTGRAD PROMPT SUITE
+      v9.5.8 ANTIGRAVITY AI POWERED
     </div>
   </div>
 
@@ -115,11 +115,11 @@
     <div class="message assistant">
       <div class="sender-label">Asisten Joe</div>
       <div class="bubble">
-        Selamat datang. Saya <b>Asisten Joe v9.5.7</b> -- DSPy & TextGrad Edition.<br/><br/>
-        Fitur Utama Stanford Prompt Compiler (v9.5.7):<br/>
-        -- <b>Komputerisasi Prompt DSPy (Stanford NLP):</b> Menyusun struktur Chain-of-Thought (CoT) bertahap otomatis<br/>
-        -- <b>Umpan Balik Teks TextGrad:</b> Menyaring & memperbaiki prompt dari potensi kegagalan sintaks<br/>
-        -- <b>Lisensi GNU AGPL v3.0:</b> Terbuka & terlindungi dari klaim SaaS pihak ketiga
+        Selamat datang. Saya <b>Asisten Joe v9.5.8</b> -- Antigravity AI Powered Edition.<br/><br/>
+        Fitur Integrasi AI (v9.5.8):<br/>
+        -- <b>Token Native Antigravity IDE:</b> Terhubung otomatis ke model AI Antigravity/Gemini aktif tanpa perlu input token manual.<br/>
+        -- <b>Dukungan API Key Kustom:</b> Dapat dihubungkan via `saasWorkflow.apiKey` atau `GEMINI_API_KEY` di `.env`.<br/>
+        -- <b>Komputerisasi Prompt DSPy:</b> Menyusun Chain-of-Thought (CoT) terstruktur otomatis.
       </div>
     </div>
   </div>
@@ -148,7 +148,7 @@
         Cek Performa
       </div>
       <div class="chip" onclick="quickAction('Diagram Alur')">
-        <svg class="icon" viewBox="0 0 16 16"><path d="M1 2.5A1.5 1.5 0 012.5 1h3A1.5 1.5 0 017 2.5v3A1.5 1.5 0 015.5 7h-3A1.5 1.5 0 011 5.5v-3zM2.5 2a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5h-3zm6.5.5A1.5 1.5 0 0110.5 1h3A1.5 1.5 0 0115 2.5v3A1.5 1.5 0 0113.5 7h-3A1.5 1.5 0 019 5.5v-3zm1.5-.5a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5h-3zM1 10.5A1.5 1.5 0 012.5 9h3A1.5 1.5 0 017 10.5v3A1.5 1.5 0 015.5 15h-3A1.5 1.5 0 011 13.5v-3zm1.5-.5a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5h-3z"/></svg>
+        <svg class="icon" viewBox="0 0 16 16"><path d="M1 2.5A1.5 1.5 0 012.5 1h3A1.5 1.5 0 017 2.5v3A1.5 1.5 0 015.5 7h-3A1.5 1.5 0 011 5.5v-3zM2.5 2a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5h-3zm6.5.5A1.5 1.5 0 0110.5 1h3A1.5 1.5 0 0115 2.5v3A1.5 1.5 0 0113.5 7h-3A1.5 1.5 0 019 5.5v-3zm1.5-.5a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5h-3zM1 10.5A1.5 1.5 0 012.5 9h3A1.5 1.5 0 015.5 15h-3A1.5 1.5 0 011 13.5v-3zm1.5-.5a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5h-3z"/></svg>
         Diagram Alur
       </div>
       <div class="chip" onclick="quickAction('Papan Tugas')">
@@ -184,7 +184,7 @@
 
       appendMessage('user', text);
       input.value = '';
-      vscode.setState({ draftText: '' }); // Bersihkan draf tersimpan setelah terkirim
+      vscode.setState({ draftText: '' });
 
       vscode.postMessage({ type: 'userInput', text: text });
     }

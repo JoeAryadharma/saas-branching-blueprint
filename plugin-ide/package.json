@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - DSPy Prompt Compiler Edition",
-  "description": "Asisten Joe v9.5.7: Stanford DSPy & TextGrad Prompt Compiler Edition (Prompt Generator Syntax Auto-Fixer, Smart Error Boundary, Auto-Save State Persistence, Git TTL Cache, AI Code Sanitizer, Automated OpenAPI API Spec Drafter, Performance Guard, Architecture Flowchart, Visual Task Board, .env.example Synchronizer, SAST & Conventional Commits).",
-  "version": "9.5.7",
+  "displayName": "Asisten Joe - Antigravity AI Powered Edition",
+  "description": "Asisten Joe v9.5.8: Antigravity AI Engine Integration (Native Token IDE & Custom Gemini Support, Stanford DSPy & TextGrad Prompt Compiler, Smart Error Boundary, Auto-Save State Persistence, Git TTL Cache, AI Code Sanitizer, Automated OpenAPI API Spec Drafter, Performance Guard, Architecture Flowchart, Visual Task Board, .env.example Synchronizer, SAST & Conventional Commits).",
+  "version": "9.5.8",
   "publisher": "joecompanyagent-lab",
   "license": "AGPL-3.0-only",
   "engines": {
@@ -25,6 +25,17 @@
     "onCommand:saasWorkflow.auditVibeCoding"
   ],
   "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Asisten Joe Pengaturan",
+      "properties": {
+        "saasWorkflow.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Kunci API Opsional (Gemini API / Antigravity API Key) jika berjalan di luar Antigravity IDE."
+        }
+      }
+    },
     "viewsContainers": {
       "activitybar": [
         {
@@ -51,7 +62,7 @@
       },
       {
         "command": "saasWorkflow.auditVibeCoding",
-        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.5.7)"
+        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.5.8)"
       },
       {
         "command": "saasWorkflow.initProject",
