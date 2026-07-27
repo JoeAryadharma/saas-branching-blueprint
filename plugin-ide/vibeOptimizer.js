@@ -2,26 +2,77 @@ const path = require('path');
 const fs = require('fs');
 
 // ============================================================
-// VIBE OPTIMIZER v9.8.0 -- Micro-Scoped Prompt Slicer Engine
-// 1. Micro-Scoped Prompt Slicer (v9.8.0 - Single-File & Single-Component Isolation)
-// 2. Grafity Design Super-Prompt Generator (5-Wall Contract & SSOT Design System)
-// 3. Multi-Agent Sub-Task Swarm Orchestrator (Arsitek -> Koder -> Auditor SAST)
-// 4. Inline CodeLens & Hover Diagnostic Guard
-// 5. Terminal Error Sensor & Auto-Fix Repair Prompt
-// 6. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
-// 7. Smart Context Compressor (Memangkas Diff/Konteks Hingga 70%)
-// 8. DSPy & TextGrad Chain-of-Thought (CoT) Prompt Compiler
-// 9. .env.example Synchronizer & OpenAPI API Spec Drafter
+// VIBE OPTIMIZER v9.9.0 -- Anti-Layout Mutation & Asset Guard Engine
+// 1. Asset & Image Replacement Guard (v9.9.0 - Single-Attribute Surgical Mutation)
+// 2. Micro-Scoped Prompt Slicer (v9.8.0 - Single-File & Single-Component Isolation)
+// 3. Grafity Design Super-Prompt Generator (5-Wall Contract & SSOT Design System)
+// 4. Multi-Agent Sub-Task Swarm Orchestrator (Arsitek -> Koder -> Auditor SAST)
+// 5. Inline CodeLens & Hover Diagnostic Guard
+// 6. Terminal Error Sensor & Auto-Fix Repair Prompt
+// 7. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
+// 8. Smart Context Compressor (Memangkas Diff/Konteks Hingga 70%)
+// 9. DSPy & TextGrad Chain-of-Thought (CoT) Prompt Compiler
+// 10. .env.example Synchronizer & OpenAPI API Spec Drafter
 // ============================================================
 
 class VibeOptimizer {
 
   // ============================================================
+  // ASSET & IMAGE REPLACEMENT GUARD (v9.9.0)
+  // Mencegah Grafity mengubah layout, navbar, atau halaman lain saat ganti gambar
+  // ============================================================
+  static compileAssetReplacementPrompt(rawPrompt, activeFilePath = '', activeCodeSnippet = '', targetDir = '') {
+    if (!rawPrompt || typeof rawPrompt !== 'string') return '';
+
+    const cleanedInput = this.cleanAIText(rawPrompt.trim());
+    const fileBasename = activeFilePath ? path.basename(activeFilePath) : 'BerkasTargetHero.jsx';
+
+    const snippetBlock = activeCodeSnippet ? 
+      `[TAG GAMBAR TARGET DI EDITOR: ${fileBasename}]\n\`\`\`\n${activeCodeSnippet.substring(0, 800)}\n\`\`\`` :
+      `[BERKAS GAMBAR TARGET]: \`${fileBasename}\``;
+
+    const assetPrompt = [
+      `# ============================================================`,
+      `# PROMPT BEDAH ASSET & GAMBAR (Anti-Layout Mutation Guard v9.9.0)`,
+      `# Dihasilkan oleh Asisten Joe | Standar Surgical Single-Attribute Mutation`,
+      `# Lisensi: GNU AGPL v3.0 | Output 100% Pure Prompt`,
+      `# ============================================================`,
+      ``,
+      `[TARGET ABSOLUT BEDAH HANYA GAMBAR]`,
+      `-- BERKAS TARGET TERKUNCI: \`${fileBasename}\``,
+      `-- HANYA GANTI ATRIBUT \`src="..."\` ATAU \`background-image: url(...)\`.`,
+      ``,
+      `${snippetBlock}`,
+      ``,
+      `[DINDING PENGUNCI STRICT ANTI-MUTASI LAYOUT]`,
+      `1. DILARANG KERAS MENGUBAH STRUKTUR LAYOUT (DILARANG ubah class CSS, flex, grid, padding, margin, width, height, atau wrapper HTML).`,
+      `2. DILARANG KERAS MENGUBAH NAVBAR, SIDEBAR, FOOTER, ATAU KOMPONEN LAIN.`,
+      `3. DILARANG KERAS MENGATASI/MEMBUKA BERKAS HALAMAN LAIN (Maksimal 1 berkas: \`${fileBasename}\`).`,
+      `4. BATAS MAKSIMAL PERUBAHAN GIT DIFF: Maksimal HANYA 1 - 3 baris kode yang berubah di git diff!`,
+      ``,
+      `[INSTRUKSI EKSEKUSI PERGANTIAN GAMBAR PRESISI]`,
+      `"${cleanedInput}"`,
+      ``,
+      `[ALUR VERIFIKASI SEBELUM GRAFITY MENGATAKAN "DONE"]`,
+      `- [ ] Memastikan Navbar dan komponen lain 100% TIDAK TERSENTUH/TERUBAH.`,
+      `- [ ] Memastikan struktur layout HTML/CSS tidak mengalami perubahan 1 pixel pun.`,
+      `- [ ] Memastikan HANYA URL/path gambar yang diperbarui di atribut \`src\` atau \`url()\`.`,
+      `- [ ] Memastikan \`git diff\` hanya mencatat maksimal 1-3 baris perubahan.`
+    ].join('\n');
+
+    return this.sanitizePromptSyntax(assetPrompt);
+  }
+
+  // ============================================================
   // MICRO-SCOPED PROMPT SLICER (v9.8.0): SINGLE FILE & COMPONENT LOCK
-  // Memotong instruksi luas menjadi prompt mikro terisolasi 1-berkas
   // ============================================================
   static compileMicroScopedPrompt(rawPrompt, activeFilePath = '', activeCodeSnippet = '', targetDir = '') {
     if (!rawPrompt || typeof rawPrompt !== 'string') return '';
+
+    const lower = rawPrompt.toLowerCase();
+    if (lower.includes('gambar') || lower.includes('foto') || lower.includes('hero') || lower.includes('image') || lower.includes('logo') || lower.includes('asset')) {
+      return this.compileAssetReplacementPrompt(rawPrompt, activeFilePath, activeCodeSnippet, targetDir);
+    }
 
     const cleanedInput = this.cleanAIText(rawPrompt.trim());
     const fileBasename = activeFilePath ? path.basename(activeFilePath) : 'BerkasTargetUtama.js';
@@ -47,8 +98,8 @@ class VibeOptimizer {
 
     const microPrompt = [
       `# ============================================================`,
-      `# PROMPT MIKRO TERISOLASI (Micro-Scoped Prompt Engine v9.8.0)`,
-      `# Dihasikan oleh Asisten Joe | Standar Single-File & Single-Component Lock`,
+      `# PROMPT MIKRO TERISOLASI (Micro-Scoped Prompt Engine v9.9.0)`,
+      `# Dihasilkan oleh Asisten Joe | Standar Single-File & Single-Component Lock`,
       `# Lisensi: GNU AGPL v3.0 | Output 100% Pure Prompt`,
       `# ============================================================`,
       ``,
@@ -111,7 +162,7 @@ class VibeOptimizer {
 
     const fixPrompt = [
       `# ============================================================`,
-      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v9.8.0)`,
+      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v9.9.0)`,
       `# Standar Lisensi: GNU AGPL v3.0 | Output Pure Prompt Generator`,
       `# ============================================================`,
       ``,
@@ -173,7 +224,7 @@ class VibeOptimizer {
       `SIMBOL & RUTE INTI TERDETEKSI:`,
       keySymbols.join('\n') || 'Fungsi Utama Aplikasi',
       ``,
-      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v9.8.0)`
+      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v9.9.0)`
     ].join('\n');
 
     return compressed;
@@ -259,7 +310,7 @@ class VibeOptimizer {
     });
 
     if (newlyAppended.length > 0) {
-      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v9.8.0)\n' +
+      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v9.9.0)\n' +
         newlyAppended.map(k => `${k}=`).join('\n') + '\n';
 
       try {
@@ -314,7 +365,7 @@ class VibeOptimizer {
     const now = new Date().toLocaleString('id-ID');
 
     const testContent = [
-      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.8.0 (DSPy Engine)`,
+      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.9.0 (DSPy Engine)`,
       `// Waktu Dibuat: ${now}`,
       ``,
       `describe('Uji Kelaikan Modul Baru (Vibe Autotest)', () => {`,
@@ -378,7 +429,7 @@ class VibeOptimizer {
     }
 
     const now = new Date().toLocaleString('id-ID');
-    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.8.0 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
+    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.9.0 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
 
     if (detectedEndpoints.length > 0) {
       content += `## RINGKASAN ENDPOINT TERDETEKSI\n\n| METODE | JALUR RUTE (PATH) | DESKRIPSI |\n| :--- | :--- | :--- |\n`;
