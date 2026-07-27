@@ -17,12 +17,18 @@ const fs = require('fs');
 
 class VibeOptimizer {
 
+  // Format path berkas presisi (Menjaga path relatif jika ada)
+  static formatFilePath(filePath = '') {
+    if (!filePath) return 'BerkasTargetUtama.js';
+    return filePath.trim();
+  }
+
   // ============================================================
   // GENERATOR 4 REM DARURAT MUTLAK GENERIK (v10.7.0)
   // Berlakunya abstrak & generik untuk SEMUA jenis pekerjaan (Frontend, Backend, DB, CLI)
   // ============================================================
   static getGenericEmergencyBrakes(targetFile = 'BerkasTarget', taskCategory = 'Umum') {
-    const fileLabel = targetFile ? path.basename(targetFile) : 'BerkasTarget';
+    const fileLabel = this.formatFilePath(targetFile);
 
     return [
       `[4 REM DARURAT MUTLAK SANGAT GENERIK (OBJECT-AGNOSTIC BRAKES v10.7.0)]`,
@@ -95,7 +101,7 @@ class VibeOptimizer {
   // ============================================================
   static compileBeforeAfterPreviewModal(rawPrompt = '', activeFilePath = '', activeCodeSnippet = '') {
     const cleanedInput = this.cleanAIText(rawPrompt.trim()) || 'Pembaruan Kode Presisi';
-    const fileLabel = activeFilePath ? path.basename(activeFilePath) : 'ModulTarget.js';
+    const fileLabel = this.formatFilePath(activeFilePath);
 
     const beforeSnippet = activeCodeSnippet ? 
       activeCodeSnippet.substring(0, 500) : 
@@ -359,13 +365,13 @@ class VibeOptimizer {
     if (!rawPrompt || typeof rawPrompt !== 'string') return '';
 
     const cleanedInput = this.cleanAIText(rawPrompt.trim());
-    const fileBasename = activeFilePath ? path.basename(activeFilePath) : 'BerkasTarget.jsx';
+    const fileLabel = this.formatFilePath(activeFilePath);
 
     const snippetBlock = activeCodeSnippet ? 
-      `[TAG KODE TARGET DI EDITOR: ${fileBasename}]\n\`\`\`\n${activeCodeSnippet.substring(0, 800)}\n\`\`\`` :
-      `[BERKAS TARGET]: \`${fileBasename}\``;
+      `[TAG KODE TARGET DI EDITOR: ${fileLabel}]\n\`\`\`\n${activeCodeSnippet.substring(0, 800)}\n\`\`\`` :
+      `[BERKAS TARGET]: \`${fileLabel}\``;
 
-    const brakes = this.getGenericEmergencyBrakes(fileBasename, 'Pergantian Asset');
+    const brakes = this.getGenericEmergencyBrakes(fileLabel, 'Pergantian Asset');
 
     const assetPrompt = [
       `# ============================================================`,
@@ -375,7 +381,7 @@ class VibeOptimizer {
       `# ============================================================`,
       ``,
       `[TARGET ABSOLUT KODE PRESISI]`,
-      `-- BERKAS TARGET TERKUNCI: \`${fileBasename}\``,
+      `-- BERKAS TARGET TERKUNCI: \`${fileLabel}\``,
       ``,
       `${snippetBlock}`,
       ``,
@@ -400,7 +406,7 @@ class VibeOptimizer {
     if (!rawPrompt || typeof rawPrompt !== 'string') return '';
 
     const cleanedInput = this.cleanAIText(rawPrompt.trim());
-    const fileBasename = activeFilePath ? path.basename(activeFilePath) : 'BerkasTargetUtama.js';
+    const fileLabel = this.formatFilePath(activeFilePath);
 
     let projectStandards = `
 -- Standar UI: Palette HSL Tailored (Ivory, Gold HSL, Near Black), Font Cormorant Garamond / Inter.
@@ -417,10 +423,10 @@ class VibeOptimizer {
     }
 
     const snippetBlock = activeCodeSnippet ? 
-      `[POTONGAN KODE TARGET BERKAS: ${fileBasename}]\n\`\`\`\n${activeCodeSnippet.substring(0, 1000)}\n\`\`\`` :
-      `[BERKAS TARGET UTAMA]: \`${fileBasename}\``;
+      `[POTONGAN KODE TARGET BERKAS: ${fileLabel}]\n\`\`\`\n${activeCodeSnippet.substring(0, 1000)}\n\`\`\`` :
+      `[BERKAS TARGET UTAMA]: \`${fileLabel}\``;
 
-    const brakes = this.getGenericEmergencyBrakes(fileBasename, 'Modul Terisolasi');
+    const brakes = this.getGenericEmergencyBrakes(fileLabel, 'Modul Terisolasi');
 
     const microPrompt = [
       `# ============================================================`,
@@ -430,7 +436,7 @@ class VibeOptimizer {
       `# ============================================================`,
       ``,
       `[TARGET RUANG LINGKUP MIKRO ABSOLUT]`,
-      `-- BERKAS TARGET TERKUNCI: \`${fileBasename}\``,
+      `-- BERKAS TARGET TERKUNCI: \`${fileLabel}\``,
       `-- HANYA UBAH BARIS KODE YANG TERKAIT DENGAN INSTRUKSI DI BAWAH.`,
       ``,
       `${snippetBlock}`,
@@ -444,12 +450,12 @@ class VibeOptimizer {
       `"${cleanedInput}"`,
       ``,
       `[ALUR EKSEKUSI BERTAHAP MIKRO]`,
-      `1. PERIKSA BARIS TARGET: Tentukan baris spesifik pada \`${fileBasename}\` yang perlu diubah.`,
+      `1. PERIKSA BARIS TARGET: Tentukan baris spesifik pada \`${fileLabel}\` yang perlu diubah.`,
       `2. TERAPKAN PERUBAHAN: Ubah hanya bagian target sesuai standar proyek di atas.`,
       `3. VERIFIKASI MIKRO: Pastikan tidak ada berkas lain yang tersentuh dan sintaks 100% valid.`,
       ``,
       `[CHECKLIST VERIFIKASI MIKRO GRAFITY SEBELUM SAY "DONE"]`,
-      `-- Memastikan HANYA \`${fileBasename}\` yang diubah (tidak ada Scope Creep).`,
+      `-- Memastikan HANYA \`${fileLabel}\` yang diubah (tidak ada Scope Creep).`,
       `-- Memastikan perubahan sintaks terbukti berhasil pada berkas target.`,
       `-- Memastikan Standar Proyek dipatuhi tanpa menyuntikkan kode siluman.`,
       `-- Memastikan tidak ada error kompilasi setelah perubahan.`
