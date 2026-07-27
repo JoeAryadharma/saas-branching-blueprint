@@ -2,23 +2,72 @@ const path = require('path');
 const fs = require('fs');
 
 // ============================================================
-// VIBE OPTIMIZER v9.6.3 -- Dedicated Prompt Generator & CodeLens Guard
-// 1. Inline CodeLens & Hover Diagnostic Guard (v9.6.3 - Tahap 4 Optimasi)
-// 2. Terminal Error Sensor & Auto-Fix Repair Prompt (Tahap 3 Optimasi)
-// 3. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
-// 4. Smart Context Compressor (Tahap 2 Optimasi: Memangkas Diff/Konteks Hingga 70%)
-// 5. DSPy & TextGrad Chain-of-Thought (CoT) Prompt Compiler (Stanford adoption)
-// 6. .env.example Synchronizer (dotenv-safe adoption)
-// 7. Atomic Commit Slicer (opencommit & cz-cli adoption)
-// 8. OpenAPI / Swagger API Spec Drafter
-// 9. AI Text & Prompt Sanitizer (strip-ansi adoption)
+// VIBE OPTIMIZER v9.6.4 -- Multi-Agent Sub-Task Swarm & Dedicated Prompt Engine
+// 1. Multi-Agent Sub-Task Swarm Orchestrator (v9.6.4 - Tahap 5 Optimasi: Arsitek -> Koder -> Auditor SAST)
+// 2. Inline CodeLens & Hover Diagnostic Guard (Tahap 4 Optimasi)
+// 3. Terminal Error Sensor & Auto-Fix Repair Prompt (Tahap 3 Optimasi)
+// 4. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
+// 5. Smart Context Compressor (Tahap 2 Optimasi: Memangkas Diff/Konteks Hingga 70%)
+// 6. DSPy & TextGrad Chain-of-Thought (CoT) Prompt Compiler (Stanford adoption)
+// 7. .env.example Synchronizer (dotenv-safe adoption)
+// 8. Atomic Commit Slicer (opencommit & cz-cli adoption)
+// 9. OpenAPI / Swagger API Spec Drafter
+// 10. AI Text & Prompt Sanitizer (strip-ansi adoption)
 // ============================================================
 
 class VibeOptimizer {
 
   // ============================================================
-  // TAHAP 3 OPTIMASI (v9.6.2): TERMINAL ERROR REPAIR PROMPT GENERATOR
-  // Menyusun Prompt Presisi Perbaikan Error Terminal Secara Otomatis
+  // TAHAP 5 OPTIMASI (v9.6.4): MULTI-AGENT SUB-TASK SWARM
+  // Memenjajakan 3 Sub-Agent Maya (Arsitek -> Koder -> Auditor SAST)
+  // ============================================================
+  static runSwarmPromptEngine(rawPrompt, projectContext = '') {
+    if (!rawPrompt || typeof rawPrompt !== 'string') return '';
+
+    const cleanedInput = this.cleanAIText(rawPrompt.trim());
+    const compressedCtx = this.compressContext(projectContext);
+
+    const swarmPrompt = [
+      `# ============================================================`,
+      `# DRAF PROMPT PRESISI SWARM MULTI-AGENT (Stanford DSPy Swarm v9.6.4)`,
+      `# Standar Lisensi: GNU AGPL v3.0 | Output Pure Prompt Generator`,
+      `# ============================================================`,
+      ``,
+      `[RINGKASAN KONTEKS PROYEK]`,
+      `${compressedCtx}`,
+      ``,
+      `[HASIL SINTESIS SWARM 3 SUB-AGENT]`,
+      ``,
+      `--- SUB-AGENT 1 (SENIOR SOFTWARE ARCHITECT):`,
+      `Instruksi: Analisis struktur makro -> meso -> mikro dari instruksi "${cleanedInput}".`,
+      `Kebutuhan Modul: Tentukan komponen, rute API, dan skema data yang dibutuhkan.`,
+      ``,
+      `--- SUB-AGENT 2 (LEAD FULLSTACK CODER):`,
+      `Instruksi: Susun langkah implementasi presisi bertahap dengan inden 2 spasi dan keterbacaan tinggi.`,
+      `Logika Utama: Integrasikan fungsi modular tanpa merusak fungsi yang sudah berjalan.`,
+      ``,
+      `--- SUB-AGENT 3 (SAST SECURITY AUDITOR):`,
+      `Instruksi: Audit kebocoran kredensial, validasi variabel process.env, dan pastikan kepatuhan OWASP.`,
+      `Verifikasi: Jangan gunakan password/token mentah di dalam kode.`,
+      ``,
+      `[INSTRUKSI UTAMA HASIL SINTESIS SWARM]`,
+      `"${cleanedInput}"`,
+      ``,
+      `[ALUR BERPIKIR (Chain-of-Thought / CoT)]`,
+      `1. PERANCANGAN: Terapkan rekomendasi Arsitek Sistem di atas.`,
+      `2. EKSEKUSI: Tuliskan draf kode utuh berstandar Koder Inti.`,
+      `3. AUDIT KEAMANAN: Terapkan perlindungan bebas kebocoran dari Auditor SAST.`,
+      ``,
+      `[BATASAN KERAS]`,
+      `-- Bebas Emoji & ANSI Escape Code.`,
+      `-- Berikan output berupa Draf Solusi Utuh yang siap dipakai.`
+    ].join('\n');
+
+    return this.sanitizePromptSyntax(swarmPrompt);
+  }
+
+  // ============================================================
+  // TAHAP 3 OPTIMASI: TERMINAL ERROR REPAIR PROMPT GENERATOR
   // ============================================================
   static compileErrorFixPrompt(terminalError, projectContext = '') {
     if (!terminalError || typeof terminalError !== 'string') {
@@ -30,7 +79,7 @@ class VibeOptimizer {
 
     const fixPrompt = [
       `# ============================================================`,
-      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v9.6.3)`,
+      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v9.6.4)`,
       `# Standar Lisensi: GNU AGPL v3.0 | Output Pure Prompt Generator`,
       `# ============================================================`,
       ``,
@@ -92,7 +141,7 @@ class VibeOptimizer {
       `SIMBOL & RUTE INTI TERDETEKSI:`,
       keySymbols.join('\n') || 'Fungsi Utama Aplikasi',
       ``,
-      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v9.6.3)`
+      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v9.6.4)`
     ].join('\n');
 
     return compressed;
@@ -102,40 +151,7 @@ class VibeOptimizer {
   // ADOPSI DSPy & TEXTGRAD (Stanford NLP Adoption)
   // ============================================================
   static compileDSPyPrompt(rawPrompt, projectContext = '') {
-    if (!rawPrompt || typeof rawPrompt !== 'string') return '';
-
-    const cleanedInput = this.cleanAIText(rawPrompt.trim());
-    const compressedCtx = this.compressContext(projectContext);
-
-    const dspyCompiledPrompt = [
-      `# ============================================================`,
-      `# DRAF PROMPT PRESISI TERKOMPILASI (DSPy & TextGrad Engine v9.6.3)`,
-      `# Standar Lisensi: GNU AGPL v3.0 | Output Pure Prompt Generator`,
-      `# ============================================================`,
-      ``,
-      `[PROFIL PERAN & SPESIALISASI]`,
-      `Kamu adalah Senior Software Architect & AI Prompt Engineer terbaik.`,
-      `Tujuanmu adalah menyelesaikan instruksi di bawah dengan 100% presisi tanpa halusinasi.`,
-      ``,
-      `[RINGKASAN ARSITEKTUR PROYEK]`,
-      `${compressedCtx}`,
-      ``,
-      `[INSTRUKSI UTAMA PEKERJAAN]`,
-      `"${cleanedInput}"`,
-      ``,
-      `[ALUR BERPIKIR BERTAHAP (Chain-of-Thought / CoT)]`,
-      `1. ANALISIS KEBUTUHAN: Evaluasi modul mana yang perlu ditambahkan/diubah.`,
-      `2. INTEGRITAS ARSITEKTUR: Pastikan tidak merusak fungsi lama yang sudah berjalan.`,
-      `3. KEAMANAN SIBER: Jangan menuliskan password, token, atau API key secara langsung (Gunakan process.env).`,
-      `4. STANDAR INDUSTRI: Gunakan struktur modular dan inden 2 spasi.`,
-      ``,
-      `[BATASAN KERAS]`,
-      `-- Bebas Emoji: Jangan sertakan emoji apapun.`,
-      `-- Bebas ANSI Escape: Jangan gunakan kode warna ANSI.`,
-      `-- Siap Dijalankan: Berikan solusi yang utuh dan jelas.`
-    ].join('\n');
-
-    return this.sanitizePromptSyntax(dspyCompiledPrompt);
+    return this.runSwarmPromptEngine(rawPrompt, projectContext);
   }
 
   static applyTextGradFeedback(originalPrompt, feedbackError) {
@@ -211,7 +227,7 @@ class VibeOptimizer {
     });
 
     if (newlyAppended.length > 0) {
-      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v9.6.3)\n' +
+      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v9.6.4)\n' +
         newlyAppended.map(k => `${k}=`).join('\n') + '\n';
 
       try {
@@ -226,7 +242,7 @@ class VibeOptimizer {
   }
 
   static refineVibePrompt(rawPrompt, projectContext = '') {
-    return this.compileDSPyPrompt(rawPrompt, projectContext);
+    return this.runSwarmPromptEngine(rawPrompt, projectContext);
   }
 
   static sliceAtomicCommits(areas) {
@@ -266,7 +282,7 @@ class VibeOptimizer {
     const now = new Date().toLocaleString('id-ID');
 
     const testContent = [
-      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.6.3 (DSPy Engine)`,
+      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.6.4 (DSPy Engine)`,
       `// Waktu Dibuat: ${now}`,
       ``,
       `describe('Uji Kelaikan Modul Baru (Vibe Autotest)', () => {`,
@@ -330,7 +346,7 @@ class VibeOptimizer {
     }
 
     const now = new Date().toLocaleString('id-ID');
-    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.6.3 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
+    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.6.4 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
 
     if (detectedEndpoints.length > 0) {
       content += `## RINGKASAN ENDPOINT TERDETEKSI\n\n| METODE | JALUR RUTE (PATH) | DESKRIPSI |\n| :--- | :--- | :--- |\n`;

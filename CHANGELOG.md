@@ -6,9 +6,10 @@ Format Berdasarkan Versi Sistem: `v[Mayor].[Minor].[Patch]`
 
 ---
 
-## [v9.6.3] - 2026-07-27 (Rilis Inline CodeLens & Hover Diagnostic Guard - Tahap 4 Optimasi)
+## [v9.6.4] - 2026-07-27 (Rilis Multi-Agent Sub-Task Swarm Engine - Puncak Optimasi Tahap 5)
 
 ### 🌟 Fitur Baru & Pembaruan
+- **Multi-Agent Sub-Task Swarm Orchestrator (`v9.6.4` - Tahap 5 Flagship):** Menjalankan alur 3 Sub-Agent Maya (Software Architect -> Lead Coder -> SAST Security Auditor) secara terintegrasi untuk menyusun Draf Prompt Utama yang paling lengkap dan aman.
 - **Inline CodeLens Provider (`v9.6.3` - Tahap 4 Optimasi):** Menambahkan tombol `[🛡️ Asisten Joe: Susun Prompt Modul Ini]` melayang langsung di atas fungsi/kelas pada editor VS Code / Antigravity IDE.
 - **Hover Diagnostic Guard (`v9.6.3` - Tahap 4 Optimasi):** Kartu peringatan kebocoran rahasia muncul otomatis saat kursor diarahkan ke variabel/kode yang mengandung API key atau URL database.
 - **Terminal Error Sensor & Repair Prompt (`v9.6.2` - Tahap 3 Optimasi):** Menambahkan tombol pintas dan fungsi `compileErrorFixPrompt` untuk menangkap log error terminal dan otomatis menyusun Draf Prompt Perbaikan Error (Stanford DSPy Format).
@@ -32,4 +33,4 @@ Format Berdasarkan Versi Sistem: `v[Mayor].[Minor].[Patch]`
 
 ---
 
-*Catatan: Dokumen ini diperbarui secara otomatis oleh Asisten Joe v9.6.3.*
+*Catatan: Dokumen ini diperbarui secara otomatis oleh Asisten Joe v9.6.4.*

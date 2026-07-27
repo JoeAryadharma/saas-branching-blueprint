@@ -1,42 +1,43 @@
-# 🏢 PUSAT REPOSITORI SAAS & EKSTENSI ASISTEN JOE v9.6.3
+# 🏢 PUSAT REPOSITORI SAAS & EKSTENSI ASISTEN JOE v9.6.4
 
-Selamat datang di repositori resmi **SaaS Branching Blueprint** dan **Ekstensi Asisten Joe v9.6.3 (Inline CodeLens & Hover Guard)**. Dokumen ini disusun untuk memberikan panduan alur kerja digital dan pengoperasian ekstensi pengawal Vibe Coding di Antigravity IDE.
+Selamat datang di repositori resmi **SaaS Branching Blueprint** dan **Ekstensi Asisten Joe v9.6.4 (Multi-Agent Sub-Task Swarm)**. Dokumen ini disusun untuk memberikan panduan alur kerja digital dan pengoperasian ekstensi pengawal Vibe Coding di Antigravity IDE.
 
 ---
 
-## 🛡️ ASISTEN JOE v9.6.3 -- INLINE CODELENS & HOVER DIAGNOSTIC GUARD (TAHAP 4 OPTIMASI)
+## 🛡️ ASISTEN JOE v9.6.4 -- MULTI-AGENT SUB-TASK SWARM & PURE PROMPT ENGINE (PUNCAK OPTIMASI TAHAP 5)
 
 Ekstensi pendamping Vibe Coding & Dedicated Prompt Generator di Antigravity IDE / VS Code yang mengadopsi repositori open-source tingkat tinggi teruji dari GitHub:
 
-1. **Inline CodeLens Provider (v9.6.3 - Tahap 4 Optimasi):** Menampilkan tombol aksi melayang `[🛡️ Asisten Joe: Susun Prompt Modul Ini]` tepat di atas baris deklarasi fungsi atau kelas pada editor VS Code / Antigravity IDE.
-2. **Hover Diagnostic Guard (v9.6.3 - Tahap 4 Optimasi):** Kartu peringatan kebocoran rahasia muncul otomatis saat kursor diarahkan ke variabel/kode yang mengandung API key atau URL database.
-3. **Terminal Error Sensor & Repair Prompt (v9.6.2 - Tahap 3 Optimasi):** Menangkap pesan error kompilasi/terminal secara otomatis dan menyodorkan tombol pintas **`[Perbaiki Error Terminal]`** yang seketika menyusun **Draf Prompt Perbaikan Error Presisi (Stanford DSPy CoT Format)** untuk AI.
-4. **Pure Prompt Output Enforcer (v9.6.1):** Seluruh respons, analisis, dan solusi dari Asisten Joe SELALU diformat sebagai **Draf Prompt Presisi Terstruktur (Prompt Generator Engine)** yang siap disalin oleh pengguna untuk AI lain (bukan potongan kode mentah).
-5. **Smart Context Compressor (v9.6.1 - Tahap 2 Optimasi):** Memangkas berkas dan `git diff` besar menjadi ringkasan simbol dan AST untuk **menghemat penggunaan token Antigravity hingga 70%** dan membuat analisis prompt jauh lebih presisi.
-6. **Real-Time Token Streaming (v9.6.0 - Tahap 1 Optimasi):** Respons dari Antigravity AI mengalir kata demi kata secara real-time ke panel obrolan Webview tanpa penundaan (*0ms perceived latency*).
-7. **Integrasi AI Engine Native Antigravity IDE (v9.5.8):** Otomatis mendeteksi dan menggunakan model AI bawaan (Gemini 3.6 Flash / Antigravity LM) beserta kuota/token akun Antigravity Anda via `vscode.lm` API tanpa perlu menginput API Key manual.
-8. **Dukungan Custom Token / API Key Opsional (v9.5.8):** Mendukung pengisian API Key kustom (`GEMINI_API_KEY` / `ANTIGRAVITY_API_KEY` di `.env` atau via setting `saasWorkflow.apiKey`) jika dijalankan di luar Antigravity IDE.
-9. **DSPy & TextGrad Prompt Compiler (v9.5.7 - Stanford NLP adoption):** Menyusun instruksi prompt terstruktur berstandar industri dengan alur berpikir bertahap (*Chain-of-Thought / CoT*) dan umpan balik kesalahan.
-10. **Pemformat & Auto-Fixer Sintaks Prompt Generator (v9.5.6):** Merapikan prompt kasar pengguna menjadi instruksi presisi terstruktur tanpa halusinasi AI.
-11. **Penangan Kendala Mandiri / Smart Error Boundary (v9.5.5 - cline adoption):** Menangkap kendala tak terduga secara terpusat dengan aksi pemulihan mandiri.
-12. **Pemulihan Status Draf Obrolan Otomatis (v9.5.4 - continuedev adoption):** Menyimpan draf ketikan secara real-time agar tidak hilang saat tab tertutup/reload.
-13. **Akselerasi Kecepatan Cache Git 500ms (v9.5.3 - simple-git adoption):** Menghemat CPU hingga 70% dan membuat respon panel 3x lebih cepat.
-14. **Pembersih Kode & Teks AI (v9.5.2 - strip-ansi adoption):** Menyaring zero-width spaces (`\u200B`) dan kode warna ANSI secara otomatis.
-15. **Pembuat Dokumentasi API Otomatis (v9.5.0):** Menyusun berkas `DOKUMENTASI_API.md` berstandar OpenAPI/Swagger.
-16. **Pengawal Performa & Ukuran Pustaka (v9.4.0):** Memindai pustaka berat (`moment`, `lodash`) dan memberikan alternatif ringan (`date-fns`, `lodash-es`).
-17. **Generator Diagram Arsitektur Seketika (v9.3.0):** Diagram alur hubungan modul berbasis Mermaid.
-18. **Visual Papan Tugas & Peta Jalan (v9.2.0):** Pemantau tiket pekerjaan `PETA_JALAN.md`.
-19. **Ringkasan Eksekutif Manajemen (v9.1.0):** Laporan kesehatan sistem untuk manajemen.
-20. **Sinkronisasi `.env.example` Otomatis (dotenv-safe adoption):** Otomatis mendeteksi variabel `process.env.XXX` baru.
-21. **Pemindai Kerentanan Kode Statis (Semgrep SAST adoption):** Memindai celah SQL Injection, XSS, dan unhandled async errors.
-22. **Sensor Kunci Rahasia 25+ Database:** Mendeteksi kebocoran Stripe, AWS, GitHub PAT, OpenAI, Claude, Midtrans, Xendit, dan URL Database secara real-time.
+1. **Multi-Agent Sub-Task Swarm Orchestrator (v9.6.4 - Tahap 5 Flagship):** Menjalankan alur 3 Sub-Agent Maya secara berurutan (**Software Architect $\rightarrow$ Lead Coder $\rightarrow$ SAST Security Auditor**) untuk menghasilkan **Draf Prompt Utama Multidimensi** yang paling lengkap, aman, dan presisi.
+2. **Inline CodeLens Provider (v9.6.3 - Tahap 4 Optimasi):** Menampilkan tombol aksi melayang `[🛡️ Asisten Joe: Susun Prompt Modul Ini]` tepat di atas baris deklarasi fungsi atau kelas pada editor VS Code / Antigravity IDE.
+3. **Hover Diagnostic Guard (v9.6.3 - Tahap 4 Optimasi):** Kartu peringatan kebocoran rahasia muncul otomatis saat kursor diarahkan ke variabel/kode yang mengandung API key atau URL database.
+4. **Terminal Error Sensor & Repair Prompt (v9.6.2 - Tahap 3 Optimasi):** Menangkap pesan error kompilasi/terminal secara otomatis dan menyodorkan tombol pintas **`[Perbaiki Error Terminal]`** yang seketika menyusun **Draf Prompt Perbaikan Error Presisi (Stanford DSPy CoT Format)** untuk AI.
+5. **Pure Prompt Output Enforcer (v9.6.1):** Seluruh respons, analisis, dan solusi dari Asisten Joe SELALU diformat sebagai **Draf Prompt Presisi Terstruktur (Prompt Generator Engine)** yang siap disalin oleh pengguna untuk AI lain (bukan potongan kode mentah).
+6. **Smart Context Compressor (v9.6.1 - Tahap 2 Optimasi):** Memangkas berkas dan `git diff` besar menjadi ringkasan simbol dan AST untuk **menghemat penggunaan token Antigravity hingga 70%** dan membuat analisis prompt jauh lebih presisi.
+7. **Real-Time Token Streaming (v9.6.0 - Tahap 1 Optimasi):** Respons dari Antigravity AI mengalir kata demi kata secara real-time ke panel obrolan Webview tanpa penundaan (*0ms perceived latency*).
+8. **Integrasi AI Engine Native Antigravity IDE (v9.5.8):** Otomatis mendeteksi dan menggunakan model AI bawaan (Gemini 3.6 Flash / Antigravity LM) beserta kuota/token akun Antigravity Anda via `vscode.lm` API tanpa perlu menginput API Key manual.
+9. **Dukungan Custom Token / API Key Opsional (v9.5.8):** Mendukung pengisian API Key kustom (`GEMINI_API_KEY` / `ANTIGRAVITY_API_KEY` di `.env` atau via setting `saasWorkflow.apiKey`) jika dijalankan di luar Antigravity IDE.
+10. **DSPy & TextGrad Prompt Compiler (v9.5.7 - Stanford NLP adoption):** Menyusun instruksi prompt terstruktur berstandar industri dengan alur berpikir bertahap (*Chain-of-Thought / CoT*) dan umpan balik kesalahan.
+11. **Pemformat & Auto-Fixer Sintaks Prompt Generator (v9.5.6):** Merapikan prompt kasar pengguna menjadi instruksi presisi terstruktur tanpa halusinasi AI.
+12. **Penangan Kendala Mandiri / Smart Error Boundary (v9.5.5 - cline adoption):** Menangkap kendala tak terduga secara terpusat dengan aksi pemulihan mandiri.
+13. **Pemulihan Status Draf Obrolan Otomatis (v9.5.4 - continuedev adoption):** Menyimpan draf ketikan secara real-time agar tidak hilang saat tab tertutup/reload.
+14. **Akselerasi Kecepatan Cache Git 500ms (v9.5.3 - simple-git adoption):** Menghemat CPU hingga 70% dan membuat respon panel 3x lebih cepat.
+15. **Pembersih Kode & Teks AI (v9.5.2 - strip-ansi adoption):** Menyaring zero-width spaces (`\u200B`) dan kode warna ANSI secara otomatis.
+16. **Pembuat Dokumentasi API Otomatis (v9.5.0):** Menyusun berkas `DOKUMENTASI_API.md` berstandar OpenAPI/Swagger.
+17. **Pengawal Performa & Ukuran Pustaka (v9.4.0):** Memindai pustaka berat (`moment`, `lodash`) dan memberikan alternatif ringan (`date-fns`, `lodash-es`).
+18. **Generator Diagram Arsitektur Seketika (v9.3.0):** Diagram alur hubungan modul berbasis Mermaid.
+19. **Visual Papan Tugas & Peta Jalan (v9.2.0):** Pemantau tiket pekerjaan `PETA_JALAN.md`.
+20. **Ringkasan Eksekutif Manajemen (v9.1.0):** Laporan kesehatan sistem untuk manajemen.
+21. **Sinkronisasi `.env.example` Otomatis (dotenv-safe adoption):** Otomatis mendeteksi variabel `process.env.XXX` baru.
+22. **Pemindai Kerentanan Kode Statis (Semgrep SAST adoption):** Memindai celah SQL Injection, XSS, dan unhandled async errors.
+23. **Sensor Kunci Rahasia 25+ Database:** Mendeteksi kebocoran Stripe, AWS, GitHub PAT, OpenAI, Claude, Midtrans, Xendit, dan URL Database secara real-time.
 
 ### 📲 Pemasangan Ekstensi (.vsix)
 
 1. Buka **Extensions** di Antigravity IDE (`Cmd + Shift + X`).
 2. Klik `...` di kanan atas $\rightarrow$ Pilih **"Install from VSIX..."**.
 3. Pilih berkas rilis resmi:  
-   👉 **[saas-workflow-ide-plugin-9.6.3.vsix](file:///Users/user/Downloads/Prompt%20Engginer/plugin-ide/saas-workflow-ide-plugin-9.6.3.vsix)**
+   👉 **[saas-workflow-ide-plugin-9.6.4.vsix](file:///Users/user/Downloads/Prompt%20Engginer/plugin-ide/saas-workflow-ide-plugin-9.6.4.vsix)**
 
 ---
 
