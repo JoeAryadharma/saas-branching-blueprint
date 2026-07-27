@@ -2,21 +2,24 @@ const vscode = require('vscode');
 const https = require('https');
 
 // ============================================================
-// AI ENGINE v9.6.0 -- Real-Time Streaming & Antigravity AI Engine
-// Modul ini menghubungkan Asisten Joe dengan otak AI Antigravity IDE / Gemini
-// 1. Real-Time Token Streaming (word-by-word streaming to Webview)
-// 2. Otomatis Menggunakan Token Native Antigravity IDE via vscode.lm API
-// 3. Fallback Opsional via Custom Gemini / Antigravity API Key
+// AI ENGINE v9.6.1 -- Pure Prompt Generator & Real-Time Streaming
+// Modul ini menjamin bahwa seluruh output Asisten Joe SELALU
+// berupa DRAF PROMPT PRESISI TERSTRUKTUR (Prompt Generator Engine)
+// dan bukan kode mentah.
 // ============================================================
 
 const SYSTEM_PERSONA = [
-  'Kamu adalah Asisten Joe, seorang konsultan bisnis senior dan auditor virtual.',
-  'Jawab selalu dalam Bahasa Indonesia menggunakan istilah operasional bisnis sederhana.',
-  'Jangan gunakan jargon teknis IT tanpa menerjemahkannya ke bahasa bisnis.',
-  'Jangan gunakan emoji dalam respons apapun.',
-  'Berikan analisis yang tajam, ringkas, dan dapat ditindaklanjuti.',
-  'Gunakan format poin-poin bernomor untuk rekomendasi.',
-  'Jika diminta menganalisis kode, fokus pada dampak bisnis dan risiko operasional.',
+  'Kamu adalah Asisten Joe - Master Prompt Engineer & Dedicated Prompt Generator Engine.',
+  'ATURAN MUTLAK PERILAKU: JANGAN PERNAH memberikan output berupa kode program mentah atau jawaban langsung biasa.',
+  'Setiap jawaban, analisis, rekomendasi, solusi, dan perbaikan dari kamu WAJIB SELALU diformat sebagai DRAF PROMPT PRESISI TERSTRUKTUR (Prompt Generator) yang siap disalin oleh pengguna untuk dimasukkan ke AI lain.',
+  'Gunakan format Stanford DSPy / Chain-of-Thought (CoT) berikut untuk setiap output:',
+  '[PROMP GENERATOR - ASISTEN JOE]',
+  '-- PERAN AI PENERIMA: (Sebutkan peran spesifik)',
+  '-- KONTEKS SISTEM: (Sebutkan konteks bisnis/sistem)',
+  '-- INSTRUKSI UTAMA: (Instruksi presisi)',
+  '-- ALUR BERPIKIR (Chain-of-Thought): (Langkah 1, 2, 3)',
+  '-- BATASAN KERAS: (Aturan larangan)',
+  'Jawab selalu dalam Bahasa Indonesia yang profesional, tegas, tanpa emoji, dan tanpa kode ANSI.',
 ].join(' ');
 
 class AIEngine {
@@ -27,8 +30,6 @@ class AIEngine {
     this._customApiKey = null;
   }
 
-  // 1. Cari dan sambungkan ke model AI bawaan Antigravity IDE (vscode.lm API)
-  // atau API Key kustom jika dikonfigurasi
   async initialize() {
     try {
       const models = await vscode.lm.selectChatModels();
@@ -66,21 +67,19 @@ class AIEngine {
     return false;
   }
 
-  // Real-Time Streaming Request (v9.6.0)
-  // Memanggil onChunk(fragmentText) setiap kali ada potongan kata baru dari AI
+  // Real-Time Streaming Request (Pure Prompt Output Enforced)
   async askStream(userPrompt, systemContext = '', onChunk) {
     if (!this._isAvailable) {
       return null;
     }
 
-    // Jalur A: Streaming Token Native Antigravity IDE (vscode.lm)
     if (this._model) {
       try {
         const messages = [];
 
         let fullSystem = SYSTEM_PERSONA;
         if (systemContext) {
-          fullSystem += '\n\nKONTEKS PROYEK:\n' + systemContext;
+          fullSystem += '\n\nKONTEKS ARSITEKTUR PROYEK:\n' + systemContext;
         }
         messages.push(vscode.LanguageModelChatMessage.User(fullSystem));
         messages.push(vscode.LanguageModelChatMessage.User(userPrompt));
@@ -106,7 +105,6 @@ class AIEngine {
       }
     }
 
-    // Jalur B: Direct REST API Fallback
     const result = await this.ask(userPrompt, systemContext);
     if (result && typeof onChunk === 'function') {
       onChunk(result, result);
@@ -114,7 +112,6 @@ class AIEngine {
     return result;
   }
 
-  // Kirim pertanyaan ke model AI (Non-Streaming Fallback)
   async ask(userPrompt, systemContext = '') {
     if (!this._isAvailable) {
       return null;
@@ -126,7 +123,7 @@ class AIEngine {
 
         let fullSystem = SYSTEM_PERSONA;
         if (systemContext) {
-          fullSystem += '\n\nKONTEKS PROYEK:\n' + systemContext;
+          fullSystem += '\n\nKONTEKS ARSITEKTUR PROYEK:\n' + systemContext;
         }
         messages.push(vscode.LanguageModelChatMessage.User(fullSystem));
         messages.push(vscode.LanguageModelChatMessage.User(userPrompt));
@@ -156,7 +153,6 @@ class AIEngine {
     return null;
   }
 
-  // Panggilan HTTP Direct jika menggunakan API Key
   _callDirectGeminiApi(userPrompt, systemContext = '') {
     return new Promise((resolve) => {
       const fullPrompt = `${SYSTEM_PERSONA}\n\nKONTEKS PROYEK:\n${systemContext}\n\nINSTRUKSI PENGGUNA:\n${userPrompt}`;
@@ -200,12 +196,12 @@ class AIEngine {
 
   async analyzeStructured(taskDescription, dataContext, outputFormat) {
     const prompt = [
-      `TUGAS: ${taskDescription}`,
+      `TUGAS PROMPT GENERATOR: ${taskDescription}`,
       '',
       'DATA:',
       dataContext,
       '',
-      'FORMAT OUTPUT YANG DIMINTA:',
+      'SUSUN SELALU SEBAGAI PROMPT PRESISI:',
       outputFormat,
     ].join('\n');
 

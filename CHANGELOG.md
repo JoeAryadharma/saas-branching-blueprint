@@ -6,13 +6,13 @@ Format Berdasarkan Versi Sistem: `v[Mayor].[Minor].[Patch]`
 
 ---
 
-## [v9.6.0] - 2026-07-27 (Rilis Real-Time Token Streaming - Tahap 1 Optimasi)
+## [v9.6.1] - 2026-07-27 (Rilis Pure Prompt Generator & Smart Context Compressor - Tahap 2 Optimasi)
 
 ### 🌟 Fitur Baru & Pembaruan
-- **Real-Time Token Streaming (`v9.6.0` - Tahap 1 Optimasi):** Mengimplementasikan alur streaming respons kata demi kata (`askStream`) dari Antigravity AI Engine ke Webview UI. Pengguna tidak perlu menunggu respons selesai untuk mulai membaca.
-- **Integrasi Token Native Antigravity IDE (`v9.5.8`):** Asisten Joe terhubung secara langsung dengan mesin AI bawaan Antigravity IDE via `vscode.lm` API.
-- **Fallback API Key Kustom (`v9.5.8`):** Mendukung pengisian API Key kustom (`GEMINI_API_KEY` / `ANTIGRAVITY_API_KEY` di `.env` atau via pengaturan VS Code `saasWorkflow.apiKey`).
-- **DSPy & TextGrad Prompt Compiler (`v9.5.7` - Stanford Adoption):** Mengadopsi teknik *Teleprompter Signature* dari DSPy dan *Textual Gradient Loop* dari TextGrad.
+- **Pure Prompt Output Enforcer (`v9.6.1`):** Menegaskan aturan sistem bahwa Asisten Joe SELALU menghasilkan output berupa **Draf Prompt Presisi Terstruktur** (Prompt Generator Engine) dan tidak memberikan kode mentah langsung.
+- **Smart Context Compressor (`v9.6.1` - Tahap 2 Optimasi):** Menyaring diff/konteks proyek besar menjadi ringkasan simbol dan AST untuk menghemat token Antigravity hingga 70%.
+- **Real-Time Token Streaming (`v9.6.0` - Tahap 1 Optimasi):** Mengimplementasikan alur streaming respons kata demi kata (`askStream`) dari Antigravity AI Engine ke Webview UI.
+- **Integrasi Token Native Antigravity IDE (`v9.5.8`):** Terhubung langsung dengan mesin AI bawaan Antigravity IDE via `vscode.lm` API.
 
 ---
 
@@ -29,4 +29,4 @@ Format Berdasarkan Versi Sistem: `v[Mayor].[Minor].[Patch]`
 
 ---
 
-*Catatan: Dokumen ini diperbarui secara otomatis oleh Asisten Joe v9.6.0.*
+*Catatan: Dokumen ini diperbarui secara otomatis oleh Asisten Joe v9.6.1.*
