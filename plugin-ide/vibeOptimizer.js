@@ -2,68 +2,101 @@ const path = require('path');
 const fs = require('fs');
 
 // ============================================================
-// VIBE OPTIMIZER v9.6.4 -- Multi-Agent Sub-Task Swarm & Dedicated Prompt Engine
-// 1. Multi-Agent Sub-Task Swarm Orchestrator (v9.6.4 - Tahap 5 Optimasi: Arsitek -> Koder -> Auditor SAST)
-// 2. Inline CodeLens & Hover Diagnostic Guard (Tahap 4 Optimasi)
-// 3. Terminal Error Sensor & Auto-Fix Repair Prompt (Tahap 3 Optimasi)
-// 4. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
-// 5. Smart Context Compressor (Tahap 2 Optimasi: Memangkas Diff/Konteks Hingga 70%)
-// 6. DSPy & TextGrad Chain-of-Thought (CoT) Prompt Compiler (Stanford adoption)
-// 7. .env.example Synchronizer (dotenv-safe adoption)
-// 8. Atomic Commit Slicer (opencommit & cz-cli adoption)
-// 9. OpenAPI / Swagger API Spec Drafter
-// 10. AI Text & Prompt Sanitizer (strip-ansi adoption)
+// VIBE OPTIMIZER v9.7.0 -- Dedicated Design Mode & Grafity Super-Prompt Engine
+// 1. Grafity Design Super-Prompt Generator (v9.7.0 - Mode Design: 5-Wall Contract, Anti-False Completion & SSOT Design System)
+// 2. Multi-Agent Sub-Task Swarm Orchestrator (Arsitek -> Koder -> Auditor SAST)
+// 3. Inline CodeLens & Hover Diagnostic Guard
+// 4. Terminal Error Sensor & Auto-Fix Repair Prompt
+// 5. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
+// 6. Smart Context Compressor (Memangkas Diff/Konteks Hingga 70%)
+// 7. DSPy & TextGrad Chain-of-Thought (CoT) Prompt Compiler (Stanford adoption)
+// 8. .env.example Synchronizer (dotenv-safe adoption)
+// 9. Atomic Commit Slicer (opencommit & cz-cli adoption)
+// 10. OpenAPI / Swagger API Spec Drafter & AI Text Sanitizer
 // ============================================================
 
 class VibeOptimizer {
 
   // ============================================================
-  // TAHAP 5 OPTIMASI (v9.6.4): MULTI-AGENT SUB-TASK SWARM
-  // Memenjajakan 3 Sub-Agent Maya (Arsitek -> Koder -> Auditor SAST)
+  // MODE DESIGN (v9.7.0): GRAFITY SUPER-PROMPT ENGINE
+  // Menyusun Prompt Perintah Khusus untuk Grafity di IDE
+  // Mengadopsi Standar Kepatuhan skills.sh, OpenClaw, & Promptfoo Assertions
   // ============================================================
-  static runSwarmPromptEngine(rawPrompt, projectContext = '') {
+  static compileGrafityDesignPrompt(rawPrompt, projectContext = '', targetDir = '') {
     if (!rawPrompt || typeof rawPrompt !== 'string') return '';
 
     const cleanedInput = this.cleanAIText(rawPrompt.trim());
     const compressedCtx = this.compressContext(projectContext);
 
-    const swarmPrompt = [
+    let brandTokens = `
+-- Palette Warna: HSL Tailored (Ivory/Cream HSL(40,20%,96%), Pure White HSL(40,15%,100%), Gold HSL(45,65%,52%), Near Black HSL(220,15%,12%)).
+-- Typography: Font Heading (Cormorant Garamond / Serif Editorial), Font Body (Inter).
+-- Radius: 4px (refined). Spacing Scale: 8pt Grid. Shadow: Subtle Glassmorphism.
+    `.trim();
+
+    if (targetDir) {
+      const brandPath = path.join(targetDir, 'BRAND.md');
+      try {
+        if (fs.existsSync(brandPath)) {
+          const content = fs.readFileSync(brandPath, 'utf8');
+          brandTokens = content.substring(0, 800);
+        }
+      } catch (e) {}
+    }
+
+    const superPrompt = [
       `# ============================================================`,
-      `# DRAF PROMPT PRESISI SWARM MULTI-AGENT (Stanford DSPy Swarm v9.6.4)`,
-      `# Standar Lisensi: GNU AGPL v3.0 | Output Pure Prompt Generator`,
+      `# SUPER-PROMPT PERINTAH GRAFITY (Standar Kepatuhan Mode Design v9.7.0)`,
+      `# Dihasilkan oleh Asisten Joe | Standar skills.sh & Promptfoo Assertions`,
+      `# Lisensi: GNU AGPL v3.0 | Output 100% Dedicated Pure Prompt`,
       `# ============================================================`,
+      ``,
+      `[PAGAR 1: KONTRAK ANTIMALAS & ANTI-FALSE COMPLETION]`,
+      `DILARANG KERAS menyatakan status "Selesai / Done" hanya berdasarkan asumsi atau perubahan kode parsial.`,
+      `Kamu WAJIB memverifikasi bahwa:`,
+      `1. Berkas benar-benar tersimpan dan tidak ada sisa kode lama.`,
+      `2. Perubahan visual (foto, warna, layout) telah diterapkan sepenuhnya pada hasil render.`,
+      `3. Tidak ada kesalahan kompilasi, build error, atau unhandled exceptions.`,
+      ``,
+      `[PAGAR 2: DESIGN SYSTEM SINGLE SOURCE OF TRUTH (BRAND.MD)]`,
+      `Seluruh perubahan wajib mengacu pada token berikut sebagai Sumber Kebenaran Mutlak:`,
+      `${brandTokens}`,
+      `DILARANG KERAS membuat warna, padding, margin, shadow, atau font baru di luar Design System!`,
+      ``,
+      `[PAGAR 3: PENGUNCI RUANG LINGKUP & DEPENDENSI (SCOPE LOCK)]`,
+      `-- Ruang Lingkup Perubahan: HANYA BENTUK LOKAL PADA INSTRUKSI UTAMA.`,
+      `-- DILARANG MENGUBAH: Layout lain, warna lain, atau komponen di luar ruang lingkup ini.`,
+      `-- PERIKSA DEPENDENSI: Wajib mengecek seluruh berkas terkait (shared components, theme tokens, wrappers) agar konsisten 100%.`,
       ``,
       `[RINGKASAN KONTEKS PROYEK]`,
       `${compressedCtx}`,
       ``,
-      `[HASIL SINTESIS SWARM 3 SUB-AGENT]`,
-      ``,
-      `--- SUB-AGENT 1 (SENIOR SOFTWARE ARCHITECT):`,
-      `Instruksi: Analisis struktur makro -> meso -> mikro dari instruksi "${cleanedInput}".`,
-      `Kebutuhan Modul: Tentukan komponen, rute API, dan skema data yang dibutuhkan.`,
-      ``,
-      `--- SUB-AGENT 2 (LEAD FULLSTACK CODER):`,
-      `Instruksi: Susun langkah implementasi presisi bertahap dengan inden 2 spasi dan keterbacaan tinggi.`,
-      `Logika Utama: Integrasikan fungsi modular tanpa merusak fungsi yang sudah berjalan.`,
-      ``,
-      `--- SUB-AGENT 3 (SAST SECURITY AUDITOR):`,
-      `Instruksi: Audit kebocoran kredensial, validasi variabel process.env, dan pastikan kepatuhan OWASP.`,
-      `Verifikasi: Jangan gunakan password/token mentah di dalam kode.`,
-      ``,
-      `[INSTRUKSI UTAMA HASIL SINTESIS SWARM]`,
+      `[INSTRUKSI UTAMA PEKERJAAN DESAIN]`,
       `"${cleanedInput}"`,
       ``,
-      `[ALUR BERPIKIR (Chain-of-Thought / CoT)]`,
-      `1. PERANCANGAN: Terapkan rekomendasi Arsitek Sistem di atas.`,
-      `2. EKSEKUSI: Tuliskan draf kode utuh berstandar Koder Inti.`,
-      `3. AUDIT KEAMANAN: Terapkan perlindungan bebas kebocoran dari Auditor SAST.`,
+      `[PAGAR 4: ALUR EKSEKUSI BERTAHAP (Chain-of-Thought / CoT)]`,
+      `1. PERANCANGAN: Identifikasi komponen dan Design System yang berlaku dari BRAND.md.`,
+      `2. EKSEKUSI: Tuliskan kode utuh yang presisi tanpa memotong fungsi lama.`,
+      `3. AUDIT DEPENDENSI: Pastikan komponen terkait ikut diperbarui secara konsisten.`,
+      `4. VERIFIKASI VIBE GUARD: Audit kebocoran rahasia & kepatuhan WCAG AAA.`,
       ``,
-      `[BATASAN KERAS]`,
-      `-- Bebas Emoji & ANSI Escape Code.`,
-      `-- Berikan output berupa Draf Solusi Utuh yang siap dipakai.`
+      `[PAGAR 5: MANDATORY VERIFICATION CHECKLIST GRAFITY SEBELUM SAY "DONE"]`,
+      `Balas dan centang seluruh poin berikut SEBELUM menyatakan pekerjaan selesai:`,
+      `- [ ] Memastikan tidak ada False Completion (Foto/Warna/Layout terbukti berubah).`,
+      `- [ ] Memastikan seluruh aturan Design System (Warna, Font, Radius) dipatuhi 100%.`,
+      `- [ ] Memastikan tidak ada perubahan liar pada komponen/file di luar ruang lingkup.`,
+      `- [ ] Memastikan seluruh dependensi (shared components/theme) telah diperbarui secara konsisten.`,
+      `- [ ] Memastikan state interaksi (hover, focus, active) dan responsivitas berjalan sempurna.`
     ].join('\n');
 
-    return this.sanitizePromptSyntax(swarmPrompt);
+    return this.sanitizePromptSyntax(superPrompt);
+  }
+
+  // ============================================================
+  // TAHAP 5 OPTIMASI: MULTI-AGENT SUB-TASK SWARM
+  // ============================================================
+  static runSwarmPromptEngine(rawPrompt, projectContext = '') {
+    return this.compileGrafityDesignPrompt(rawPrompt, projectContext);
   }
 
   // ============================================================
@@ -79,7 +112,7 @@ class VibeOptimizer {
 
     const fixPrompt = [
       `# ============================================================`,
-      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v9.6.4)`,
+      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v9.7.0)`,
       `# Standar Lisensi: GNU AGPL v3.0 | Output Pure Prompt Generator`,
       `# ============================================================`,
       ``,
@@ -141,7 +174,7 @@ class VibeOptimizer {
       `SIMBOL & RUTE INTI TERDETEKSI:`,
       keySymbols.join('\n') || 'Fungsi Utama Aplikasi',
       ``,
-      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v9.6.4)`
+      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v9.7.0)`
     ].join('\n');
 
     return compressed;
@@ -151,7 +184,7 @@ class VibeOptimizer {
   // ADOPSI DSPy & TEXTGRAD (Stanford NLP Adoption)
   // ============================================================
   static compileDSPyPrompt(rawPrompt, projectContext = '') {
-    return this.runSwarmPromptEngine(rawPrompt, projectContext);
+    return this.compileGrafityDesignPrompt(rawPrompt, projectContext);
   }
 
   static applyTextGradFeedback(originalPrompt, feedbackError) {
@@ -227,7 +260,7 @@ class VibeOptimizer {
     });
 
     if (newlyAppended.length > 0) {
-      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v9.6.4)\n' +
+      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v9.7.0)\n' +
         newlyAppended.map(k => `${k}=`).join('\n') + '\n';
 
       try {
@@ -242,7 +275,7 @@ class VibeOptimizer {
   }
 
   static refineVibePrompt(rawPrompt, projectContext = '') {
-    return this.runSwarmPromptEngine(rawPrompt, projectContext);
+    return this.compileGrafityDesignPrompt(rawPrompt, projectContext);
   }
 
   static sliceAtomicCommits(areas) {
@@ -282,7 +315,7 @@ class VibeOptimizer {
     const now = new Date().toLocaleString('id-ID');
 
     const testContent = [
-      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.6.4 (DSPy Engine)`,
+      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.7.0 (DSPy Engine)`,
       `// Waktu Dibuat: ${now}`,
       ``,
       `describe('Uji Kelaikan Modul Baru (Vibe Autotest)', () => {`,
@@ -346,7 +379,7 @@ class VibeOptimizer {
     }
 
     const now = new Date().toLocaleString('id-ID');
-    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.6.4 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
+    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.7.0 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
 
     if (detectedEndpoints.length > 0) {
       content += `## RINGKASAN ENDPOINT TERDETEKSI\n\n| METODE | JALUR RUTE (PATH) | DESKRIPSI |\n| :--- | :--- | :--- |\n`;
