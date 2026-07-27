@@ -44,7 +44,7 @@ flowchart TD
 
     SYSTEM --> L1["1. LAPISAN VISUAL DAN TAMPILAN DEPAN\nMengatur Halaman Utama dan Tombol\nMenampilkan Pratinjau Sebelum dan Sesudah"]
     SYSTEM --> L2["2. LAPISAN SERVER DAN ATURAN BISNIS\nMengelola Logika Bisnis dan Transaksi\nMengirim Pesan Otomatis dan Otentikasi"]
-    SYSTEM --> L3["3. LAPISAN PENYIMPANAN DATA\nMenyimpan Data Pembeli dan Produk\nMemperbarui Data Tanpa Mematikan Website"]
+    SYSTEM --> L3["3. LAPISAN PENYIMPANAN DATA\nMenyimpan Data Pengguna dan Produk\nMemperbarui Data Tanpa Mematikan Website"]
     SYSTEM --> L4["4. LAPISAN KEAMANAN DAN BENTENG\nMemeriksa Kunci Rahasia Aplikasi\nMelindungi Data Dari Celah Peretasan"]
     SYSTEM --> L5["5. LAPISAN OTOMATISASI DAN DEVOPS\nMencatat Pembaruan Sistem Terstruktur\nMenyimpan Hasil Pekerjaan ke Ruang Rilis"]
     SYSTEM --> L6["6. LAPISAN PERFORMA DAN BENGKEL\nMembersihkan Pustaka Penyebab Lambat\nMemperbaiki Otomatis Saat Terjadi Kendala"]
@@ -112,7 +112,7 @@ flowchart TD
 
     subgraph SESUDAH["KONDISI HASIL TARGET (TO-BE)"]
         B1["Kondisi Target Baru (TO-BE)\nMemasang Fitur Baru Presisi\nSeluruh Bagian Tetangga Utuh Aman"]
-        B2["Penyimpanan Data Otomatis\nMemverifikasi Pekerjaan Bersih\nSiap Digunakan Pembeli Live"]
+        B2["Penyimpanan Data Otomatis\nMemverifikasi Pekerjaan Bersih\nSiap Digunakan Oleh Pengguna Live"]
     end
 
     SEBELUM --> PROSES
@@ -145,7 +145,7 @@ sequenceDiagram
 flowchart TD
     classDef default text-align:center;
     subgraph DATA["STRUKTUR HUBUNGAN DATA PROMPT ENGINEERING"]
-        PENGGUNA["Data Prompt Engineer\nMenyimpan Identitas Pengguna Usaha\nMencatat Status Ruang Kerja Aktif"]
+        PENGGUNA["Data Prompt Engineer\nMenyimpan Identitas Akun Pengguna\nMencatat Status Ruang Kerja Aktif"]
         
         PROMPT["Data Draf Super Prompt\nMenyimpan Instruksi Komponen Target\nMengunci Aturan 4 Rem Darurat Mutlak"]
         
@@ -166,7 +166,7 @@ flowchart TD
         
         UJI["Pengujian Keamanan Sistem\nMemeriksa Ulang Celah Peretasan\nMenguji Keutuhan Seluruh Data"]
         
-        UTAMA["Ruang Kerja Utama Live\nMengaktifkan Aplikasi Utama Terbarui\nSiap Digunakan Pembeli Secara Live"]
+        UTAMA["Ruang Kerja Utama Live\nMengaktifkan Aplikasi Utama Terbarui\nSiap Digunakan Oleh Pengguna Secara Live"]
     end
 
     FITUR --> UJI
