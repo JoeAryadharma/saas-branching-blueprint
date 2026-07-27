@@ -18,7 +18,7 @@ Ekstensi pendamping Vibe Coding & Dedicated Prompt Generator di Antigravity IDE 
 4. **RDBMS Architecture & Migration Guard Engine (v10.4.0):** Audit otomatis skema basis data relasional (Normalisasi 3NF, Indeks B-Tree FK, Zero-Downtime Migration, SAST SQL Injection Guard).
 5. **AS-IS vs. TO-BE Architectural Transformation Engine (v10.3.0):** Generator perbandingan visual side-by-side kondisi arsitektur sistem saat ini (**AS-IS**) lawan kondisi arsitektur target setelah prompt dieksekusi (**TO-BE**).
 6. **Multi-Diagram Project Visualizer Engine (v10.2.0):** Menghasilkan 5 diagram visual utuh untuk proyek Anda berstandar Mermaid.js.
-7. **Human-Friendly Layperson Commit Engine (v10.1.0):** Mengubah pesan commit teknis yang rumit menjadi **Bahasa Awam & Bahasa Bisnis yang Sangat Mudah Dibaca** oleh Klien, Product Manager, maupun Pemilik Bisnis non-teknis.
+7. **Human-Friendly Layperson Commit Engine (v10.1.0):** Mengubah pesan commit teknis yang rumit menjadi **Format Pesan Commit Ringkas & Terstruktur** yang Sangat Mudah Dibaca oleh Klien dan Product Manager.
 8. **Semantic Versioning Automator Engine (v10.0.0):** Mengotomatiskan & mengoptimalkan penomoran skema Semantic Versioning (`v[Major].[Minor].[Patch]` / `x.x.0`).
 9. **Anti-Layout Mutation & Asset Guard Engine (v9.9.0):** Memutus kebiasaan buruk Grafity yang sering merusak Navbar, layout CSS, atau halaman web lain saat diminta sekadar mengganti gambar/foto.
 
@@ -31,9 +31,9 @@ Ekstensi pendamping Vibe Coding & Dedicated Prompt Generator di Antigravity IDE 
 
 ---
 
-## VISUALISASI ARSITEKTUR SISTEM (7 DIAGRAM BAHASA AWAM)
+## VISUALISASI ARSITEKTUR SISTEM (7 DIAGRAM SISTEM)
 
-Berikut adalah 7 Diagram Visual yang disajikan murni dalam Bahasa Awam tanpa kode HTML, tanpa tag div, tanpa istilah teknis rumit, dan tanpa emoji:
+Berikut adalah 7 Diagram Visual yang disajikan murni tanpa kode HTML, tanpa tag div, dan tanpa emoji:
 
 ### 1. DIAGRAM PETA 6 LAPISAN UTAMA SISTEM
 
@@ -46,7 +46,7 @@ flowchart TD
     SYSTEM --> L2["2. LAPISAN SERVER DAN ATURAN BISNIS\nMengelola Logika Bisnis dan Transaksi\nMengirim Pesan Otomatis dan Otentikasi"]
     SYSTEM --> L3["3. LAPISAN PENYIMPANAN DATA\nMenyimpan Data Pembeli dan Produk\nMemperbarui Data Tanpa Mematikan Website"]
     SYSTEM --> L4["4. LAPISAN KEAMANAN DAN BENTENG\nMemeriksa Kunci Rahasia Aplikasi\nMelindungi Data Dari Celah Peretasan"]
-    SYSTEM --> L5["5. LAPISAN OTOMATISASI DAN DEVOPS\nMencatat Pembaruan Bahasa Awam\nMenyimpan Hasil Pekerjaan ke Ruang Rilis"]
+    SYSTEM --> L5["5. LAPISAN OTOMATISASI DAN DEVOPS\nMencatat Pembaruan Sistem Terstruktur\nMenyimpan Hasil Pekerjaan ke Ruang Rilis"]
     SYSTEM --> L6["6. LAPISAN PERFORMA DAN BENGKEL\nMembersihkan Pustaka Penyebab Lambat\nMemperbaiki Otomatis Saat Terjadi Kendala"]
 ```
 
@@ -135,7 +135,7 @@ sequenceDiagram
     Joe->>Pengerja: 4. Kirim Instruksi Terkunci 4 Rem Darurat
     Pengerja-->>Joe: 5. Pengerjaan Selesai
     Joe->>Joe: 6. Uji Keamanan dan Bebas Kebocoran Data
-    Joe->>Penyimpanan: 7. Simpan Hasil Pekerjaan dengan Catatan Bahasa Awam
+    Joe->>Penyimpanan: 7. Simpan Hasil Pekerjaan dengan Catatan Pembaruan Sistem
     Joe-->>User: 8. Laporan: Fitur Berhasil Diluncurkan!
 ```
 
