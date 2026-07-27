@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - Pure Prompt & Context Compressor Edition",
-  "description": "Asisten Joe v9.6.1: Dedicated Pure Prompt Generator & Smart Context Compressor (Output SELALU Draf Prompt Presisi, 70% Token Saving, Real-Time Token Streaming, Native Antigravity AI Engine, Stanford DSPy & TextGrad Prompt Compiler, Smart Error Boundary, Auto-Save State Persistence, Git TTL Cache, AI Code Sanitizer, Automated OpenAPI API Spec Drafter, Performance Guard, Architecture Flowchart, Visual Task Board, .env.example Synchronizer, SAST & Conventional Commits).",
-  "version": "9.6.1",
+  "displayName": "Asisten Joe - Terminal Error Repair & Pure Prompt Edition",
+  "description": "Asisten Joe v9.6.2: Terminal Error Sensor & Auto-Fix Repair Prompt (Tangkap Error Terminal & Susun Prompt Perbaikan 1-Klik, Output SELALU Draf Prompt Presisi, 70% Token Saving, Real-Time Token Streaming, Native Antigravity AI Engine, Stanford DSPy & TextGrad Prompt Compiler, Smart Error Boundary, Auto-Save State Persistence, Git TTL Cache, AI Code Sanitizer, Automated OpenAPI API Spec Drafter, Performance Guard, Architecture Flowchart, Visual Task Board, .env.example Synchronizer, SAST & Conventional Commits).",
+  "version": "9.6.2",
   "publisher": "joecompanyagent-lab",
   "license": "AGPL-3.0-only",
   "engines": {
@@ -62,7 +62,7 @@
       },
       {
         "command": "saasWorkflow.auditVibeCoding",
-        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.6.1)"
+        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.6.2)"
       },
       {
         "command": "saasWorkflow.initProject",

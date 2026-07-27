@@ -2,22 +2,64 @@ const path = require('path');
 const fs = require('fs');
 
 // ============================================================
-// VIBE OPTIMIZER v9.6.1 -- Dedicated Prompt Generator & Context Compressor
-// 1. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
-// 2. Smart Context Compressor (v9.6.1 - Tahap 2 Optimasi: Memangkas Diff/Konteks Hingga 70%)
-// 3. DSPy & TextGrad Chain-of-Thought (CoT) Prompt Compiler (Stanford adoption)
-// 4. .env.example Synchronizer (dotenv-safe adoption)
-// 5. Atomic Commit Slicer (opencommit & cz-cli adoption)
-// 6. OpenAPI / Swagger API Spec Drafter
-// 7. AI Text & Prompt Sanitizer (strip-ansi adoption)
+// VIBE OPTIMIZER v9.6.2 -- Dedicated Prompt Generator & Terminal Error Repair
+// 1. Terminal Error Sensor & Auto-Fix Repair Prompt (v9.6.2 - Tahap 3 Optimasi)
+// 2. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
+// 3. Smart Context Compressor (Tahap 2 Optimasi: Memangkas Diff/Konteks Hingga 70%)
+// 4. DSPy & TextGrad Chain-of-Thought (CoT) Prompt Compiler (Stanford adoption)
+// 5. .env.example Synchronizer (dotenv-safe adoption)
+// 6. Atomic Commit Slicer (opencommit & cz-cli adoption)
+// 7. OpenAPI / Swagger API Spec Drafter
+// 8. AI Text & Prompt Sanitizer (strip-ansi adoption)
 // ============================================================
 
 class VibeOptimizer {
 
   // ============================================================
-  // TAHAP 2 OPTIMASI (v9.6.1): SMART CONTEXT COMPRESSOR
-  // Memangkas diff/konteks proyek yang besar menjadi ringkasan simbol & AST
-  // untuk menghemat token Antigravity hingga 70% dan meningkatkan fokus prompt.
+  // TAHAP 3 OPTIMASI (v9.6.2): TERMINAL ERROR REPAIR PROMPT GENERATOR
+  // Menyusun Prompt Presisi Perbaikan Error Terminal Secara Otomatis
+  // ============================================================
+  static compileErrorFixPrompt(terminalError, projectContext = '') {
+    if (!terminalError || typeof terminalError !== 'string') {
+      terminalError = 'Terjadi kesalahan tidak diketahui pada saat eksekusi command/build.';
+    }
+
+    const cleanedError = this.cleanAIText(terminalError.trim());
+    const compressedCtx = this.compressContext(projectContext, 20);
+
+    const fixPrompt = [
+      `# ============================================================`,
+      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v9.6.2)`,
+      `# Standar Lisensi: GNU AGPL v3.0 | Output Pure Prompt Generator`,
+      `# ============================================================`,
+      ``,
+      `[PROFIL PERAN & SPESIALISASI]`,
+      `Kamu adalah Senior Debugger & AI Repair Specialist.`,
+      `Tujuanmu adalah menganalisis dan memberikan solusi perbaikan atas error terminal di bawah ini.`,
+      ``,
+      `[LOG ERROR TERMINAL TERDETEKSI]`,
+      `\`\`\``,
+      `${cleanedError.substring(0, 1500)}`,
+      `\`\`\``,
+      ``,
+      `[RINGKASAN KONTEKS PROYEK]`,
+      `${compressedCtx}`,
+      ``,
+      `[ALUR BERPIKIR PERBAIKAN (Chain-of-Thought / CoT)]`,
+      `1. IDENTIFIKASI ROOT CAUSE: Tentukan baris berkas dan modul mana yang memicu error di atas.`,
+      `2. KOREKSI SINTAKS/MODUL: Jelaskan perbaikan kode yang tepat tanpa merusak fungsi lain.`,
+      `3. VERIFIKASI ULANG: Pastikan perintah build/test dapat berjalan kembali tanpa error.`,
+      ``,
+      `[BATASAN KERAS]`,
+      `-- Bebas Emoji: Jangan gunakan emoji apapun.`,
+      `-- Tunjukkan Kode Perbaikan Utuh yang siap ditempel ke berkas terkait.`
+    ].join('\n');
+
+    return this.sanitizePromptSyntax(fixPrompt);
+  }
+
+  // ============================================================
+  // TAHAP 2 OPTIMASI: SMART CONTEXT COMPRESSOR
   // ============================================================
   static compressContext(rawContext, maxLines = 40) {
     if (!rawContext || typeof rawContext !== 'string') return '';
@@ -31,11 +73,9 @@ class VibeOptimizer {
     const fileHeaders = [];
 
     lines.forEach(line => {
-      // Tangkap nama berkas
       if (line.startsWith('---') || line.startsWith('+++') || line.startsWith('diff --git')) {
         if (!fileHeaders.includes(line)) fileHeaders.push(line);
       }
-      // Tangkap fungsi, kelas, rute, atau ekspor
       else if (/function\s+[a-zA-Z0-9_]+|class\s+[a-zA-Z0-9_]+|const\s+[a-zA-Z0-9_]+\s*=|app\.(get|post|put|delete)|router\.(get|post)/i.test(line)) {
         if (keySymbols.length < 25) {
           keySymbols.push(line.trim());
@@ -51,7 +91,7 @@ class VibeOptimizer {
       `SIMBOL & RUTE INTI TERDETEKSI:`,
       keySymbols.join('\n') || 'Fungsi Utama Aplikasi',
       ``,
-      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v9.6.1)`
+      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v9.6.2)`
     ].join('\n');
 
     return compressed;
@@ -59,7 +99,6 @@ class VibeOptimizer {
 
   // ============================================================
   // ADOPSI DSPy & TEXTGRAD (Stanford NLP Adoption)
-  // Selalu menghasilkan Prompt Presisi Terstruktur (Tanpa Kode Mentah)
   // ============================================================
   static compileDSPyPrompt(rawPrompt, projectContext = '') {
     if (!rawPrompt || typeof rawPrompt !== 'string') return '';
@@ -69,7 +108,7 @@ class VibeOptimizer {
 
     const dspyCompiledPrompt = [
       `# ============================================================`,
-      `# DRAF PROMPT PRESISI TERKOMPILASI (DSPy & TextGrad Engine v9.6.1)`,
+      `# DRAF PROMPT PRESISI TERKOMPILASI (DSPy & TextGrad Engine v9.6.2)`,
       `# Standar Lisensi: GNU AGPL v3.0 | Output Pure Prompt Generator`,
       `# ============================================================`,
       ``,
@@ -171,7 +210,7 @@ class VibeOptimizer {
     });
 
     if (newlyAppended.length > 0) {
-      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v9.6.1)\n' +
+      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v9.6.2)\n' +
         newlyAppended.map(k => `${k}=`).join('\n') + '\n';
 
       try {
@@ -226,7 +265,7 @@ class VibeOptimizer {
     const now = new Date().toLocaleString('id-ID');
 
     const testContent = [
-      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.6.1 (DSPy Engine)`,
+      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v9.6.2 (DSPy Engine)`,
       `// Waktu Dibuat: ${now}`,
       ``,
       `describe('Uji Kelaikan Modul Baru (Vibe Autotest)', () => {`,
@@ -290,7 +329,7 @@ class VibeOptimizer {
     }
 
     const now = new Date().toLocaleString('id-ID');
-    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.6.1 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
+    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v9.6.2 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
 
     if (detectedEndpoints.length > 0) {
       content += `## RINGKASAN ENDPOINT TERDETEKSI\n\n| METODE | JALUR RUTE (PATH) | DESKRIPSI |\n| :--- | :--- | :--- |\n`;
