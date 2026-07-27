@@ -2,40 +2,93 @@ const path = require('path');
 const fs = require('fs');
 
 // ============================================================
-// VIBE OPTIMIZER v10.5.0 -- Interactive Before & After Design Preview Modal Engine
-// 1. Before & After Design Preview Modal Engine (v10.5.0 - Pop-up Visual Preview Sebelum vs Sesudah)
-// 2. RDBMS Architecture & Migration Guard Engine (v10.4.0 - Normalisasi 3NF, Zero-Downtime SQL, SAST SQLi Guard)
-// 3. AS-IS vs. TO-BE Architecture Diagram Generator (v10.3.0 - Side-by-Side Transformation)
-// 4. Multi-Diagram Project Engine (v10.2.0 - Arsitektur, ERD, Sequence, GitGraph, Gantt)
-// 5. Human-Friendly Layperson Commit Engine (v10.1.0 - Kode Commit Bahasa Awam)
-// 6. Semantic Versioning Automator (v10.0.0 - SemVer Auto-Increment Engine x.x.0)
-// 7. Asset & Image Replacement Guard (v9.9.0 - Single-Attribute Surgical Mutation)
-// 8. Micro-Scoped Prompt Slicer (v9.8.0 - Single-File & Single-Component Isolation)
-// 9. Grafity Design Super-Prompt Generator (5-Wall Contract & SSOT Design System)
-// 10. Multi-Agent Sub-Task Swarm Orchestrator (Arsitek -> Koder -> Auditor SAST)
-// 11. Inline CodeLens & Hover Diagnostic Guard
-// 12. Terminal Error Sensor & Auto-Fix Repair Prompt
-// 13. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
-// 14. Smart Context Compressor (Memangkas Diff/Konteks Hingga 70%)
-// 15. .env.example Synchronizer & OpenAPI API Spec Drafter
+// VIBE OPTIMIZER v10.6.0 -- Visual Page Inspector & IDE Prompt Generator Engine
+// 1. Visual Page Inspector Engine (v10.6.0 - Pemilihan Halaman Web, Inspeksi Komponen, & Generator Prompt IDE)
+// 2. Before & After Design Preview Modal Engine (v10.5.0 - Pop-up Visual Preview Sebelum vs Sesudah)
+// 3. RDBMS Architecture & Migration Guard Engine (v10.4.0 - Normalisasi 3NF, Zero-Downtime SQL, SAST SQLi Guard)
+// 4. AS-IS vs. TO-BE Architecture Diagram Generator (v10.3.0 - Side-by-Side Transformation)
+// 5. Multi-Diagram Project Engine (v10.2.0 - Arsitektur, ERD, Sequence, GitGraph, Gantt)
+// 6. Human-Friendly Layperson Commit Engine (v10.1.0 - Kode Commit Bahasa Awam)
+// 7. Semantic Versioning Automator (v10.0.0 - SemVer Auto-Increment Engine x.x.0)
+// 8. Asset & Image Replacement Guard (v9.9.0 - Single-Attribute Surgical Mutation)
+// 9. Micro-Scoped Prompt Slicer (v9.8.0 - Single-File & Single-Component Isolation)
+// 10. Grafity Design Super-Prompt Generator (5-Wall Contract & SSOT Design System)
+// 11. Multi-Agent Sub-Task Swarm Orchestrator (Arsitek -> Koder -> Auditor SAST)
+// 12. Inline CodeLens & Hover Diagnostic Guard
+// 13. Terminal Error Sensor & Auto-Fix Repair Prompt
+// 14. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
+// 15. Smart Context Compressor (Memangkas Diff/Konteks Hingga 70%)
+// 16. .env.example Synchronizer & OpenAPI API Spec Drafter
 // ============================================================
 
 class VibeOptimizer {
 
   // ============================================================
+  // VISUAL PAGE INSPECTOR & IDE PROMPT GENERATOR ENGINE (v10.6.0)
+  // Memindai halaman web, memecah elemen komponen, dan menyusun prompt presisi ke IDE
+  // ============================================================
+  static compilePageInspector(targetDir = '', pageQuery = '') {
+    const cleanedQuery = this.cleanAIText(pageQuery.trim()) || 'Landing Page';
+    const detectedFiles = [];
+
+    if (targetDir) {
+      const searchDirs = ['src', 'pages', 'components', 'views', 'app', '.'];
+      
+      const scanRecursive = (dirPath) => {
+        try {
+          if (!fs.existsSync(dirPath)) return;
+          const items = fs.readdirSync(dirPath, { withFileTypes: true });
+
+          for (const item of items) {
+            if (item.name === 'node_modules' || item.name.startsWith('.')) continue;
+            const fullPath = path.join(dirPath, item.name);
+
+            if (item.isDirectory()) {
+              scanRecursive(fullPath);
+            } else if (/\.(js|jsx|ts|tsx|html|vue|svelte)$/i.test(item.name)) {
+              const rel = path.relative(targetDir, fullPath);
+              detectedFiles.push({
+                basename: item.name,
+                relativePath: rel,
+                fullPath: fullPath
+              });
+            }
+          }
+        } catch (e) {}
+      };
+
+      searchDirs.forEach(d => scanRecursive(path.join(targetDir, d)));
+    }
+
+    // Filter berkas yang relevan dengan query halaman
+    const queryLower = cleanedQuery.toLowerCase();
+    let matchedComponents = detectedFiles.filter(f => 
+      f.basename.toLowerCase().includes(queryLower) || 
+      f.relativePath.toLowerCase().includes(queryLower)
+    );
+
+    if (matchedComponents.length === 0) {
+      matchedComponents = detectedFiles.slice(0, 6);
+    }
+
+    return {
+      query: cleanedQuery,
+      totalDetected: detectedFiles.length,
+      matchedComponents: matchedComponents.slice(0, 6)
+    };
+  }
+
+  // ============================================================
   // BEFORE & AFTER DESIGN PREVIEW MODAL ENGINE (v10.5.0)
-  // Menghasilkan draf komparasi visual sebelum & sesudah prompt dieksekusi
   // ============================================================
   static compileBeforeAfterPreviewModal(rawPrompt = '', activeFilePath = '', activeCodeSnippet = '') {
     const cleanedInput = this.cleanAIText(rawPrompt.trim()) || 'Pembaruan Tampilan UI Komponen';
     const fileLabel = activeFilePath ? path.basename(activeFilePath) : 'KomponenUtama.jsx';
 
-    // Mockup/HTML Snippet SEBELUM (AS-IS)
     const beforeSnippet = activeCodeSnippet ? 
       activeCodeSnippet.substring(0, 500) : 
       `<div class="btn-old" style="background:#3b82f6;color:#fff;padding:8px;">\n  Tombol Komponen Lama\n</div>`;
 
-    // Mockup/HTML Snippet SESUDAH (TO-BE Projected)
     const toBeProjectedSnippet = activeCodeSnippet ? 
       `/* PROYEKSI PERUBAHAN SESUDAH (TO-BE) */\n` + activeCodeSnippet.replace(/color:\s*[^;]+/i, 'color: var(--gold-hsl)').substring(0, 500) :
       `<div class="btn-new" style="background:hsl(45,65%,52%);color:hsl(220,15%,12%);padding:10px;border-radius:4px;">\n  Tombol Komponen Baru (${cleanedInput})\n</div>`;
@@ -92,7 +145,7 @@ class VibeOptimizer {
     }
 
     const rdbmsPlaybook = [
-      `## STANDAR APLIKASI RDBMS ENTERPRISE (v10.5.0)`,
+      `## STANDAR APLIKASI RDBMS ENTERPRISE (v10.6.0)`,
       `-- **1. Prinsip Normalisasi (3NF):** Pisahkan data atomik ke tabel terisolasi (User, Role, Tenant, Transaction).`,
       `-- **2. Strategi Multi-Tenancy SaaS:** Gunakan \`tenant_id\` pada setiap tabel dengan PostgreSQL Row-Level Security (RLS).`,
       `-- **3. Keamanan SQL (SAST):** Ganti semua konkatenasi SQL dengan Prepared Statement / ORM Parameterization.`,
@@ -240,7 +293,7 @@ class VibeOptimizer {
       `    checkout develop`,
       `    merge feature/fitur-baru id: "Merge PR Vibe Guard"`,
       `    checkout main`,
-      `    merge develop id: "Rilis v10.5.0 Live"`
+      `    merge develop id: "Rilis v10.6.0 Live"`
     ].join('\n');
 
     const ganttMermaid = [
@@ -252,7 +305,7 @@ class VibeOptimizer {
       `    section Pengembangan`,
       `    Pengembangan Modul & AI Prompt Engine :active, dev1, 2026-07-24, 4d`,
       `    section Pengujian & Rilis`,
-      `    Audit Keamanan SAST & Rilis v10.5.0 :rel1, 2026-07-27, 2d`
+      `    Audit Keamanan SAST & Rilis v10.6.0 :rel1, 2026-07-27, 2d`
     ].join('\n');
 
     return {
@@ -267,7 +320,7 @@ class VibeOptimizer {
   // ============================================================
   // SEMANTIC VERSIONING AUTOMATOR ENGINE (v10.0.0 - x.x.0)
   // ============================================================
-  static calculateNextVersion(currentVersionStr = '10.4.0', changeType = 'minor') {
+  static calculateNextVersion(currentVersionStr = '10.5.0', changeType = 'minor') {
     const parts = currentVersionStr.replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
     let major = parts[0] || 0;
     let minor = parts[1] || 0;
@@ -302,7 +355,7 @@ class VibeOptimizer {
 
     const assetPrompt = [
       `# ============================================================`,
-      `# PROMPT BEDAH ASSET & GAMBAR (Anti-Layout Mutation Guard v10.5.0)`,
+      `# PROMPT BEDAH ASSET & GAMBAR (Anti-Layout Mutation Guard v10.6.0)`,
       `# Dihasilkan oleh Asisten Joe | Standar Surgical Single-Attribute Mutation`,
       `# Lisensi: GNU AGPL v3.0 | Output 100% Pure Prompt`,
       `# ============================================================`,
@@ -367,7 +420,7 @@ class VibeOptimizer {
 
     const microPrompt = [
       `# ============================================================`,
-      `# PROMPT MIKRO TERISOLASI (Micro-Scoped Prompt Engine v10.5.0)`,
+      `# PROMPT MIKRO TERISOLASI (Micro-Scoped Prompt Engine v10.6.0)`,
       `# Dihasilkan oleh Asisten Joe | Standar Single-File & Single-Component Lock`,
       `# Lisensi: GNU AGPL v3.0 | Output 100% Pure Prompt`,
       `# ============================================================`,
@@ -431,7 +484,7 @@ class VibeOptimizer {
 
     const fixPrompt = [
       `# ============================================================`,
-      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v10.5.0)`,
+      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v10.6.0)`,
       `# Standar Lisensi: GNU AGPL v3.0 | Output Pure Prompt Generator`,
       `# ============================================================`,
       ``,
@@ -493,7 +546,7 @@ class VibeOptimizer {
       `SIMBOL & RUTE INTI TERDETEKSI:`,
       keySymbols.join('\n') || 'Fungsi Utama Aplikasi',
       ``,
-      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v10.5.0)`
+      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v10.6.0)`
     ].join('\n');
 
     return compressed;
@@ -579,7 +632,7 @@ class VibeOptimizer {
     });
 
     if (newlyAppended.length > 0) {
-      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v10.5.0)\n' +
+      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v10.6.0)\n' +
         newlyAppended.map(k => `${k}=`).join('\n') + '\n';
 
       try {
@@ -634,7 +687,7 @@ class VibeOptimizer {
     const now = new Date().toLocaleString('id-ID');
 
     const testContent = [
-      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v10.5.0 (DSPy Engine)`,
+      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v10.6.0 (DSPy Engine)`,
       `// Waktu Dibuat: ${now}`,
       ``,
       `describe('Uji Kelaikan Modul Baru (Vibe Autotest)', () => {`,
@@ -698,7 +751,7 @@ class VibeOptimizer {
     }
 
     const now = new Date().toLocaleString('id-ID');
-    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v10.5.0 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
+    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v10.6.0 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
 
     if (detectedEndpoints.length > 0) {
       content += `## RINGKASAN ENDPOINT TERDETEKSI\n\n| METODE | JALUR RUTE (PATH) | DESKRIPSI |\n| :--- | :--- | :--- |\n`;

@@ -86,7 +86,7 @@
       Asisten Joe
     </div>
     <div class="badge-personal">
-      v10.5.0 DESIGN PREVIEW ENGINE
+      v10.6.0 VISUAL INSPECTOR
     </div>
   </div>
 
@@ -115,19 +115,23 @@
     <div class="message assistant">
       <div class="sender-label">Asisten Joe</div>
       <div class="bubble">
-        Selamat datang! Saya <b>Asisten Joe v10.5.0</b> -- Interactive Before & After Design Preview Modal Engine.<br/><br/>
-        Spesifikasi Mode Desain Interaktif (v10.5.0):<br/>
-        -- <b>Pop-Up Visual Simulasi Sebelum vs. Sesudah:</b> Menampilkan pratinjau tampilan AS-IS (sebelum prompt) dan TO-BE (sesudah prompt dieksekusi) dalam Pop-Up Modal interaktif sebelum Grafity/AI mengubah berkas Anda.<br/>
-        -- <b>Tombol Persetujuan Cepat:</b> Dilengkapi tombol <code>[Setujui & Salin Prompt]</code> dan <code>[Edit Perintah]</code>.<br/>
-        -- <b>Audit Skema RDBMS (v10.4.0):</b> Normalisasi 3NF, Indeks B-Tree, & Zero-Downtime Migration.
+        Selamat datang! Saya <b>Asisten Joe v10.6.0</b> -- Visual Page Inspector & Interactive IDE Prompt Generator Engine.<br/><br/>
+        Alur Kerja Inspektur Halaman (v10.6.0):<br/>
+        -- <b>Inspeksi Halaman Web:</b> Memecah halaman web menjadi elemen komponen yang dapat dipilih pengguna.<br/>
+        -- <b>IDE Super-Prompt Compiler:</b> Otomatis menyusun Super-Prompt presisi berstandar Scope Lock & Embargo Contract untuk dikirimkan ke Grafity/AI IDE.<br/>
+        -- <b>Pop-Up Visual Simulasi (v10.5.0):</b> Pratinjau tampilan SEBELUM vs SESUDAH secara interaktif.
       </div>
     </div>
   </div>
 
   <!-- Quick Action Chips (2 Baris Native IDE Style) -->
   <div class="chips-area">
-    <!-- Baris 1: Pop-up Preview (AS-IS vs TO-BE), Audit RDBMS & SQL, & Diagram AS-IS vs TO-BE -->
+    <!-- Baris 1: Inspeksi Halaman Web, Pop-up Preview (AS-IS vs TO-BE), & Audit RDBMS & SQL -->
     <div class="chips-row">
+      <div class="chip highlight" onclick="quickAction('Inspeksi Halaman Web')">
+        <svg class="icon" viewBox="0 0 16 16"><path d="M0 2.75C0 1.784.784 1 1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V2.75zm1.75-.25a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25V2.75a.25.25 0 00-.25-.25H1.75zM2.5 4a.5.5 0 000 1h11a.5.5 0 000-1h-11z"/></svg>
+        🌐 Inspeksi Halaman Web
+      </div>
       <div class="chip highlight" onclick="quickAction('Pop up preview sebelum sesudah prompt')">
         <svg class="icon" viewBox="0 0 16 16"><path d="M16 3.75C16 2.784 15.216 2 14.25 2h-12.5C.784 2 0 2.784 0 3.75v8.5C0 13.216.784 14 1.75 14h12.5c.966 0 1.75-.784 1.75-1.75v-8.5zM1.5 3.75a.25.25 0 01.25-.25h12.5a.25.25 0 01.25.25v1.5H1.5v-1.5zm0 3h13v5.5a.25.25 0 01-.25.25H1.75a.25.25 0 01-.25-.25v-5.5z"/></svg>
         🪟 Pop-up Preview (AS-IS vs TO-BE)
@@ -136,20 +140,16 @@
         <svg class="icon" viewBox="0 0 16 16"><path d="M8 1c-3.866 0-7 1.343-7 3v8c0 1.657 3.134 3 7 3s7-1.343 7-3V4c0-1.657-3.134-3-7-3zM2 4c0-.726 2.378-2 6-2s6 1.274 6 2-2.378 2-6 2-6-1.274-6-2zm12 4c0 .726-2.378 2-6 2s6-1.274-6-2V5.815C3.593 6.568 5.66 7 8 7s4.407-.432 6-1.185V8zm0 4c0 .726-2.378 2-6 2s6-1.274-6-2V9.815C3.593 10.568 5.66 11 8 11s4.407-.432 6-1.185V12z"/></svg>
         🗄️ Audit RDBMS & SQL
       </div>
-      <div class="chip highlight" onclick="quickAction('Diagram AS IS TO BE dari prompt ini')">
+    </div>
+    <!-- Baris 2: Diagram AS-IS vs TO-BE, 5 Diagram Proyek, & Ganti Gambar (Aman) -->
+    <div class="chips-row">
+      <div class="chip" onclick="quickAction('Diagram AS IS TO BE dari prompt ini')">
         <svg class="icon" viewBox="0 0 16 16"><path d="M8 3a5 5 0 104.546 2.914.5.5 0 01.908-.417A6 6 0 118 2v1zM8 4.466V.534a.25.25 0 01.41-.192l2.36 1.966a.25.25 0 010 .384L8.41 4.658A.25.25 0 018 4.466z"/></svg>
         🔄 Diagram AS-IS vs TO-BE
       </div>
-    </div>
-    <!-- Baris 2: 5 Diagram Proyek, Ganti Gambar (Aman), & Micro-Scoped Prompt -->
-    <div class="chips-row">
       <div class="chip" onclick="quickAction('Diagram Alur')">
         <svg class="icon" viewBox="0 0 16 16"><path d="M1 2.5A1.5 1.5 0 012.5 1h3A1.5 1.5 0 017 2.5v3A1.5 1.5 0 015.5 7h-3A1.5 1.5 0 011 5.5v-3zM2.5 2a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5h-3zm6.5.5A1.5 1.5 0 0110.5 1h3A1.5 1.5 0 0115 2.5v3A1.5 1.5 0 0113.5 7h-3A1.5 1.5 0 019 5.5v-3zm1.5-.5a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5h-3zM1 10.5A1.5 1.5 0 012.5 9h3A1.5 1.5 0 015.5 15h-3A1.5 1.5 0 011 13.5v-3zm1.5-.5a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5h-3z"/></svg>
         📊 5 Diagram Proyek
-      </div>
-      <div class="chip" onclick="quickAction('Ganti Gambar')">
-        <svg class="icon" viewBox="0 0 16 16"><path d="M.5 1a.5.5 0 00-.5.5v13a.5.5 0 00.5.5h15a.5.5 0 00.5-.5v-13a.5.5 0 00-.5-.5H.5zM3 3.5a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm11.5 7.5L11 6.5 8 10l-2-2L2 12h12.5z"/></svg>
-        🖼️ Ganti Gambar (Aman)
       </div>
       <div class="chip" onclick="quickAction('Micro')">
         <svg class="icon" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 3.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9z"/></svg>

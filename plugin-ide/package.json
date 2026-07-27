@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - Interactive Design Preview Suite",
-  "description": "Asisten Joe v10.5.0: Interactive Before & After Design Preview Modal Suite (Modul Pop-up Pratinjau Visual Komparasi Tampilan SEBELUM vs SESUDAH Prompt Dieksekusi, Audit RDBMS Normalisasi 3NF, AS-IS vs TO-BE Architectural Transformation Engine, Multi-Diagram Visualizer 5-Diagram, Human-Friendly Layperson Commit Engine, Semantic Versioning Automator Engine x.x.0, Anti-Layout Mutation Asset Guard, Micro-Scoped Prompt Slicer, Mode Design Grafity Super-Prompt Engine, Multi-Agent Swarm, Inline CodeLens & Hover Guard, Terminal Error Sensor, Real-Time Token Streaming, Native Antigravity AI Engine).",
-  "version": "10.5.0",
+  "displayName": "Asisten Joe - Visual Inspector & IDE Prompt Suite",
+  "description": "Asisten Joe v10.6.0: Visual Page Inspector & Interactive IDE Prompt Generator Suite (Modul Pemecahan Halaman Web menjadi Komponen Terisolasi, Generator Super-Prompt Presisi IDE Terkunci Scope & Embargo Contract, Interactive Pop-up Design Preview SEBELUM vs SESUDAH, Audit RDBMS Normalisasi 3NF, AS-IS vs TO-BE Architectural Transformation Engine, Multi-Diagram Visualizer 5-Diagram, Human-Friendly Layperson Commit Engine, Semantic Versioning Automator Engine x.x.0, Anti-Layout Mutation Asset Guard, Micro-Scoped Prompt Slicer, Mode Design Grafity Super-Prompt Engine, Multi-Agent Swarm, Inline CodeLens & Hover Guard, Terminal Error Sensor, Real-Time Token Streaming, Native Antigravity AI Engine).",
+  "version": "10.6.0",
   "publisher": "joecompanyagent-lab",
   "license": "AGPL-3.0-only",
   "engines": {
@@ -63,7 +63,7 @@
       },
       {
         "command": "saasWorkflow.auditVibeCoding",
-        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v10.5.0)"
+        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v10.6.0)"
       },
       {
         "command": "saasWorkflow.initProject",
