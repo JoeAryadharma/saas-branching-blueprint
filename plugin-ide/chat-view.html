@@ -86,7 +86,7 @@
       Asisten Joe
     </div>
     <div class="badge-personal">
-      v9.5.8 ANTIGRAVITY AI POWERED
+      v9.6.0 REAL-TIME STREAMING SUITE
     </div>
   </div>
 
@@ -115,10 +115,10 @@
     <div class="message assistant">
       <div class="sender-label">Asisten Joe</div>
       <div class="bubble">
-        Selamat datang. Saya <b>Asisten Joe v9.5.8</b> -- Antigravity AI Powered Edition.<br/><br/>
-        Fitur Integrasi AI (v9.5.8):<br/>
-        -- <b>Token Native Antigravity IDE:</b> Terhubung otomatis ke model AI Antigravity/Gemini aktif tanpa perlu input token manual.<br/>
-        -- <b>Dukungan API Key Kustom:</b> Dapat dihubungkan via `saasWorkflow.apiKey` atau `GEMINI_API_KEY` di `.env`.<br/>
+        Selamat datang. Saya <b>Asisten Joe v9.6.0</b> -- Real-Time Token Streaming Edition.<br/><br/>
+        Fitur Rilis v9.6.0 (Tahap 1 Optimasi):<br/>
+        -- <b>Real-Time Token Streaming:</b> Respons dari Antigravity AI mengalir kata demi kata secara real-time tanpa penundaan.<br/>
+        -- <b>Token Native Antigravity IDE:</b> Terhubung otomatis ke model AI Antigravity/Gemini aktif.<br/>
         -- <b>Komputerisasi Prompt DSPy:</b> Menyusun Chain-of-Thought (CoT) terstruktur otomatis.
       </div>
     </div>
@@ -194,10 +194,11 @@
       sendMessage();
     }
 
-    function appendMessage(sender, htmlContent) {
+    function appendMessage(sender, htmlContent, msgId = null) {
       const container = document.getElementById('chatContainer');
       const msgDiv = document.createElement('div');
       msgDiv.className = `message ${sender}`;
+      if (msgId) msgDiv.id = msgId;
       
       const label = sender === 'user' ? 'Anda' : 'Asisten Joe';
       msgDiv.innerHTML = `
@@ -207,12 +208,27 @@
 
       container.appendChild(msgDiv);
       container.scrollTop = container.scrollHeight;
+      return msgDiv;
     }
 
     window.addEventListener('message', event => {
       const data = event.data;
       if (data.type === 'response') {
         appendMessage('assistant', data.text);
+      }
+      if (data.type === 'streamStart') {
+        appendMessage('assistant', data.text, data.msgId);
+      }
+      if (data.type === 'streamUpdate') {
+        const msgDiv = document.getElementById(data.msgId);
+        if (msgDiv) {
+          const bubble = msgDiv.querySelector('.bubble');
+          if (bubble) {
+            bubble.innerHTML = data.text;
+            const container = document.getElementById('chatContainer');
+            container.scrollTop = container.scrollHeight;
+          }
+        }
       }
       if (data.type === 'updateWidget') {
         if (data.branch) document.getElementById('widgetBranch').innerText = data.branch;

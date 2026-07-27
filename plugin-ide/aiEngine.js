@@ -2,10 +2,11 @@ const vscode = require('vscode');
 const https = require('https');
 
 // ============================================================
-// AI ENGINE v9.5.8 -- Jembatan Integrasi Token & Model AI Antigravity
+// AI ENGINE v9.6.0 -- Real-Time Streaming & Antigravity AI Engine
 // Modul ini menghubungkan Asisten Joe dengan otak AI Antigravity IDE / Gemini
-// 1. Otomatis Menggunakan Token Native Antigravity IDE via vscode.lm API
-// 2. Fallback Opsional via Custom Gemini / Antigravity API Key
+// 1. Real-Time Token Streaming (word-by-word streaming to Webview)
+// 2. Otomatis Menggunakan Token Native Antigravity IDE via vscode.lm API
+// 3. Fallback Opsional via Custom Gemini / Antigravity API Key
 // ============================================================
 
 const SYSTEM_PERSONA = [
@@ -29,11 +30,9 @@ class AIEngine {
   // 1. Cari dan sambungkan ke model AI bawaan Antigravity IDE (vscode.lm API)
   // atau API Key kustom jika dikonfigurasi
   async initialize() {
-    // A. Cek integrasi bawaan Antigravity IDE (vscode.lm)
     try {
       const models = await vscode.lm.selectChatModels();
       if (models && models.length > 0) {
-        // Prioritaskan model Gemini atau Antigravity jika ada
         const preferred = models.find(m => 
           (m.family && m.family.toLowerCase().includes('gemini')) ||
           (m.vendor && m.vendor.toLowerCase().includes('antigravity'))
@@ -51,7 +50,6 @@ class AIEngine {
       console.log('AIEngine: Mode Native vscode.lm tidak tersedia, memeriksa API Key kustom...', e.message);
     }
 
-    // B. Cek API Key dari Pengaturan VS Code / Environment Variable
     const configApiKey = vscode.workspace.getConfiguration('saasWorkflow').get('apiKey');
     const envApiKey = process.env.GEMINI_API_KEY || process.env.ANTIGRAVITY_API_KEY;
     this._customApiKey = configApiKey || envApiKey || null;
@@ -68,13 +66,60 @@ class AIEngine {
     return false;
   }
 
-  // Kirim pertanyaan ke model AI (Antigravity IDE LM API atau Direct REST API)
+  // Real-Time Streaming Request (v9.6.0)
+  // Memanggil onChunk(fragmentText) setiap kali ada potongan kata baru dari AI
+  async askStream(userPrompt, systemContext = '', onChunk) {
+    if (!this._isAvailable) {
+      return null;
+    }
+
+    // Jalur A: Streaming Token Native Antigravity IDE (vscode.lm)
+    if (this._model) {
+      try {
+        const messages = [];
+
+        let fullSystem = SYSTEM_PERSONA;
+        if (systemContext) {
+          fullSystem += '\n\nKONTEKS PROYEK:\n' + systemContext;
+        }
+        messages.push(vscode.LanguageModelChatMessage.User(fullSystem));
+        messages.push(vscode.LanguageModelChatMessage.User(userPrompt));
+
+        const tokenSource = new vscode.CancellationTokenSource();
+        const timeout = setTimeout(() => tokenSource.cancel(), 45000);
+
+        const response = await this._model.sendRequest(messages, {}, tokenSource.token);
+
+        let fullResult = '';
+        for await (const fragment of response.text) {
+          fullResult += fragment;
+          if (typeof onChunk === 'function') {
+            onChunk(fragment, fullResult);
+          }
+        }
+
+        clearTimeout(timeout);
+        return fullResult;
+
+      } catch (e) {
+        console.error('AIEngine Streaming Error:', e.message);
+      }
+    }
+
+    // Jalur B: Direct REST API Fallback
+    const result = await this.ask(userPrompt, systemContext);
+    if (result && typeof onChunk === 'function') {
+      onChunk(result, result);
+    }
+    return result;
+  }
+
+  // Kirim pertanyaan ke model AI (Non-Streaming Fallback)
   async ask(userPrompt, systemContext = '') {
     if (!this._isAvailable) {
       return null;
     }
 
-    // Jalur A: Menggunakan Token Bawaan Antigravity IDE (vscode.lm)
     if (this._model) {
       try {
         const messages = [];
@@ -100,11 +145,10 @@ class AIEngine {
         return result;
 
       } catch (e) {
-        console.error('AIEngine: Kesalahan pada API Antigravity IDE LM:', e.message);
+        console.error('AIEngine Error:', e.message);
       }
     }
 
-    // Jalur B: Direct REST API via API Key (Custom Token)
     if (this._customApiKey) {
       return await this._callDirectGeminiApi(userPrompt, systemContext);
     }

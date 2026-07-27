@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - Antigravity AI Powered Edition",
-  "description": "Asisten Joe v9.5.8: Antigravity AI Engine Integration (Native Token IDE & Custom Gemini Support, Stanford DSPy & TextGrad Prompt Compiler, Smart Error Boundary, Auto-Save State Persistence, Git TTL Cache, AI Code Sanitizer, Automated OpenAPI API Spec Drafter, Performance Guard, Architecture Flowchart, Visual Task Board, .env.example Synchronizer, SAST & Conventional Commits).",
-  "version": "9.5.8",
+  "displayName": "Asisten Joe - Real-Time Streaming Edition",
+  "description": "Asisten Joe v9.6.0: Real-Time Token Streaming Edition (Word-by-word streaming, Native Antigravity AI Engine, Stanford DSPy & TextGrad Prompt Compiler, Smart Error Boundary, Auto-Save State Persistence, Git TTL Cache, AI Code Sanitizer, Automated OpenAPI API Spec Drafter, Performance Guard, Architecture Flowchart, Visual Task Board, .env.example Synchronizer, SAST & Conventional Commits).",
+  "version": "9.6.0",
   "publisher": "joecompanyagent-lab",
   "license": "AGPL-3.0-only",
   "engines": {
@@ -62,7 +62,7 @@
       },
       {
         "command": "saasWorkflow.auditVibeCoding",
-        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.5.8)"
+        "title": "Asisten Joe: Audit Kualitas & Keamanan Vibe Coding (v9.6.0)"
       },
       {
         "command": "saasWorkflow.initProject",

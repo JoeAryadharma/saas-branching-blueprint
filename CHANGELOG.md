@@ -6,14 +6,13 @@ Format Berdasarkan Versi Sistem: `v[Mayor].[Minor].[Patch]`
 
 ---
 
-## [v9.5.8] - 2026-07-27 (Rilis Antigravity AI Engine Powered Edition)
+## [v9.6.0] - 2026-07-27 (Rilis Real-Time Token Streaming - Tahap 1 Optimasi)
 
 ### 🌟 Fitur Baru & Pembaruan
-- **Integrasi Token Native Antigravity IDE (`v9.5.8`):** Asisten Joe kini terhubung secara langsung dengan mesin AI bawaan Antigravity IDE via `vscode.lm` API. Menggunakan kuota dan token akun Antigravity / Gemini 3.6 Flash aktif secara otomatis tanpa perlu mengisi API Key secara manual.
-- **Fallback API Key Kustom (`v9.5.8`):** Mendukung pengisian API Key kustom (`GEMINI_API_KEY` / `ANTIGRAVITY_API_KEY` di `.env` atau via pengaturan VS Code `saasWorkflow.apiKey`) jika berjalan di luar Antigravity IDE.
-- **DSPy & TextGrad Prompt Compiler (`v9.5.7` - Stanford Adoption):** Mengadopsi teknik *Teleprompter Signature* dari DSPy dan *Textual Gradient Loop* dari TextGrad untuk menyusun prompt dengan struktur *Chain-of-Thought (CoT)*.
-- **Prompt Generator Syntax Auto-Fixer (`v9.5.6`):** Menambahkan modul pemformat dan pembersih otomatis prompt AI.
-- **Smart Error Boundary (`v9.5.5` - cline adoption):** Penanganan kendala tak terduga terpusat dengan tombol pemulihan mandiri.
+- **Real-Time Token Streaming (`v9.6.0` - Tahap 1 Optimasi):** Mengimplementasikan alur streaming respons kata demi kata (`askStream`) dari Antigravity AI Engine ke Webview UI. Pengguna tidak perlu menunggu respons selesai untuk mulai membaca.
+- **Integrasi Token Native Antigravity IDE (`v9.5.8`):** Asisten Joe terhubung secara langsung dengan mesin AI bawaan Antigravity IDE via `vscode.lm` API.
+- **Fallback API Key Kustom (`v9.5.8`):** Mendukung pengisian API Key kustom (`GEMINI_API_KEY` / `ANTIGRAVITY_API_KEY` di `.env` atau via pengaturan VS Code `saasWorkflow.apiKey`).
+- **DSPy & TextGrad Prompt Compiler (`v9.5.7` - Stanford Adoption):** Mengadopsi teknik *Teleprompter Signature* dari DSPy dan *Textual Gradient Loop* dari TextGrad.
 
 ---
 
@@ -30,4 +29,4 @@ Format Berdasarkan Versi Sistem: `v[Mayor].[Minor].[Patch]`
 
 ---
 
-*Catatan: Dokumen ini diperbarui secara otomatis oleh Asisten Joe v9.5.8.*
+*Catatan: Dokumen ini diperbarui secara otomatis oleh Asisten Joe v9.6.0.*
