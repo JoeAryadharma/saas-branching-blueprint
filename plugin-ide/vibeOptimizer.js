@@ -2,30 +2,43 @@ const path = require('path');
 const fs = require('fs');
 
 // ============================================================
-// VIBE OPTIMIZER v10.6.0 -- Visual Page Inspector & IDE Prompt Generator Engine
-// 1. Visual Page Inspector Engine (v10.6.0 - Pemilihan Halaman Web, Inspeksi Komponen, & Generator Prompt IDE)
-// 2. Before & After Design Preview Modal Engine (v10.5.0 - Pop-up Visual Preview Sebelum vs Sesudah)
-// 3. RDBMS Architecture & Migration Guard Engine (v10.4.0 - Normalisasi 3NF, Zero-Downtime SQL, SAST SQLi Guard)
-// 4. AS-IS vs. TO-BE Architecture Diagram Generator (v10.3.0 - Side-by-Side Transformation)
-// 5. Multi-Diagram Project Engine (v10.2.0 - Arsitektur, ERD, Sequence, GitGraph, Gantt)
-// 6. Human-Friendly Layperson Commit Engine (v10.1.0 - Kode Commit Bahasa Awam)
-// 7. Semantic Versioning Automator (v10.0.0 - SemVer Auto-Increment Engine x.x.0)
-// 8. Asset & Image Replacement Guard (v9.9.0 - Single-Attribute Surgical Mutation)
-// 9. Micro-Scoped Prompt Slicer (v9.8.0 - Single-File & Single-Component Isolation)
-// 10. Grafity Design Super-Prompt Generator (5-Wall Contract & SSOT Design System)
-// 11. Multi-Agent Sub-Task Swarm Orchestrator (Arsitek -> Koder -> Auditor SAST)
-// 12. Inline CodeLens & Hover Diagnostic Guard
-// 13. Terminal Error Sensor & Auto-Fix Repair Prompt
-// 14. Pure Prompt Output Enforcer (Output Selalu Berupa Prompt Presisi)
-// 15. Smart Context Compressor (Memangkas Diff/Konteks Hingga 70%)
-// 16. .env.example Synchronizer & OpenAPI API Spec Drafter
+// VIBE OPTIMIZER v10.7.0 -- Object-Agnostic Emergency Brakes & Dynamic Scope Engine
+// 1. General & Dynamic Emergency Brakes (v10.7.0 - Rem Darurat Generik Berlaku untuk UI, Backend, DB, & CLI)
+// 2. Visual Page Inspector Engine (v10.6.0 - Pemilihan Halaman Web, Inspeksi Komponen, & Generator Prompt IDE)
+// 3. Before & After Design Preview Modal Engine (v10.5.0 - Pop-up Visual Preview Sebelum vs Sesudah)
+// 4. RDBMS Architecture & Migration Guard Engine (v10.4.0 - Normalisasi 3NF, Zero-Downtime SQL, SAST SQLi Guard)
+// 5. AS-IS vs. TO-BE Architecture Diagram Generator (v10.3.0 - Side-by-Side Transformation)
+// 6. Multi-Diagram Project Engine (v10.2.0 - Arsitektur, ERD, Sequence, GitGraph, Gantt)
+// 7. Human-Friendly Layperson Commit Engine (v10.1.0 - Kode Commit Bahasa Awam)
+// 8. Semantic Versioning Automator (v10.0.0 - SemVer Auto-Increment Engine x.x.0)
+// 9. Asset & Image Replacement Guard (v9.9.0 - Single-Attribute Surgical Mutation)
+// 10. Micro-Scoped Prompt Slicer (v9.8.0 - Single-File & Single-Component Isolation)
 // ============================================================
 
 class VibeOptimizer {
 
   // ============================================================
+  // GENERATOR 4 REM DARURAT MUTLAK GENERIK (v10.7.0)
+  // Berlakunya abstrak & generik untuk SEMUA jenis pekerjaan (Frontend, Backend, DB, CLI)
+  // ============================================================
+  static getGenericEmergencyBrakes(targetFile = 'BerkasTarget', taskCategory = 'Umum') {
+    const fileLabel = targetFile ? path.basename(targetFile) : 'BerkasTarget';
+
+    return [
+      `[4 REM DARURAT MUTLAK SANGAT GENERIK (OBJECT-AGNOSTIC BRAKES v10.7.0)]`,
+      `1. 🔒 KUNCI ISOLASI SCOPE TARGET (Target Scope Isolation Brake):`,
+      `   -- HANYA berkas \`${fileLabel}\` yang diizinkan untuk diubah. DILARANG KERAS memicu Scope Creep ke berkas lain.`,
+      `2. 🚫 KONTRAK EMBARGO NON-TARGET (Non-Target Embargo Brake):`,
+      `   -- DILARANG KERAS merubah, menghapus, atau merusak komponen, modul, fungsi, atau berkas tetangga di luar target \`${fileLabel}\`.`,
+      `3. 🏛️ KEPATUHAN STANDAR ARSITEKTUR & DESAIN (Architectural & Design Standard Constraint Brake):`,
+      `   -- Wajib mematuhi standar proyek yang berlaku (BRAND.md untuk UI, OpenAPI/REST untuk API, Normalisasi 3NF untuk Database, atau Standar CLI). Dilarang menyuntikkan pola siluman (*ghost pattern*).`,
+      `4. 📈 BATAS AMBANG MUTASI MINIMAL (Minimal Mutation Threshold Brake):`,
+      `   -- Perubahan kode pada \`git diff\` WAJIB seminimal mungkin (hanya baris presisi yang dibutuhkan), tanpa mengubah format/gaya penulisan kode di luar area kerja.`
+    ].join('\n');
+  }
+
+  // ============================================================
   // VISUAL PAGE INSPECTOR & IDE PROMPT GENERATOR ENGINE (v10.6.0)
-  // Memindai halaman web, memecah elemen komponen, dan menyusun prompt presisi ke IDE
   // ============================================================
   static compilePageInspector(targetDir = '', pageQuery = '') {
     const cleanedQuery = this.cleanAIText(pageQuery.trim()) || 'Landing Page';
@@ -60,7 +73,6 @@ class VibeOptimizer {
       searchDirs.forEach(d => scanRecursive(path.join(targetDir, d)));
     }
 
-    // Filter berkas yang relevan dengan query halaman
     const queryLower = cleanedQuery.toLowerCase();
     let matchedComponents = detectedFiles.filter(f => 
       f.basename.toLowerCase().includes(queryLower) || 
@@ -82,16 +94,16 @@ class VibeOptimizer {
   // BEFORE & AFTER DESIGN PREVIEW MODAL ENGINE (v10.5.0)
   // ============================================================
   static compileBeforeAfterPreviewModal(rawPrompt = '', activeFilePath = '', activeCodeSnippet = '') {
-    const cleanedInput = this.cleanAIText(rawPrompt.trim()) || 'Pembaruan Tampilan UI Komponen';
-    const fileLabel = activeFilePath ? path.basename(activeFilePath) : 'KomponenUtama.jsx';
+    const cleanedInput = this.cleanAIText(rawPrompt.trim()) || 'Pembaruan Kode Presisi';
+    const fileLabel = activeFilePath ? path.basename(activeFilePath) : 'ModulTarget.js';
 
     const beforeSnippet = activeCodeSnippet ? 
       activeCodeSnippet.substring(0, 500) : 
-      `<div class="btn-old" style="background:#3b82f6;color:#fff;padding:8px;">\n  Tombol Komponen Lama\n</div>`;
+      `/* KODE ASLI SAAT INI (AS-IS) */\nfunction modulLama() {\n  return "Kondisi Eksis";\n}`;
 
     const toBeProjectedSnippet = activeCodeSnippet ? 
-      `/* PROYEKSI PERUBAHAN SESUDAH (TO-BE) */\n` + activeCodeSnippet.replace(/color:\s*[^;]+/i, 'color: var(--gold-hsl)').substring(0, 500) :
-      `<div class="btn-new" style="background:hsl(45,65%,52%);color:hsl(220,15%,12%);padding:10px;border-radius:4px;">\n  Tombol Komponen Baru (${cleanedInput})\n</div>`;
+      `/* PROYEKSI PERUBAHAN SESUDAH (TO-BE) */\n` + activeCodeSnippet.substring(0, 500) :
+      `/* KODE HRESULT TO-BE (${cleanedInput}) */\nfunction modulBaru() {\n  return "Kondisi Ter-Update Presisi";\n}`;
 
     return {
       fileLabel,
@@ -145,7 +157,7 @@ class VibeOptimizer {
     }
 
     const rdbmsPlaybook = [
-      `## STANDAR APLIKASI RDBMS ENTERPRISE (v10.6.0)`,
+      `## STANDAR APLIKASI RDBMS ENTERPRISE (v10.7.0)`,
       `-- **1. Prinsip Normalisasi (3NF):** Pisahkan data atomik ke tabel terisolasi (User, Role, Tenant, Transaction).`,
       `-- **2. Strategi Multi-Tenancy SaaS:** Gunakan \`tenant_id\` pada setiap tabel dengan PostgreSQL Row-Level Security (RLS).`,
       `-- **3. Keamanan SQL (SAST):** Ganti semua konkatenasi SQL dengan Prepared Statement / ORM Parameterization.`,
@@ -173,8 +185,8 @@ class VibeOptimizer {
     const asIsMermaid = [
       `flowchart TD`,
       `    subgraph ASIS["KONDISI SAAT INI (AS-IS - Sebelum Perubahan)"]`,
-      `        ClientOld["Client & Tampilan Lama"]`,
-      `        ControllerOld["Modul/Rute Eksis (${techStr})"]`,
+      `        ClientOld["Client & Modul Lama"]`,
+      `        ControllerOld["Layanan Eksis (${techStr})"]`,
       `        DBOld[("Database & Skema Saat Ini")]`,
       `    end`,
       `    ClientOld --> ControllerOld`,
@@ -184,8 +196,8 @@ class VibeOptimizer {
     const toBeMermaid = [
       `flowchart TD`,
       `    subgraph TOBE["KONDISI TARGET (TO-BE - Setelah Prompt Dieksekusi)"]`,
-      `        ClientNew["Client UI Ter-Update<br/><small>[BARU/DIPERBARUI]</small>"]`,
-      `        ControllerNew["Modul Presisi Presisi<br/><small>[DITINGKATKAN]</small>"]`,
+      `        ClientNew["Modul Ter-Update<br/><small>[BARU/DIPERBARUI]</small>"]`,
+      `        ControllerNew["Logika Bisnis Presisi<br/><small>[DITINGKATKAN]</small>"]`,
       `        GuardNew["Vibe Guard & SAST Security<br/><small>[TERPROTEKSI]</small>"]`,
       `        DBNew[("Database Terstruktur (+Skema Baru)<br/><small>[TERKUNCI]</small>")]`,
       `    end`,
@@ -293,7 +305,7 @@ class VibeOptimizer {
       `    checkout develop`,
       `    merge feature/fitur-baru id: "Merge PR Vibe Guard"`,
       `    checkout main`,
-      `    merge develop id: "Rilis v10.6.0 Live"`
+      `    merge develop id: "Rilis v10.7.0 Live"`
     ].join('\n');
 
     const ganttMermaid = [
@@ -305,7 +317,7 @@ class VibeOptimizer {
       `    section Pengembangan`,
       `    Pengembangan Modul & AI Prompt Engine :active, dev1, 2026-07-24, 4d`,
       `    section Pengujian & Rilis`,
-      `    Audit Keamanan SAST & Rilis v10.6.0 :rel1, 2026-07-27, 2d`
+      `    Audit Keamanan SAST & Rilis v10.7.0 :rel1, 2026-07-27, 2d`
     ].join('\n');
 
     return {
@@ -320,7 +332,7 @@ class VibeOptimizer {
   // ============================================================
   // SEMANTIC VERSIONING AUTOMATOR ENGINE (v10.0.0 - x.x.0)
   // ============================================================
-  static calculateNextVersion(currentVersionStr = '10.5.0', changeType = 'minor') {
+  static calculateNextVersion(currentVersionStr = '10.6.0', changeType = 'minor') {
     const parts = currentVersionStr.replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
     let major = parts[0] || 0;
     let minor = parts[1] || 0;
@@ -347,69 +359,59 @@ class VibeOptimizer {
     if (!rawPrompt || typeof rawPrompt !== 'string') return '';
 
     const cleanedInput = this.cleanAIText(rawPrompt.trim());
-    const fileBasename = activeFilePath ? path.basename(activeFilePath) : 'BerkasTargetHero.jsx';
+    const fileBasename = activeFilePath ? path.basename(activeFilePath) : 'BerkasTarget.jsx';
 
     const snippetBlock = activeCodeSnippet ? 
-      `[TAG GAMBAR TARGET DI EDITOR: ${fileBasename}]\n\`\`\`\n${activeCodeSnippet.substring(0, 800)}\n\`\`\`` :
-      `[BERKAS GAMBAR TARGET]: \`${fileBasename}\``;
+      `[TAG KODE TARGET DI EDITOR: ${fileBasename}]\n\`\`\`\n${activeCodeSnippet.substring(0, 800)}\n\`\`\`` :
+      `[BERKAS TARGET]: \`${fileBasename}\``;
+
+    const brakes = this.getGenericEmergencyBrakes(fileBasename, 'Pergantian Asset');
 
     const assetPrompt = [
       `# ============================================================`,
-      `# PROMPT BEDAH ASSET & GAMBAR (Anti-Layout Mutation Guard v10.6.0)`,
+      `# PROMPT BEDAH ASSET & KODE PRESISI (Anti-Mutation Guard v10.7.0)`,
       `# Dihasilkan oleh Asisten Joe | Standar Surgical Single-Attribute Mutation`,
       `# Lisensi: GNU AGPL v3.0 | Output 100% Pure Prompt`,
       `# ============================================================`,
       ``,
-      `[TARGET ABSOLUT BEDAH HANYA GAMBAR]`,
+      `[TARGET ABSOLUT KODE PRESISI]`,
       `-- BERKAS TARGET TERKUNCI: \`${fileBasename}\``,
-      `-- HANYA GANTI ATRIBUT \`src="..."\` ATAU \`background-image: url(...)\`.`,
       ``,
       `${snippetBlock}`,
       ``,
-      `[DINDING PENGUNCI STRICT ANTI-MUTASI LAYOUT]`,
-      `1. DILARANG KERAS MENGUBAH STRUKTUR LAYOUT (DILARANG ubah class CSS, flex, grid, padding, margin, width, height, atau wrapper HTML).`,
-      `2. DILARANG KERAS MENGUBAH NAVBAR, SIDEBAR, FOOTER, ATAU KOMPONEN LAIN.`,
-      `3. DILARANG KERAS MENGATASI/MEMBUKA BERKAS HALAMAN LAIN (Maksimal 1 berkas: \`${fileBasename}\`).`,
-      `4. BATAS MAKSIMAL PERUBAHAN GIT DIFF: Maksimal HANYA 1 - 3 baris kode yang berubah di git diff!`,
+      `${brakes}`,
       ``,
-      `[INSTRUKSI EKSEKUSI PERGANTIAN GAMBAR PRESISI]`,
+      `[INSTRUKSI EKSEKUSI PRESISI]`,
       `"${cleanedInput}"`,
       ``,
       `[ALUR VERIFIKASI SEBELUM GRAFITY MENGATAKAN "DONE"]`,
-      `- [ ] Memastikan Navbar dan komponen lain 100% TIDAK TERSENTUH/TERUBAH.`,
-      `- [ ] Memastikan struktur layout HTML/CSS tidak mengalami perubahan 1 pixel pun.`,
-      `- [ ] Memastikan HANYA URL/path gambar yang diperbarui di atribut \`src\` atau \`url()\`.`,
-      `- [ ] Memastikan \`git diff\` hanya mencatat maksimal 1-3 baris perubahan.`
+      `- [ ] Memastikan berkas lain 100% TIDAK TERSENTUH/TERUBAH.`,
+      `- [ ] Memastikan struktur dasar kode tidak mengalami perubahan yang tidak relevan.`,
+      `- [ ] Memastikan \`git diff\` hanya mencatat minimal baris perubahan yang presisi.`
     ].join('\n');
 
     return this.sanitizePromptSyntax(assetPrompt);
   }
 
   // ============================================================
-  // MICRO-SCOPED PROMPT SLICER (v9.8.0): SINGLE FILE & COMPONENT LOCK
+  // MICRO-SCOPED PROMPT SLICER (v9.8.0): DYNAMIC OBJECT-AGNOSTIC SCOPE LOCK
   // ============================================================
   static compileMicroScopedPrompt(rawPrompt, activeFilePath = '', activeCodeSnippet = '', targetDir = '') {
     if (!rawPrompt || typeof rawPrompt !== 'string') return '';
 
-    const lower = rawPrompt.toLowerCase();
-    if (lower.includes('gambar') || lower.includes('foto') || lower.includes('hero') || lower.includes('image') || lower.includes('logo') || lower.includes('asset')) {
-      return this.compileAssetReplacementPrompt(rawPrompt, activeFilePath, activeCodeSnippet, targetDir);
-    }
-
     const cleanedInput = this.cleanAIText(rawPrompt.trim());
     const fileBasename = activeFilePath ? path.basename(activeFilePath) : 'BerkasTargetUtama.js';
 
-    let brandTokens = `
--- Palette Warna: HSL Tailored (Ivory HSL(40,20%,96%), Gold HSL(45,65%,52%), Near Black HSL(220,15%,12%)).
--- Typography: Font Heading (Cormorant Garamond / Serif Editorial), Font Body (Inter).
--- Radius: 4px (refined). Spacing Scale: 8pt Grid.
+    let projectStandards = `
+-- Standar UI: Palette HSL Tailored (Ivory, Gold HSL, Near Black), Font Cormorant Garamond / Inter.
+-- Standar Backend/API: OpenAPI/REST JSON Standard, Parameterized Query (SQLi Protection).
     `.trim();
 
     if (targetDir) {
       const brandPath = path.join(targetDir, 'BRAND.md');
       try {
         if (fs.existsSync(brandPath)) {
-          brandTokens = fs.readFileSync(brandPath, 'utf8').substring(0, 500);
+          projectStandards = fs.readFileSync(brandPath, 'utf8').substring(0, 500);
         }
       } catch (e) {}
     }
@@ -418,10 +420,12 @@ class VibeOptimizer {
       `[POTONGAN KODE TARGET BERKAS: ${fileBasename}]\n\`\`\`\n${activeCodeSnippet.substring(0, 1000)}\n\`\`\`` :
       `[BERKAS TARGET UTAMA]: \`${fileBasename}\``;
 
+    const brakes = this.getGenericEmergencyBrakes(fileBasename, 'Modul Terisolasi');
+
     const microPrompt = [
       `# ============================================================`,
-      `# PROMPT MIKRO TERISOLASI (Micro-Scoped Prompt Engine v10.6.0)`,
-      `# Dihasilkan oleh Asisten Joe | Standar Single-File & Single-Component Lock`,
+      `# PROMPT MIKRO TERISOLASI (Object-Agnostic Scope Engine v10.7.0)`,
+      `# Dihasilkan oleh Asisten Joe | Standar Single-File Scope Lock`,
       `# Lisensi: GNU AGPL v3.0 | Output 100% Pure Prompt`,
       `# ============================================================`,
       ``,
@@ -431,26 +435,23 @@ class VibeOptimizer {
       ``,
       `${snippetBlock}`,
       ``,
-      `[KONTRAK EMBARGO (AREA DILARANG SENTUH)]`,
-      `1. DILARANG KERAS mengubah berkas lain di luar \`${fileBasename}\`.`,
-      `2. DILARANG KERAS mengubah fungsi, variabel, atau baris kode lain di luar target pekerjaan.`,
-      `3. DILARANG KERAS mengganti warna, font, atau radius di luar Design System BRAND.md.`,
+      `${brakes}`,
       ``,
-      `[TOKENDESIGN SYSTEM SINGLE SOURCE OF TRUTH]`,
-      `${brandTokens}`,
+      `[STANDAR PROYEK SINGLE SOURCE OF TRUTH]`,
+      `${projectStandards}`,
       ``,
       `[INSTRUKSI EKSEKUSI MIKRO PRESISI]`,
       `"${cleanedInput}"`,
       ``,
       `[ALUR EKSEKUSI BERTAHAP MIKRO]`,
       `1. PERIKSA BARIS TARGET: Tentukan baris spesifik pada \`${fileBasename}\` yang perlu diubah.`,
-      `2. TERAPKAN PERUBAHAN: Ubah hanya bagian target sesuai token BRAND.md di atas.`,
+      `2. TERAPKAN PERUBAHAN: Ubah hanya bagian target sesuai standar proyek di atas.`,
       `3. VERIFIKASI MIKRO: Pastikan tidak ada berkas lain yang tersentuh dan sintaks 100% valid.`,
       ``,
       `[CHECKLIST VERIFIKASI MIKRO GRAFITY SEBELUM SAY "DONE"]`,
       `- [ ] Memastikan HANYA \`${fileBasename}\` yang diubah (tidak ada Scope Creep).`,
-      `- [ ] Memastikan perubahan visual/sintaks terbukti berhasil pada berkas target.`,
-      `- [ ] Memastikan Design System dipatuhi tanpa membuat warna/font siluman.`,
+      `- [ ] Memastikan perubahan sintaks terbukti berhasil pada berkas target.`,
+      `- [ ] Memastikan Standar Proyek dipatuhi tanpa menyuntikkan kode siluman.`,
       `- [ ] Memastikan tidak ada error kompilasi setelah perubahan.`
     ].join('\n');
 
@@ -484,7 +485,7 @@ class VibeOptimizer {
 
     const fixPrompt = [
       `# ============================================================`,
-      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v10.6.0)`,
+      `# DRAF PROMPT PERBAIKAN ERROR TERMINAL (DSPy Repair Engine v10.7.0)`,
       `# Standar Lisensi: GNU AGPL v3.0 | Output Pure Prompt Generator`,
       `# ============================================================`,
       ``,
@@ -546,7 +547,7 @@ class VibeOptimizer {
       `SIMBOL & RUTE INTI TERDETEKSI:`,
       keySymbols.join('\n') || 'Fungsi Utama Aplikasi',
       ``,
-      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v10.6.0)`
+      `... (Konteks Lain Dipangkas Otomatis oleh Smart Context Compressor v10.7.0)`
     ].join('\n');
 
     return compressed;
@@ -632,7 +633,7 @@ class VibeOptimizer {
     });
 
     if (newlyAppended.length > 0) {
-      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v10.6.0)\n' +
+      const appendText = '\n# Variabel Lingkungan Baru (Disinkronkan oleh Asisten Joe v10.7.0)\n' +
         newlyAppended.map(k => `${k}=`).join('\n') + '\n';
 
       try {
@@ -687,7 +688,7 @@ class VibeOptimizer {
     const now = new Date().toLocaleString('id-ID');
 
     const testContent = [
-      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v10.6.0 (DSPy Engine)`,
+      `// Draf Pengujian Otomatis -- Disusun oleh Asisten Joe v10.7.0 (DSPy Engine)`,
       `// Waktu Dibuat: ${now}`,
       ``,
       `describe('Uji Kelaikan Modul Baru (Vibe Autotest)', () => {`,
@@ -751,7 +752,7 @@ class VibeOptimizer {
     }
 
     const now = new Date().toLocaleString('id-ID');
-    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v10.6.0 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
+    let content = `# DOKUMENTASI API PROYEK\n\n*Disusun otomatis oleh Asisten Joe v10.7.0 (OpenAPI Standard)*\n*Waktu Pembaruan:* ${now}\n\n---\n\n`;
 
     if (detectedEndpoints.length > 0) {
       content += `## RINGKASAN ENDPOINT TERDETEKSI\n\n| METODE | JALUR RUTE (PATH) | DESKRIPSI |\n| :--- | :--- | :--- |\n`;
