@@ -1,34 +1,32 @@
-# PUSAT REPOSITORI SAAS & EKSTENSI ASISTEN JOE v10.9.0
+# PUSAT REPOSITORI SAAS & EKSTENSI ASISTEN JOE v10.10.0
 
-Selamat datang di repositori resmi **SaaS Branching Blueprint** dan **Ekstensi Asisten Joe v10.9.0 (Senior Full Stack Laravel & Blade AI Chatbot Engine)**. Dokumen ini disusun untuk memberikan panduan alur kerja digital dan pengoperasian ekstensi pengawal Vibe Coding di Antigravity IDE.
+Selamat datang di repositori resmi **SaaS Branching Blueprint** dan **Ekstensi Asisten Joe v10.10.0 (Enterprise SaaS Gitflow & Branching Suite)**. Dokumen ini disusun untuk memberikan panduan alur kerja digital dan pengoperasian ekstensi pengawal Vibe Coding di Antigravity IDE.
 
 ---
 
-## ASISTEN JOE v10.9.0 -- SENIOR FULL STACK LARAVEL & BLADE AI CHATBOT ENGINE
+## ASISTEN JOE v10.10.0 -- ENTERPRISE SAAS GITFLOW & BRANCHING SUITE
 
-Ekstensi pendamping Vibe Coding & AI Chatbot Reguler Profesional Spesialis Full Stack Laravel & Blade di Antigravity IDE / VS Code yang mengadopsi integrasi Groq LLaMA 3.3 70B & 3x Key Pool Auto-Failover:
+Ekstensi pendamping Vibe Coding, Gitflow Branching Automator, & Senior Full Stack Laravel & Blade AI Chatbot di Antigravity IDE / VS Code:
 
-1. **Senior Full Stack Laravel & Blade Engine (v10.9.0):** Pengolahan AI Chatbot murni berkecepatan tinggi berstandar Arsitektur Full Stack Laravel 11/12 & Blade Component Engine:
-   - ⚡ **High-Speed Groq LLaMA 3.3 70B:** Pemrosesan percakapan AI super cepat dengan akurasi dan konteks tinggi.
-   - 🐘 **Laravel 11/12 Slim Structure:** Kepatuhan struktur modern `bootstrap/app.php` & Action/Service Class pattern.
-   - 🎨 **Blade Component Architecture:** Spesialis arsitektur Komponen Blade XML Tag (`<x-layout>`, `<x-button>`) & Zero-Logic Views.
-   - 🚀 **Zero N+1 Query & Security Guard:** Pengawal *Eager Loading* (`with()`), sanitasi XSS/CSRF (`@csrf`), dan pengunci hak akses (`@can`).
-   - 🔄 **3x Key Pool Auto-Failover:** Rotasi otomatis 3 Kunci API Groq aktif untuk menjamin layanan AI 100% tanpa batas (*zero-downtime*).
-2. **Object-Agnostic Emergency Brakes Engine (v10.7.0):** Sistem Rem Darurat Mutlak Generik Universal (Isolasi scope target `${targetFile}`, Embargo non-target, Standar arsitektur).
-3. **Visual Page Inspector & IDE Prompt Generator Engine (v10.6.0):** Alur kerja inspeksi visual halaman web (memecah halaman web menjadi komponen terisolasi).
-4. **Interactive Before & After Design Preview Modal Engine (v10.5.0):** Menampilkan Pop-Up Modal simulasi pratinjau visual komparasi tampilan **SEBELUM (AS-IS)** vs **SESUDAH (TO-BE)** secara interaktif.
-5. **RDBMS Architecture & Migration Guard Engine (v10.4.0):** Audit otomatis skema basis data relasional (Normalisasi 3NF, Indeks B-Tree FK, Zero-Downtime Migration, SAST SQL Injection Guard).
-6. **AS-IS vs. TO-BE Architectural Transformation Engine (v10.3.0):** Generator perbandingan visual side-by-side kondisi arsitektur sistem saat ini (**AS-IS**) lawan kondisi arsitektur target setelah prompt dieksekusi (**TO-BE**).
-7. **Multi-Diagram Project Visualizer Engine (v10.2.0):** Menghasilkan 5 diagram visual utuh untuk proyek Anda berstandar Mermaid.js.
-8. **Human-Friendly Layperson Commit Engine (v10.1.0):** Mengubah pesan commit teknis yang rumit menjadi **Format Pesan Commit Ringkas & Terstruktur** yang Sangat Mudah Dibaca oleh Klien dan Product Manager.
-9. **Semantic Versioning Automator Engine (v10.0.0):** Mengotomatiskan & mengoptimalkan penomoran skema Semantic Versioning (`v[Major].[Minor].[Patch]` / `x.x.0`).
+1. **Enterprise SaaS Gitflow & Branching Automator (v10.10.0):** Pengelolaan cabang otomatis berstandar Enterprise Gitflow:
+   - 🌿 **Feature Branches (`feature/*` / `feat/*`):** Cabang pengembangan fitur baru bercabang dari `develop` (contoh: `feature/TK-101-modul-pembayaran` atau `feat/TK-102-blade-component`).
+   - 🚑 **Hotfix Branches (`hotfix/*` / `hotFix/*`):** Cabang perbaikan darurat produksi bercabang dari `main` (contoh: `hotfix/HF-901-perbaikan-csrf-login`). Di-merge ganda (*Dual Merge*) otomatis ke `main` & `develop`.
+2. **Senior Full Stack Laravel & Blade Engine (v10.9.0):** Pengolahan AI Chatbot murni berkecepatan tinggi berstandar Arsitektur Full Stack Laravel 11/12 (`bootstrap/app.php`, Action/Service Class pattern) & Blade Component Engine XML Tag (`<x-layout>`, `<x-button>`).
+3. **Object-Agnostic Emergency Brakes Engine (v10.7.0):** Sistem Rem Darurat Mutlak Generik Universal (Isolasi scope target `${targetFile}`, Embargo non-target, Standar arsitektur).
+4. **Visual Page Inspector & IDE Prompt Generator Engine (v10.6.0):** Alur kerja inspeksi visual halaman web (memecah halaman web menjadi komponen terisolasi).
+5. **Interactive Before & After Design Preview Modal Engine (v10.5.0):** Menampilkan Pop-Up Modal simulasi pratinjau visual komparasi tampilan **SEBELUM (AS-IS)** vs **SESUDAH (TO-BE)** secara interaktif.
+6. **RDBMS Architecture & Migration Guard Engine (v10.4.0):** Audit otomatis skema basis data relasional (Normalisasi 3NF, Indeks B-Tree FK, Zero-Downtime Migration, SAST SQL Injection Guard).
+7. **AS-IS vs. TO-BE Architectural Transformation Engine (v10.3.0):** Generator perbandingan visual side-by-side kondisi arsitektur sistem saat ini (**AS-IS**) lawan kondisi arsitektur target setelah prompt dieksekusi (**TO-BE**).
+8. **Multi-Diagram Project Visualizer Engine (v10.2.0):** Menghasilkan 5 diagram visual utuh untuk proyek Anda berstandar Mermaid.js.
+9. **Human-Friendly Layperson Commit Engine (v10.1.0):** Mengubah pesan commit teknis yang rumit menjadi **Format Pesan Commit Ringkas & Terstruktur** yang Sangat Mudah Dibaca oleh Klien dan Product Manager.
+10. **Semantic Versioning Automator Engine (v10.0.0):** Mengotomatiskan & mengoptimalkan penomoran skema Semantic Versioning (`v[Major].[Minor].[Patch]` / `x.x.0`).
 
 ### Pemasangan Ekstensi (.vsix)
 
 1. Buka **Extensions** di Antigravity IDE (`Cmd + Shift + X`).
 2. Klik `...` di kanan atas -> Pilih **"Install from VSIX..."**.
 3. Pilih berkas rilis resmi:  
-   👉 **[saas-workflow-ide-plugin-10.8.0.vsix](file:///Users/user/Downloads/Prompt%20Engginer/plugin-ide/saas-workflow-ide-plugin-10.8.0.vsix)**
+   👉 **[saas-workflow-ide-plugin-10.10.0.vsix](file:///Users/user/Downloads/Prompt%20Engginer/plugin-ide/saas-workflow-ide-plugin-10.10.0.vsix)**
 
 ---
 

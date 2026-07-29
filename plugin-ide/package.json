@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - Senior Full Stack Laravel & Blade AI Chatbot Engine",
-  "description": "Asisten Joe v10.9.0: Senior Full Stack Laravel & Blade AI Chatbot Engine (Spesialis Arsitektur Komponen Blade <x-component>, View Models, Slim Structure Laravel 11/12 bootstrap/app.php, Zero N+1 Query Eloquent Guard, Single-File Scope Lock, Integrasi Groq LLaMA 3.3 70B 3x Key Pool Auto-Failover, Object-Agnostic Emergency Brakes, Visual Page Inspector, Interactive Pop-up Design Preview SEBELUM vs SESUDAH, Audit RDBMS Normalisasi 3NF, AS-IS vs TO-BE Architectural Transformation Engine, Multi-Diagram Visualizer 5-Diagram, Human-Friendly Layperson Commit Engine, Semantic Versioning Automator Engine x.x.0, Anti-Layout Mutation Asset Guard, Micro-Scoped Prompt Slicer, Mode Design Grafity Super-Prompt Engine, Multi-Agent Swarm, Inline CodeLens & Hover Guard, Terminal Error Sensor, Real-Time Token Streaming).",
-  "version": "10.9.0",
+  "displayName": "Asisten Joe - Enterprise SaaS Gitflow & Branching Suite",
+  "description": "Asisten Joe v10.10.0: Enterprise SaaS Gitflow & Branching Suite (Dukungan Otomatis Cabang Fitur Baru feature/* feat/* & Cabang Perbaikan Darurat Hotfix hotfix/* hotFix/* dengan Dual-Merge Produksi, Senior Full Stack Laravel 11/12 & Blade AI Engine, Eager Loading N+1 Guard, Integrasi Groq LLaMA 3.3 70B 3x Key Pool Auto-Failover, Object-Agnostic Emergency Brakes, Visual Page Inspector, Interactive Pop-up Design Preview SEBELUM vs SESUDAH, Audit RDBMS Normalisasi 3NF, AS-IS vs TO-BE Architectural Transformation Engine, Multi-Diagram Visualizer 5-Diagram, Human-Friendly Layperson Commit Engine, Semantic Versioning Automator Engine x.x.0, Anti-Layout Mutation Asset Guard, Micro-Scoped Prompt Slicer).",
+  "version": "10.10.0",
   "publisher": "joecompanyagent-lab",
   "icon": "media/icon.png",
   "license": "MIT",

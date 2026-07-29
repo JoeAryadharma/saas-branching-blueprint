@@ -109,6 +109,9 @@ class SaaSWorkflowChatProvider {
       else if (lowerText.includes('fitur baru') || lowerText.includes('buat fitur') || lowerText.includes('tambah fitur')) {
         await this._handleCreateFeature(targetDir, folderName, audit);
       }
+      else if (lowerText.includes('hotfix') || lowerText.includes('hot-fix') || lowerText.includes('perbaikan darurat') || lowerText.includes('bugfix darurat')) {
+        await this._handleCreateHotfix(targetDir, folderName, audit);
+      }
       else if (lowerText.includes('risiko') || lowerText.includes('biaya') || lowerText.includes('dampak') || lowerText.includes('cost')) {
         await this._handleRiskAnalysis(targetDir, folderName, text, audit, diff);
       }
@@ -787,6 +790,25 @@ class SaaSWorkflowChatProvider {
       this._memory.addDecision(`Membuat fitur baru: ${featureName} (${ticketId})`, branchName);
       this._appendLog(targetDir, folderName, "MEMBUAT FITUR BARU", `${branchName}`, audit);
       this._reply(`[BERHASIL] Ruang Kerja Fitur: <code>${branchName}</code><br/>Setelah selesai, ketik "Ajukan PR" untuk ulasan Vibe Guard.`);
+    } catch (err) {
+      this._reply(`[GAGAL] ${err.message}`);
+    }
+  }
+
+  async _handleCreateHotfix(targetDir, folderName, audit) {
+    const bugId = await vscode.window.showInputBox({ prompt: 'Nomor Tiket/Bug Hotfix (Contoh: HF-901):' });
+    if (!bugId) return;
+    const fixName = await vscode.window.showInputBox({ prompt: 'Nama Perbaikan Darurat (Contoh: perbaikan-csrf-login):' });
+    if (!fixName) return;
+
+    const branchName = `hotfix/${bugId}-${fixName.toLowerCase().replace(/\s+/g, '-')}`;
+    try {
+      try { execSync(`git checkout main && git checkout -b ${branchName}`, { cwd: targetDir }); }
+      catch (e) { execSync(`git checkout -b ${branchName}`, { cwd: targetDir }); }
+      this._memory.incrementStat('total_hotfix_dibuat');
+      this._memory.addDecision(`Membuat cabang hotfix darurat: ${fixName} (${bugId})`, branchName);
+      this._appendLog(targetDir, folderName, "MEMBUAT HOTFIX DARURAT", `${branchName}`, audit);
+      this._reply(`[BERHASIL] Ruang Kerja Hotfix Darurat Produksi: <code>${branchName}</code><br/>Dibuat bercabang langsung dari <code>main</code>.<br/>Setelah selesai, ketik "Ajukan PR" untuk ulasan Vibe Guard & dual-merge ke <code>main</code> dan <code>develop</code>.`);
     } catch (err) {
       this._reply(`[GAGAL] ${err.message}`);
     }
