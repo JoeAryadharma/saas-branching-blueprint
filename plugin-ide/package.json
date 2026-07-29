@@ -1,8 +1,8 @@
 {
   "name": "saas-workflow-ide-plugin",
-  "displayName": "Asisten Joe - Enterprise SaaS Gitflow & Branching Suite",
-  "description": "Asisten Joe v10.10.0: Enterprise SaaS Gitflow & Branching Suite (Dukungan Otomatis Cabang Fitur Baru feature/* feat/* & Cabang Perbaikan Darurat Hotfix hotfix/* hotFix/* dengan Dual-Merge Produksi, Senior Full Stack Laravel 11/12 & Blade AI Engine, Eager Loading N+1 Guard, Integrasi Groq LLaMA 3.3 70B 3x Key Pool Auto-Failover, Object-Agnostic Emergency Brakes, Visual Page Inspector, Interactive Pop-up Design Preview SEBELUM vs SESUDAH, Audit RDBMS Normalisasi 3NF, AS-IS vs TO-BE Architectural Transformation Engine, Multi-Diagram Visualizer 5-Diagram, Human-Friendly Layperson Commit Engine, Semantic Versioning Automator Engine x.x.0, Anti-Layout Mutation Asset Guard, Micro-Scoped Prompt Slicer).",
-  "version": "10.10.0",
+  "displayName": "Asisten Joe - Full Stack Laravel & Blade Archetype Engine",
+  "description": "Asisten Joe v10.11.0: Full Stack Laravel & Blade Archetype Engine (Archetype Resmi AI Assistant & Senior Full Stack Architect Laravel 11/12 & Blade Component Engine, Evaluasi Prompt Terstruktur, Enterprise SaaS Gitflow feature/* & hotfix/* Dual-Merge, Groq LLaMA 3.3 70B 3x Key Pool Auto-Failover, Object-Agnostic Emergency Brakes).",
+  "version": "10.11.0",
   "publisher": "joecompanyagent-lab",
   "icon": "media/icon.png",
   "license": "MIT",

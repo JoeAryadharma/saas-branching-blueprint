@@ -1,17 +1,15 @@
-# PUSAT REPOSITORI SAAS & EKSTENSI ASISTEN JOE v10.10.0
+# PUSAT REPOSITORI SAAS & EKSTENSI ASISTEN JOE v10.11.0
 
-Selamat datang di repositori resmi **SaaS Branching Blueprint** dan **Ekstensi Asisten Joe v10.10.0 (Enterprise SaaS Gitflow & Branching Suite)**. Dokumen ini disusun untuk memberikan panduan alur kerja digital dan pengoperasian ekstensi pengawal Vibe Coding di Antigravity IDE.
+Selamat datang di repositori resmi **SaaS Branching Blueprint** dan **Ekstensi Asisten Joe v10.11.0 (Full Stack Laravel & Blade Archetype Engine)**. Dokumen ini disusun untuk memberikan panduan alur kerja digital dan pengoperasian ekstensi pengawal Vibe Coding di Antigravity IDE.
 
 ---
 
-## ASISTEN JOE v10.10.0 -- ENTERPRISE SAAS GITFLOW & BRANCHING SUITE
+## ASISTEN JOE v10.11.0 -- FULL STACK LARAVEL & BLADE ARCHETYPE ENGINE
 
-Ekstensi pendamping Vibe Coding, Gitflow Branching Automator, & Senior Full Stack Laravel & Blade AI Chatbot di Antigravity IDE / VS Code:
+Ekstensi pendamping Vibe Coding, Archetype AI Assistant Spesialis Full Stack Laravel & Blade Architect, & Prompt Engineer di Antigravity IDE / VS Code:
 
-1. **Enterprise SaaS Gitflow & Branching Automator (v10.10.0):** Pengelolaan cabang otomatis berstandar Enterprise Gitflow:
-   - 🌿 **Feature Branches (`feature/*` / `feat/*`):** Cabang pengembangan fitur baru bercabang dari `develop` (contoh: `feature/TK-101-modul-pembayaran` atau `feat/TK-102-blade-component`).
-   - 🚑 **Hotfix Branches (`hotfix/*` / `hotFix/*`):** Cabang perbaikan darurat produksi bercabang dari `main` (contoh: `hotfix/HF-901-perbaikan-csrf-login`). Di-merge ganda (*Dual Merge*) otomatis ke `main` & `develop`.
-2. **Senior Full Stack Laravel & Blade Engine (v10.9.0):** Pengolahan AI Chatbot murni berkecepatan tinggi berstandar Arsitektur Full Stack Laravel 11/12 (`bootstrap/app.php`, Action/Service Class pattern) & Blade Component Engine XML Tag (`<x-layout>`, `<x-button>`).
+1. **Full Stack Laravel & Blade Archetype Engine (v10.11.0):** Archetype resmi AI Assistant & Senior Full Stack Architect Laravel 11/12 (`bootstrap/app.php`, Action/Service Class) & Blade Component Engine (`<x-layout>`, `<x-button>`), dilengkapi Evaluasi Prompt Terstruktur tanpa frasa meta canggung.
+2. **Enterprise SaaS Gitflow & Branching Automator (v10.10.0):** Otomasi cabang fitur (`feature/*` / `feat/*`) dan perbaikan darurat produksi (`hotfix/*` / `hotFix/*`) dengan Dual-Merge otomatis ke `main` & `develop`.
 3. **Object-Agnostic Emergency Brakes Engine (v10.7.0):** Sistem Rem Darurat Mutlak Generik Universal (Isolasi scope target `${targetFile}`, Embargo non-target, Standar arsitektur).
 4. **Visual Page Inspector & IDE Prompt Generator Engine (v10.6.0):** Alur kerja inspeksi visual halaman web (memecah halaman web menjadi komponen terisolasi).
 5. **Interactive Before & After Design Preview Modal Engine (v10.5.0):** Menampilkan Pop-Up Modal simulasi pratinjau visual komparasi tampilan **SEBELUM (AS-IS)** vs **SESUDAH (TO-BE)** secara interaktif.

@@ -2,23 +2,20 @@ const vscode = require('vscode');
 const https = require('https');
 
 // ============================================================
-// ASISTEN JOE v10.9.0 -- FULL STACK LARAVEL & BLADE AI CHATBOT ENGINE
-// Modul Utama Pengolahan AI Chatbot Reguler Spesialis Full Stack Laravel & Blade
+// ASISTEN JOE v10.11.0 -- FULL STACK LARAVEL & BLADE ARCHETYPE ENGINE
+// Modul Utama Pengolahan AI Chatbot Spesialis Full Stack Laravel & Blade
+// Archetype Resmi: Professional Senior Full Stack Architect & Prompt Engineer
 // Menggunakan Groq LLaMA 3.3 70B & Auto-Failover 3x API Key Pool
 // ============================================================
 
 const SYSTEM_PERSONA = [
-  'Kamu adalah Asisten Joe - Master AI Chatbot & Senior Full Stack Laravel & Blade Architect yang Cerdas, Profesional, dan Presisi.',
-  'PERILAKU CHATBOT REGULER PROFESIONAL: Jawab setiap pertanyaan, analisis, obrolan, maupun permintaan koding/prompt pengguna secara langsung, alami, lancar, dan komunikatif layaknya AI Chatbot Reguler Profesional spesialis Full Stack Laravel 11/12 dan Blade Engine.',
-  'KEAHLIAN UTAMA LARAVEL & BLADE:',
-  '1. Arsitektur Komponen Blade Modern berbasis XML Tag (<x-layout>, <x-button>) & Zero-Logic Views.',
-  '2. Kepatuhan Arsitektur Laravel 11/12 Slim Structure (bootstrap/app.php, Action/Service Pattern).',
-  '3. Optimalisasi Eloquent ORM, Eager Loading (with()), dan Pencegahan N+1 Query.',
-  '4. Keamanan Vibe Coding Guard (Proteksi CSRF, XSS {{ }}, Gate/Policy @can, SAST Security).',
-  '5. Generator Super-Prompt & Micro-Scoped Prompt Isolasi Berkas Presisi.',
-  'Gunakan Bahasa Indonesia yang profesional, ramah, tegas, tanpa emoji, dan tanpa kode ANSI.',
-  'Jika pengguna meminta kode Laravel/Blade, berikan kode yang bersih, efisien, aman, dan mematuhi standar Laravel Pint & PSR-12.',
-  'Jika pengguna meminta instruksi atau prompt, berikan panduan terstruktur yang presisi.'
+  'Kamu adalah Asisten Joe - AI Chatbot & Senior Full Stack Laravel & Blade Architect yang Profesional, Lugas, dan Presisi.',
+  'ARCHETYPE CHATBOT PROFESIONAL:',
+  '1. Jawab setiap pertanyaan, analisis, obrolan, maupun permintaan koding/prompt pengguna secara langsung, ramah, komunikatif, dan lugas tanpa menggunakan frasa meta seperti "solusi manusiawi" atau istilah canggung.',
+  '2. Spesialis Full Stack Laravel 11/12 (bootstrap/app.php, Action/Service Pattern) & Blade Component Architecture (<x-layout>, <x-button>, Zero-Logic Views).',
+  '3. Pengawal Optimalisasi Eloquent (Eager Loading with(), Zero N+1 Query) & Keamanan (CSRF, XSS {{ }}, Gate/Policy @can).',
+  '4. Setiap analisis prompt wajib menyertakan Evaluasi Prompt yang objektif dan terstruktur (Tingkat Kejelasan, Keamanan Scope, Skor Kesiapan, & Rekomendasi Optimasi).',
+  'Gunakan Bahasa Indonesia yang profesional, tegas, ramah, tanpa emoji, dan tanpa kode ANSI.'
 ].join(' ');
 
 class AIEngine {
@@ -34,7 +31,7 @@ class AIEngine {
     ];
 
     this._currentKeyIndex = 0;
-    this._modelName = 'Groq LLaMA 3.3 70B (Full Stack Laravel & Blade Engine)';
+    this._modelName = 'Groq LLaMA 3.3 70B (Full Stack Laravel & Blade Archetype)';
     this._isAvailable = true;
   }
 
@@ -44,7 +41,7 @@ class AIEngine {
       this._groqApiKeys.unshift(configApiKey);
     }
     this._isAvailable = true;
-    console.log(`AIEngine v10.9.0: Tersambung ke Groq API Engine dengan ${this._groqApiKeys.length} Kunci Pool Aktif.`);
+    console.log(`AIEngine v10.11.0: Tersambung ke Groq API Engine dengan ${this._groqApiKeys.length} Kunci Pool Aktif.`);
     return true;
   }
 
@@ -56,7 +53,7 @@ class AIEngine {
   // Merotasi kunci ke kunci berikutnya jika terjadi limit/error
   _rotateKey() {
     this._currentKeyIndex = (this._currentKeyIndex + 1) % this._groqApiKeys.length;
-    console.log(`AIEngine v10.9.0: Melakukan rotasi otomatis ke Groq API Key indeks #${this._currentKeyIndex}`);
+    console.log(`AIEngine v10.11.0: Melakukan rotasi otomatis ke Groq API Key indeks #${this._currentKeyIndex}`);
   }
 
   // Real-Time Streaming Chatbot Murni over Groq SSE
