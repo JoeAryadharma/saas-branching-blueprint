@@ -2,16 +2,22 @@ const vscode = require('vscode');
 const https = require('https');
 
 // ============================================================
-// ASISTEN JOE v10.8.0 -- GROQ HIGH-SPEED AI ENGINE (PURE CHATBOT)
-// Modul Utama Pengolahan Kecerdasan AI Berkecepatan Tinggi
+// ASISTEN JOE v10.9.0 -- FULL STACK LARAVEL & BLADE AI CHATBOT ENGINE
+// Modul Utama Pengolahan AI Chatbot Reguler Spesialis Full Stack Laravel & Blade
 // Menggunakan Groq LLaMA 3.3 70B & Auto-Failover 3x API Key Pool
 // ============================================================
 
 const SYSTEM_PERSONA = [
-  'Kamu adalah Asisten Joe - AI Chatbot Pendamping Penuh & Partner Koding Otonom yang Cerdas, Ramah, dan Presisi.',
-  'PERILAKU CHATBOT MURNI: Jawab setiap pertanyaan, obrolan, analisis, maupun permintaan bantuan pengguna secara langsung, alami, lancar, dan komunikatif layaknya Chatbot Murni (Pure Conversational Chatbot).',
+  'Kamu adalah Asisten Joe - Master AI Chatbot & Senior Full Stack Laravel & Blade Architect yang Cerdas, Profesional, dan Presisi.',
+  'PERILAKU CHATBOT REGULER PROFESIONAL: Jawab setiap pertanyaan, analisis, obrolan, maupun permintaan koding/prompt pengguna secara langsung, alami, lancar, dan komunikatif layaknya AI Chatbot Reguler Profesional spesialis Full Stack Laravel 11/12 dan Blade Engine.',
+  'KEAHLIAN UTAMA LARAVEL & BLADE:',
+  '1. Arsitektur Komponen Blade Modern berbasis XML Tag (<x-layout>, <x-button>) & Zero-Logic Views.',
+  '2. Kepatuhan Arsitektur Laravel 11/12 Slim Structure (bootstrap/app.php, Action/Service Pattern).',
+  '3. Optimalisasi Eloquent ORM, Eager Loading (with()), dan Pencegahan N+1 Query.',
+  '4. Keamanan Vibe Coding Guard (Proteksi CSRF, XSS {{ }}, Gate/Policy @can, SAST Security).',
+  '5. Generator Super-Prompt & Micro-Scoped Prompt Isolasi Berkas Presisi.',
   'Gunakan Bahasa Indonesia yang profesional, ramah, tegas, tanpa emoji, dan tanpa kode ANSI.',
-  'Jika pengguna meminta kode, berikan kode yang bersih, efisien, dan aman.',
+  'Jika pengguna meminta kode Laravel/Blade, berikan kode yang bersih, efisien, aman, dan mematuhi standar Laravel Pint & PSR-12.',
   'Jika pengguna meminta instruksi atau prompt, berikan panduan terstruktur yang presisi.'
 ].join(' ');
 
@@ -28,7 +34,7 @@ class AIEngine {
     ];
 
     this._currentKeyIndex = 0;
-    this._modelName = 'Groq LLaMA 3.3 70B (3x Key Pool Auto-Failover)';
+    this._modelName = 'Groq LLaMA 3.3 70B (Full Stack Laravel & Blade Engine)';
     this._isAvailable = true;
   }
 
@@ -38,7 +44,7 @@ class AIEngine {
       this._groqApiKeys.unshift(configApiKey);
     }
     this._isAvailable = true;
-    console.log(`AIEngine v10.8.0: Tersambung ke Groq API Engine dengan ${this._groqApiKeys.length} Kunci Pool Aktif.`);
+    console.log(`AIEngine v10.9.0: Tersambung ke Groq API Engine dengan ${this._groqApiKeys.length} Kunci Pool Aktif.`);
     return true;
   }
 
@@ -50,7 +56,7 @@ class AIEngine {
   // Merotasi kunci ke kunci berikutnya jika terjadi limit/error
   _rotateKey() {
     this._currentKeyIndex = (this._currentKeyIndex + 1) % this._groqApiKeys.length;
-    console.log(`AIEngine v10.8.0: Melakukan rotasi otomatis ke Groq API Key indeks #${this._currentKeyIndex}`);
+    console.log(`AIEngine v10.9.0: Melakukan rotasi otomatis ke Groq API Key indeks #${this._currentKeyIndex}`);
   }
 
   // Real-Time Streaming Chatbot Murni over Groq SSE
