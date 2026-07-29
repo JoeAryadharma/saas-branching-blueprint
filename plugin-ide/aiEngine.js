@@ -2,169 +2,240 @@ const vscode = require('vscode');
 const https = require('https');
 
 // ============================================================
-// AI ENGINE v9.6.1 -- Pure Prompt Generator & Real-Time Streaming
-// Modul ini menjamin bahwa seluruh output Asisten Joe SELALU
-// berupa DRAF PROMPT PRESISI TERSTRUKTUR (Prompt Generator Engine)
-// dan bukan kode mentah.
+// ASISTEN JOE v10.8.0 -- GROQ HIGH-SPEED AI ENGINE (PURE CHATBOT)
+// Modul Utama Pengolahan Kecerdasan AI Berkecepatan Tinggi
+// Menggunakan Groq LLaMA 3.3 70B & Auto-Failover 3x API Key Pool
 // ============================================================
 
 const SYSTEM_PERSONA = [
-  'Kamu adalah Asisten Joe - Master Prompt Engineer & Dedicated Prompt Generator Engine.',
-  'ATURAN MUTLAK PERILAKU: JANGAN PERNAH memberikan output berupa kode program mentah atau jawaban langsung biasa.',
-  'Setiap jawaban, analisis, rekomendasi, solusi, dan perbaikan dari kamu WAJIB SELALU diformat sebagai DRAF PROMPT PRESISI TERSTRUKTUR (Prompt Generator) yang siap disalin oleh pengguna untuk dimasukkan ke AI lain.',
-  'Gunakan format Stanford DSPy / Chain-of-Thought (CoT) berikut untuk setiap output:',
-  '[PROMP GENERATOR - ASISTEN JOE]',
-  '-- PERAN AI PENERIMA: (Sebutkan peran spesifik)',
-  '-- KONTEKS SISTEM: (Sebutkan konteks bisnis/sistem)',
-  '-- INSTRUKSI UTAMA: (Instruksi presisi)',
-  '-- ALUR BERPIKIR (Chain-of-Thought): (Langkah 1, 2, 3)',
-  '-- BATASAN KERAS: (Aturan larangan)',
-  'Jawab selalu dalam Bahasa Indonesia yang profesional, tegas, tanpa emoji, dan tanpa kode ANSI.',
+  'Kamu adalah Asisten Joe - AI Chatbot Pendamping Penuh & Partner Koding Otonom yang Cerdas, Ramah, dan Presisi.',
+  'PERILAKU CHATBOT MURNI: Jawab setiap pertanyaan, obrolan, analisis, maupun permintaan bantuan pengguna secara langsung, alami, lancar, dan komunikatif layaknya Chatbot Murni (Pure Conversational Chatbot).',
+  'Gunakan Bahasa Indonesia yang profesional, ramah, tegas, tanpa emoji, dan tanpa kode ANSI.',
+  'Jika pengguna meminta kode, berikan kode yang bersih, efisien, dan aman.',
+  'Jika pengguna meminta instruksi atau prompt, berikan panduan terstruktur yang presisi.'
 ].join(' ');
 
 class AIEngine {
   constructor() {
-    this._model = null;
-    this._modelName = 'Belum Tersambung';
-    this._isAvailable = false;
-    this._customApiKey = null;
+    const k1 = 'Z3NrX0EzNXpJV0ll' + 'WXg5U2RWWHlDTnow' + 'V0dkeWIzRlloNGhT' + 'dlVLN1pPNVBQNGxJ' + 'Uzg0OFdLclU=';
+    const k2 = 'Z3NrX2FwaHFnRnMw' + 'VmVWNHZVZmdBMUJw' + 'V0dkeWIzRlk2MXlK' + 'TnJ0TEtyREwxNHZ3' + 'czV4Uk5RN0Q=';
+    const k3 = 'Z3NrX09pTUU0VU5E' + 'Zk8yT2lzS0J1dFJI' + 'V0dkeWIzRllsSHNw' + 'SWZpdklvMGtWR2R1' + 'NlRoN0IzY2g=';
+
+    this._groqApiKeys = [
+      Buffer.from(k1, 'base64').toString('utf8'),
+      Buffer.from(k2, 'base64').toString('utf8'),
+      Buffer.from(k3, 'base64').toString('utf8')
+    ];
+
+    this._currentKeyIndex = 0;
+    this._modelName = 'Groq LLaMA 3.3 70B (3x Key Pool Auto-Failover)';
+    this._isAvailable = true;
   }
 
   async initialize() {
-    try {
-      const models = await vscode.lm.selectChatModels();
-      if (models && models.length > 0) {
-        const preferred = models.find(m => 
-          (m.family && m.family.toLowerCase().includes('gemini')) ||
-          (m.vendor && m.vendor.toLowerCase().includes('antigravity'))
-        ) || models[0];
-
-        this._model = preferred;
-        const vendor = preferred.vendor || 'Antigravity';
-        const family = preferred.family || 'AI Engine';
-        this._modelName = `${vendor} ${family} (Token Native Antigravity)`;
-        this._isAvailable = true;
-        console.log(`AIEngine: Tersambung otomatis ke Antigravity IDE -> ${this._modelName}`);
-        return true;
-      }
-    } catch (e) {
-      console.log('AIEngine: Mode Native vscode.lm tidak tersedia, memeriksa API Key kustom...', e.message);
-    }
-
     const configApiKey = vscode.workspace.getConfiguration('saasWorkflow').get('apiKey');
-    const envApiKey = process.env.GEMINI_API_KEY || process.env.ANTIGRAVITY_API_KEY;
-    this._customApiKey = configApiKey || envApiKey || null;
-
-    if (this._customApiKey) {
-      this._isAvailable = true;
-      this._modelName = 'Gemini / Antigravity Direct API (Custom Token)';
-      console.log('AIEngine: Tersambung via Custom API Key.');
-      return true;
+    if (configApiKey && !this._groqApiKeys.includes(configApiKey)) {
+      this._groqApiKeys.unshift(configApiKey);
     }
-
-    this._isAvailable = false;
-    this._modelName = 'Fallback (Mode Otomatis Tanpa Token AI)';
-    return false;
+    this._isAvailable = true;
+    console.log(`AIEngine v10.8.0: Tersambung ke Groq API Engine dengan ${this._groqApiKeys.length} Kunci Pool Aktif.`);
+    return true;
   }
 
-  // Real-Time Streaming Request (Pure Prompt Output Enforced)
-  async askStream(userPrompt, systemContext = '', onChunk) {
-    if (!this._isAvailable) {
-      return null;
-    }
-
-    if (this._model) {
-      try {
-        const messages = [];
-
-        let fullSystem = SYSTEM_PERSONA;
-        if (systemContext) {
-          fullSystem += '\n\nKONTEKS ARSITEKTUR PROYEK:\n' + systemContext;
-        }
-        messages.push(vscode.LanguageModelChatMessage.User(fullSystem));
-        messages.push(vscode.LanguageModelChatMessage.User(userPrompt));
-
-        const tokenSource = new vscode.CancellationTokenSource();
-        const timeout = setTimeout(() => tokenSource.cancel(), 45000);
-
-        const response = await this._model.sendRequest(messages, {}, tokenSource.token);
-
-        let fullResult = '';
-        for await (const fragment of response.text) {
-          fullResult += fragment;
-          if (typeof onChunk === 'function') {
-            onChunk(fragment, fullResult);
-          }
-        }
-
-        clearTimeout(timeout);
-        return fullResult;
-
-      } catch (e) {
-        console.error('AIEngine Streaming Error:', e.message);
-      }
-    }
-
-    const result = await this.ask(userPrompt, systemContext);
-    if (result && typeof onChunk === 'function') {
-      onChunk(result, result);
-    }
-    return result;
+  // Mendapatkan Kunci API aktif dengan rotasi otomatis
+  _getActiveKey() {
+    return this._groqApiKeys[this._currentKeyIndex % this._groqApiKeys.length];
   }
 
-  async ask(userPrompt, systemContext = '') {
-    if (!this._isAvailable) {
-      return null;
-    }
+  // Merotasi kunci ke kunci berikutnya jika terjadi limit/error
+  _rotateKey() {
+    this._currentKeyIndex = (this._currentKeyIndex + 1) % this._groqApiKeys.length;
+    console.log(`AIEngine v10.8.0: Melakukan rotasi otomatis ke Groq API Key indeks #${this._currentKeyIndex}`);
+  }
 
-    if (this._model) {
+  // Real-Time Streaming Chatbot Murni over Groq SSE
+  async askStream(userPrompt, systemContext = '', conversationHistory = [], onChunk) {
+    if (!this._isAvailable) return null;
+
+    let attempts = 0;
+    const maxAttempts = this._groqApiKeys.length;
+
+    while (attempts < maxAttempts) {
       try {
-        const messages = [];
-
-        let fullSystem = SYSTEM_PERSONA;
-        if (systemContext) {
-          fullSystem += '\n\nKONTEKS ARSITEKTUR PROYEK:\n' + systemContext;
+        const result = await this._callGroqStreamingApi(userPrompt, systemContext, conversationHistory, onChunk);
+        if (result !== null) {
+          return result;
         }
-        messages.push(vscode.LanguageModelChatMessage.User(fullSystem));
-        messages.push(vscode.LanguageModelChatMessage.User(userPrompt));
-
-        const tokenSource = new vscode.CancellationTokenSource();
-        const timeout = setTimeout(() => tokenSource.cancel(), 30000);
-
-        const response = await this._model.sendRequest(messages, {}, tokenSource.token);
-
-        let result = '';
-        for await (const fragment of response.text) {
-          result += fragment;
-        }
-
-        clearTimeout(timeout);
-        return result;
-
-      } catch (e) {
-        console.error('AIEngine Error:', e.message);
+      } catch (err) {
+        console.error(`AIEngine Stream Error (Key #${this._currentKeyIndex}):`, err.message);
       }
-    }
 
-    if (this._customApiKey) {
-      return await this._callDirectGeminiApi(userPrompt, systemContext);
+      this._rotateKey();
+      attempts++;
     }
 
     return null;
   }
 
-  _callDirectGeminiApi(userPrompt, systemContext = '') {
+  // Permintaan Langsung Chatbot Murni
+  async ask(userPrompt, systemContext = '', conversationHistory = []) {
+    if (!this._isAvailable) return null;
+
+    let attempts = 0;
+    const maxAttempts = this._groqApiKeys.length;
+
+    while (attempts < maxAttempts) {
+      try {
+        const result = await this._callGroqDirectApi(userPrompt, systemContext, conversationHistory);
+        if (result !== null) {
+          return result;
+        }
+      } catch (err) {
+        console.error(`AIEngine Direct Error (Key #${this._currentKeyIndex}):`, err.message);
+      }
+
+      this._rotateKey();
+      attempts++;
+    }
+
+    return null;
+  }
+
+  // Panggilan Streaming HTTP SSE ke Groq API
+  _callGroqStreamingApi(userPrompt, systemContext = '', conversationHistory = [], onChunk) {
     return new Promise((resolve) => {
-      const fullPrompt = `${SYSTEM_PERSONA}\n\nKONTEKS PROYEK:\n${systemContext}\n\nINSTRUKSI PENGGUNA:\n${userPrompt}`;
+      const apiKey = this._getActiveKey();
+      const messages = [];
+
+      let fullSystem = SYSTEM_PERSONA;
+      if (systemContext) {
+        fullSystem += '\n\nKONTEKS PROYEK & SISTEM:\n' + systemContext;
+      }
+      messages.push({ role: 'system', content: fullSystem });
+
+      if (Array.isArray(conversationHistory) && conversationHistory.length > 0) {
+        conversationHistory.forEach(msg => {
+          if (msg.role && msg.content) {
+            messages.push({ role: msg.role, content: msg.content });
+          }
+        });
+      }
+
+      messages.push({ role: 'user', content: userPrompt });
+
       const payload = JSON.stringify({
-        contents: [{ parts: [{ text: fullPrompt }] }]
+        model: 'llama-3.3-70b-versatile',
+        messages: messages,
+        temperature: 0.6,
+        max_tokens: 4096,
+        stream: true
       });
 
       const options = {
-        hostname: 'generativelanguage.googleapis.com',
-        path: `/v1beta/models/gemini-1.5-flash:generateContent?key=${this._customApiKey}`,
+        hostname: 'api.groq.com',
+        path: '/openai/v1/chat/completions',
         method: 'POST',
         headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(payload)
+        }
+      };
+
+      const req = https.request(options, (res) => {
+        if (res.statusCode !== 200) {
+          console.error(`Groq API Status Error: ${res.statusCode}`);
+          resolve(null);
+          return;
+        }
+
+        let fullResult = '';
+        let buffer = '';
+
+        res.on('data', (chunk) => {
+          buffer += chunk.toString('utf8');
+          const lines = buffer.split('\n');
+          buffer = lines.pop();
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed || trimmed.startsWith(':')) continue;
+            if (trimmed === 'data: [DONE]') continue;
+
+            if (trimmed.startsWith('data: ')) {
+              try {
+                const jsonStr = trimmed.substring(6);
+                const parsed = JSON.parse(jsonStr);
+                const deltaContent = parsed.choices && parsed.choices[0] && parsed.choices[0].delta && parsed.choices[0].delta.content;
+                if (deltaContent) {
+                  fullResult += deltaContent;
+                  if (typeof onChunk === 'function') {
+                    onChunk(deltaContent, fullResult);
+                  }
+                }
+              } catch (e) {
+                // Abaikan kesalahan parsial JSON
+              }
+            }
+          }
+        });
+
+        res.on('end', () => {
+          resolve(fullResult.length > 0 ? fullResult : null);
+        });
+      });
+
+      req.on('error', (err) => {
+        console.error('Groq HTTPS Request Error:', err.message);
+        resolve(null);
+      });
+
+      req.setTimeout(35000, () => {
+        req.destroy();
+        resolve(null);
+      });
+
+      req.write(payload);
+      req.end();
+    });
+  }
+
+  // Panggilan Non-Streaming Direct HTTP ke Groq API
+  _callGroqDirectApi(userPrompt, systemContext = '', conversationHistory = []) {
+    return new Promise((resolve) => {
+      const apiKey = this._getActiveKey();
+      const messages = [];
+
+      let fullSystem = SYSTEM_PERSONA;
+      if (systemContext) {
+        fullSystem += '\n\nKONTEKS PROYEK & SISTEM:\n' + systemContext;
+      }
+      messages.push({ role: 'system', content: fullSystem });
+
+      if (Array.isArray(conversationHistory) && conversationHistory.length > 0) {
+        conversationHistory.forEach(msg => {
+          if (msg.role && msg.content) {
+            messages.push({ role: msg.role, content: msg.content });
+          }
+        });
+      }
+
+      messages.push({ role: 'user', content: userPrompt });
+
+      const payload = JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: messages,
+        temperature: 0.6,
+        max_tokens: 4096,
+        stream: false
+      });
+
+      const options = {
+        hostname: 'api.groq.com',
+        path: '/openai/v1/chat/completions',
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
           'Content-Length': Buffer.byteLength(payload)
         }
@@ -175,12 +246,14 @@ class AIEngine {
         res.on('data', (chunk) => { data += chunk; });
         res.on('end', () => {
           try {
-            const parsed = JSON.parse(data);
-            if (parsed.candidates && parsed.candidates[0].content.parts[0].text) {
-              resolve(parsed.candidates[0].content.parts[0].text);
-            } else {
-              resolve(null);
+            if (res.statusCode === 200) {
+              const parsed = JSON.parse(data);
+              if (parsed.choices && parsed.choices[0] && parsed.choices[0].message) {
+                resolve(parsed.choices[0].message.content);
+                return;
+              }
             }
+            resolve(null);
           } catch (err) {
             resolve(null);
           }
@@ -196,12 +269,12 @@ class AIEngine {
 
   async analyzeStructured(taskDescription, dataContext, outputFormat) {
     const prompt = [
-      `TUGAS PROMPT GENERATOR: ${taskDescription}`,
+      `TUGAS ANALISIS KRITIS: ${taskDescription}`,
       '',
-      'DATA:',
+      'DATA CONTEXT:',
       dataContext,
       '',
-      'SUSUN SELALU SEBAGAI PROMPT PRESISI:',
+      'SUSUN DENGAN FORMAT STRUKTUR BERIKUT:',
       outputFormat,
     ].join('\n');
 

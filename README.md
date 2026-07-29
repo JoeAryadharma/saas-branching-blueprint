@@ -1,33 +1,32 @@
-# PUSAT REPOSITORI SAAS & EKSTENSI ASISTEN JOE v10.7.0
+# PUSAT REPOSITORI SAAS & EKSTENSI ASISTEN JOE v10.8.0
 
-Selamat datang di repositori resmi **SaaS Branching Blueprint** dan **Ekstensi Asisten Joe v10.7.0 (Object-Agnostic Emergency Brakes Suite)**. Dokumen ini disusun untuk memberikan panduan alur kerja digital dan pengoperasian ekstensi pengawal Vibe Coding di Antigravity IDE.
+Selamat datang di repositori resmi **SaaS Branching Blueprint** dan **Ekstensi Asisten Joe v10.8.0 (Pure Conversational Groq AI Chatbot Engine)**. Dokumen ini disusun untuk memberikan panduan alur kerja digital dan pengoperasian ekstensi pengawal Vibe Coding di Antigravity IDE.
 
 ---
 
-## ASISTEN JOE v10.7.0 -- OBJECT-AGNOSTIC EMERGENCY BRAKES SUITE
+## ASISTEN JOE v10.8.0 -- PURE CONVERSATIONAL GROQ AI CHATBOT ENGINE
 
-Ekstensi pendamping Vibe Coding & Dedicated Prompt Generator di Antigravity IDE / VS Code yang mengadopsi repositori open-source tingkat tinggi teruji dari GitHub (`skills.sh`, `OpenClaw`, `Promptfoo`, & `Stanford DSPy`):
+Ekstensi pendamping Vibe Coding & Pure Conversational AI Chatbot di Antigravity IDE / VS Code yang mengadopsi integrasi Groq LLaMA 3.3 70B & 3x Key Pool Auto-Failover:
 
-1. **Object-Agnostic Emergency Brakes Engine (v10.7.0):** Sistem Rem Darurat Mutlak Generik Universal yang Berkelakuan Abstrak Tanpa Hardcode Objek Spesifik:
-   - Target Scope Isolation Brake: Mengunci eksekusi secara absolut pada berkas target `${targetFile}` tanpa memicu Scope Creep.
-   - Non-Target Embargo Brake: Melarang keras merubah, menghapus, atau merusak komponen, modul, fungsi, atau berkas tetangga di luar target.
-   - Architectural & Design Standard Constraint Brake: Memaksa kepatuhan standar proyek (`BRAND.md` untuk UI, OpenAPI/REST untuk API, Normalisasi 3NF untuk DB, Standar CLI) tanpa menyuntikkan *ghost pattern*.
-   - Minimal Mutation Threshold Brake: Membatasi perubahan `git diff` seminimal mungkin pada area kerja presisi.
-2. **Visual Page Inspector & IDE Prompt Generator Engine (v10.6.0):** Alur kerja inspeksi visual halaman web (memecah halaman web menjadi komponen terisolasi).
-3. **Interactive Before & After Design Preview Modal Engine (v10.5.0):** Menampilkan Pop-Up Modal simulasi pratinjau visual komparasi tampilan **SEBELUM (AS-IS)** vs **SESUDAH (TO-BE)** secara interaktif.
-4. **RDBMS Architecture & Migration Guard Engine (v10.4.0):** Audit otomatis skema basis data relasional (Normalisasi 3NF, Indeks B-Tree FK, Zero-Downtime Migration, SAST SQL Injection Guard).
-5. **AS-IS vs. TO-BE Architectural Transformation Engine (v10.3.0):** Generator perbandingan visual side-by-side kondisi arsitektur sistem saat ini (**AS-IS**) lawan kondisi arsitektur target setelah prompt dieksekusi (**TO-BE**).
-6. **Multi-Diagram Project Visualizer Engine (v10.2.0):** Menghasilkan 5 diagram visual utuh untuk proyek Anda berstandar Mermaid.js.
-7. **Human-Friendly Layperson Commit Engine (v10.1.0):** Mengubah pesan commit teknis yang rumit menjadi **Format Pesan Commit Ringkas & Terstruktur** yang Sangat Mudah Dibaca oleh Klien dan Product Manager.
-8. **Semantic Versioning Automator Engine (v10.0.0):** Mengotomatiskan & mengoptimalkan penomoran skema Semantic Versioning (`v[Major].[Minor].[Patch]` / `x.x.0`).
-9. **Anti-Layout Mutation & Asset Guard Engine (v9.9.0):** Memutus kebiasaan buruk Grafity yang sering merusak Navbar, layout CSS, atau halaman web lain saat diminta sekadar mengganti gambar/foto.
+1. **Pure Conversational Groq AI Chatbot Engine (v10.8.0):** Pengolahan AI Chatbot murni berkecepatan tinggi berbasis model flagship Groq LLaMA 3.3 70B:
+   - ⚡ **High-Speed Groq LLaMA 3.3 70B:** Pemrosesan percakapan AI super cepat dengan akurasi dan konteks tinggi.
+   - 🔄 **3x Key Pool Auto-Failover:** Rotasi otomatis 3 Kunci API Groq aktif untuk menjamin layanan AI 100% tanpa batas (*zero-downtime*).
+   - 💬 **Pure Chatbot Experience:** Pengalaman obrolan alami, komunikatif, dan responsif dengan memori percakapan *multi-turn*.
+2. **Object-Agnostic Emergency Brakes Engine (v10.7.0):** Sistem Rem Darurat Mutlak Generik Universal (Isolasi scope target `${targetFile}`, Embargo non-target, Standar arsitektur).
+3. **Visual Page Inspector & IDE Prompt Generator Engine (v10.6.0):** Alur kerja inspeksi visual halaman web (memecah halaman web menjadi komponen terisolasi).
+4. **Interactive Before & After Design Preview Modal Engine (v10.5.0):** Menampilkan Pop-Up Modal simulasi pratinjau visual komparasi tampilan **SEBELUM (AS-IS)** vs **SESUDAH (TO-BE)** secara interaktif.
+5. **RDBMS Architecture & Migration Guard Engine (v10.4.0):** Audit otomatis skema basis data relasional (Normalisasi 3NF, Indeks B-Tree FK, Zero-Downtime Migration, SAST SQL Injection Guard).
+6. **AS-IS vs. TO-BE Architectural Transformation Engine (v10.3.0):** Generator perbandingan visual side-by-side kondisi arsitektur sistem saat ini (**AS-IS**) lawan kondisi arsitektur target setelah prompt dieksekusi (**TO-BE**).
+7. **Multi-Diagram Project Visualizer Engine (v10.2.0):** Menghasilkan 5 diagram visual utuh untuk proyek Anda berstandar Mermaid.js.
+8. **Human-Friendly Layperson Commit Engine (v10.1.0):** Mengubah pesan commit teknis yang rumit menjadi **Format Pesan Commit Ringkas & Terstruktur** yang Sangat Mudah Dibaca oleh Klien dan Product Manager.
+9. **Semantic Versioning Automator Engine (v10.0.0):** Mengotomatiskan & mengoptimalkan penomoran skema Semantic Versioning (`v[Major].[Minor].[Patch]` / `x.x.0`).
 
 ### Pemasangan Ekstensi (.vsix)
 
 1. Buka **Extensions** di Antigravity IDE (`Cmd + Shift + X`).
 2. Klik `...` di kanan atas -> Pilih **"Install from VSIX..."**.
 3. Pilih berkas rilis resmi:  
-   👉 **[saas-workflow-ide-plugin-10.7.0.vsix](file:///Users/user/Downloads/Prompt%20Engginer/plugin-ide/saas-workflow-ide-plugin-10.7.0.vsix)**
+   👉 **[saas-workflow-ide-plugin-10.8.0.vsix](file:///Users/user/Downloads/Prompt%20Engginer/plugin-ide/saas-workflow-ide-plugin-10.8.0.vsix)**
 
 ---
 

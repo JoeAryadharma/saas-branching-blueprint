@@ -6,6 +6,15 @@ Format Berdasarkan Versi Sistem: `v[Mayor].[Minor].[Patch]`
 
 ---
 
+## [v10.8.0] - 2026-07-29 (Rilis Pure Conversational Groq AI Chatbot Engine)
+
+### 🌟 Fitur Baru & Pembaruan
+- **Pure Conversational Groq AI Chatbot Engine (`v10.8.0`):** Integrasi AI Chatbot murni berkecepatan tinggi berbasis model flagship Groq LLaMA 3.3 70B:
+  - ⚡ **High-Speed Groq LLaMA 3.3 70B:** Pemrosesan percakapan AI super cepat dengan akurasi dan konteks tinggi.
+  - 🔄 **3x Key Pool Auto-Failover:** Rotasi otomatis 3 Kunci API Groq aktif untuk menjamin layanan AI 100% tanpa henti (*zero-downtime*).
+  - 💬 **Pure Chatbot Experience:** Pengalaman obrolan alami, komunikatif, dan responsif dengan memori percakapan *multi-turn*.
+  - 🌊 **Real-Time Token Streaming:** Streaming respons token demi token via Groq SSE Protocol.
+
 ## [v10.7.0] - 2026-07-27 (Rilis Object-Agnostic Emergency Brakes Suite)
 
 ### 🌟 Fitur Baru & Pembaruan

@@ -19,6 +19,7 @@ class SaaSWorkflowChatProvider {
     this._ai = aiEngine;
     this._memory = new MemoryManager();
     this._logHistory = [];
+    this._chatHistory = [];
   }
 
   resolveWebviewView(webviewView, context, _token) {
@@ -423,7 +424,7 @@ class SaaSWorkflowChatProvider {
 
   async _handleFreeQuestion(targetDir, folderName, text, audit) {
     const msgId = 'msg_' + Date.now();
-    const headerHtml = `<b>Asisten Joe (Visual Inspector Engine v10.6.0)</b> <small style="color:#94a3b8;">(${this._ai.modelName})</small><br/><br/>`;
+    const headerHtml = `<b>Asisten Joe (Groq AI Chatbot)</b> <small style="color:#94a3b8;">(${this._ai.modelName})</small><br/><br/>`;
     
     this._replyStreamStart(msgId, headerHtml);
 
@@ -431,17 +432,25 @@ class SaaSWorkflowChatProvider {
     const compressedContext = VibeOptimizer.compressContext(projectContext);
     const memoryContext = this._memory.getRelevantContext(3);
     
+    const fullContext = compressedContext + '\n\n' + memoryContext;
+
     let fullResponse = '';
-    const result = await this._ai.askStream(text, compressedContext + '\n\n' + memoryContext, (chunk, accumulated) => {
+    const result = await this._ai.askStream(text, fullContext, this._chatHistory, (chunk, accumulated) => {
       fullResponse = accumulated;
       const formatted = headerHtml + this._formatAIResponse(accumulated);
       this._replyStreamUpdate(msgId, formatted);
     });
 
     if (fullResponse) {
-      this._appendLog(targetDir, folderName, "GENERASI PROMPT (STREAM)", text, audit);
+      if (!this._chatHistory) this._chatHistory = [];
+      this._chatHistory.push({ role: 'user', content: text });
+      this._chatHistory.push({ role: 'assistant', content: fullResponse });
+      if (this._chatHistory.length > 20) {
+        this._chatHistory = this._chatHistory.slice(-20);
+      }
+      this._appendLog(targetDir, folderName, "CHATBOT MURNI (GROQ STREAM)", text, audit);
     } else {
-      this._reply(`<b>Asisten Joe</b> <small style="color:#94a3b8;">(Mode Prompt Standar)</small><br/><br/>Instruksi: <i>"${text}"</i>.<br/>Gunakan tombol pintas di bawah.`);
+      this._reply(`<b>Asisten Joe (Groq AI Chatbot)</b><br/><br/>Instruksi: <i>"${text}"</i>.<br/>Gunakan tombol pintas di bawah.`);
     }
   }
 
